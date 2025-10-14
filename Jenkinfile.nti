@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        DOTNET_VERSION = '9.0.100'
+        NODE_VERSION = '22'
+        DOCKER_REGISTRY = 'your-registry.azurecr.io'
+        DOCKER_REGISTRY_CREDENTIALS = 'acr-credentials'
+        SLACK_CHANNEL = '#devops-alerts'
+    }
+
+    stages {
+        stage('Build Images (NTI)') {
+            steps {
+                script {
+                    // Build Docker images for NTI environment
+                    sh '''
+                        echo "Building Docker images for NTI environment..."
+                        docker compose -f docker-compose-nti.yml build
+                        echo "Docker images for NTI built successfully."
+                    '''
+                }
+            }
+        }
+        stage('Deploy to NTI') {
+            steps {
+                script {
+                    // Deploy to NTI environment using Docker Swarm and docker-compose-nti.yml
+                    sh '''
+                        echo "Starting deployment to NTI environment using Docker Swarm..."
+
+                        # Build images (if not already built)
+                        docker compose -f docker-compose-nti.yml build
+
+                        # Deploy stack using Docker Swarm
+                        docker stack deploy -c docker-compose-nti.yml projectmanagement-stack
+
+                        # Optionally, remove old/unused containers and networks after new ones are up
+                        docker system prune -f
+
+                        # Wait for services to be healthy
+                        sleep 30
+
+                        # Verify deployment
+                        docker stack services projectmanagement-stack
+                    '''
+                }
+            }
+        }
+    }
+}

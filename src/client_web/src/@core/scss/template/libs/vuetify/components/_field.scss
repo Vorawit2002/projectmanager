@@ -1,0 +1,68 @@
+@use "@configured-variables" as variables;
+@use "sass:map";
+@use "@styles/variables/vuetify";
+@use "@core/scss/base/mixins";
+@use "@core/scss/base/utils";
+
+// 👉 Custom border-radius for Vuetify inputs
+.v-text-field .v-field,
+.v-select .v-field,
+.v-autocomplete .v-field,
+.v-combobox .v-field,
+.v-file-input .v-field {
+  border-radius: 14px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+// 👉 VField outline color override
+.v-field__outline {
+  color: rgba(var(--v-theme-on-surface));
+
+  &:not([class*="text-"]) .v-label {
+    color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+  }
+}
+
+// Override input height on comfortable and compact density
+.v-text-field,
+.v-autocomplete,
+.v-combobox,
+.v-file-input,
+.v-select {
+  &.v-input.v-input--density-default:not(.v-textarea) .v-field__input {
+    min-block-size: 56px;
+  }
+
+  &.v-input.v-input--density-comfortable:not(.v-textarea) .v-field__input {
+    min-block-size: 48px;
+  }
+
+  &.v-input.v-input--density-compact:not(.v-textarea) .v-field__input {
+    min-block-size: 40px;
+  }
+}
+
+// Force outline visibility for focus and error states
+.v-field.v-field--focused .v-field__outline,
+.v-input.v-input--error .v-field__outline {
+  --v-field-border-opacity: 1 !important;
+}
+
+// Hover state outline color
+@media (hover: hover) {
+  .v-field:not(.v-field--focused, .v-field--error):hover .v-field__outline {
+    --v-field-border-opacity: 0.6 !important;
+  }
+}
+
+// Icon styling in input slots
+.v-field__prepend-inner,
+.v-field__append-inner,
+.v-field__clearable,
+.v-input__prepend,
+.v-input__append {
+  > .v-icon {
+    font-size: 20px;
+    opacity: var(--v-high-emphasis-opacity) !important;
+  }
+}

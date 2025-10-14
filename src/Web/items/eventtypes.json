@@ -1,0 +1,13 @@
+[
+  {
+    "Name": "นัดหมาย",
+    "EventTypeCode": "001",
+    "IsActive": true
+  },
+  {
+
+    "Name": "แจ้งงานรายวัน",
+    "EventTypeCode": "002",
+    "IsActive": true
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "Id": "F803F2A9-E56F-4C28-3665-08DC9FC7FEB0",
+    "Name": "Develop",
+    "IsActive": true
+  },
+  {
+    "Id": "B00D9F60-F0EE-43D5-8935-08DCA4A24BE8",
+    "Name": "Sale",
+    "IsActive": true
+  },
+  {
+    "Id": "4611B11D-33A2-4352-8936-08DCA4A24BE8",
+    "Name": "Product",
+    "IsActive": true
+  },
+  {
+    "Id": "4611B11D-33A2-4352-8936-08DCA4A24BE9",
+    "Name": "System & Service",
+    "IsActive": true
+  }
+]

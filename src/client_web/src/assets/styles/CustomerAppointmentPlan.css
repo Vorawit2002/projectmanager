@@ -1,0 +1,107 @@
+.text-sub-title {
+  font-size: 25px;
+  font-weight: bold;
+  color: #2b3086;
+  -webkit-background-clip: text; /* สำหรับเว็บเบราว์เซอร์ที่รองรับ */
+  background-clip: text;
+  text-shadow: 5px 5px 8px rgba(65, 69, 92, 0.5);
+  line-height: 1.4; /* ปรับความสูงบรรทัดให้อ่านง่าย */
+}
+.card-form {
+  background: #ffffff;
+  border-radius: 15px;
+}
+.dashed-border {
+  border: 1px dashed grey;
+}
+:deep(.selected-row) {
+  background-color: rgba(var(--v-theme-info), 0.1) !important;
+}
+.card-table {
+  /* เพิ่มเงาและขอบมนที่สวยงาม */
+  box-shadow: 0 4px 15px rgba(43, 48, 134, 0.1);
+  border-radius: 16px;
+  overflow: hidden; /* สำคัญมากเพื่อให้ขอบมนครอบคลุมตารางข้างใน */
+}
+
+/* ปรับปรุงสไตล์ของ Tabs */
+:deep(.v-tab.v-tab--selected) {
+  color: #2b3086; /* ใช้สีเดียวกับหัวเรื่อง */
+  font-weight: 600;
+}
+:deep(.v-tabs-pill .v-tab__slider) {
+  background-color: #2b3086; /* ใช้สีเดียวกับหัวเรื่อง */
+}
+:deep(.v-data-table-header__content) {
+  font-weight: bold; /* ทำให้หัวตารางเป็นตัวหนา */
+  color: #4a4a4a;
+}
+:deep(td) {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  vertical-align: middle;
+}
+
+/* ----- Responsive Design ----- */
+
+/* สำหรับ Tablet และหน้าจอที่เล็กลงมา (ต่ำกว่า 960px) */
+@media (max-width: 960px) {
+  /*
+    นี่คือส่วนสำคัญที่สุดสำหรับตาราง Responsive
+    ทำให้ตารางสามารถเลื่อนแนวนอนได้เมื่อพื้นที่ไม่พอ
+  */
+  :deep(.v-data-table__wrapper) {
+    overflow-x: auto;
+  }
+
+  /* ป้องกันไม่ให้ข้อความในเซลล์ตัดคำลงบรรทัดใหม่ เพื่อให้ตารางเลื่อนได้ทั้งแผง */
+  :deep(th),
+  :deep(td) {
+    white-space: nowrap;
+  }
+}
+
+/* สำหรับ Mobile (ต่ำกว่า 600px) */
+@media (max-width: 600px) {
+  .text-sub-title {
+    font-size: 26px; /* ลดขนาดหัวเรื่องบนมือถือ */
+  }
+
+  /*
+    ปรับ layout ของ Header ให้เรียงจากบนลงล่าง
+    โดยกำหนดให้ container ที่มี d-flex สามารถ wrap ได้
+  */
+  .d-flex.justify-space-between {
+    flex-wrap: wrap;
+    justify-content: flex-start !important; /* จัดชิดซ้าย */
+    gap: 16px; /* เพิ่มช่องว่างระหว่างหัวเรื่องกับปุ่ม */
+  }
+
+  /* ทำให้ปุ่มเพิ่มกิจกรรมเต็มความกว้างเพื่อการกดที่ง่ายขึ้น */
+  .d-flex.justify-space-between .v-btn {
+    width: 100%;
+  }
+
+  /* ลดขนาดตัวอักษรในตารางเพื่อให้แสดงผลได้ดีขึ้น */
+  :deep(td),
+  :deep(th) {
+    font-size: 0.8rem;
+    padding: 10px 12px !important;
+  }
+
+  /* จัดการปุ่ม Action ในตาราง */
+  .flex.justify-start.align-center {
+    gap: 6px; /* เพิ่มระยะห่างระหว่างปุ่ม */
+  }
+
+  .flex.justify-start.align-center .v-btn {
+    margin-right: 1 !important; /* ลบ margin เดิมออก */
+  }
+}
+
+/* Table row highlight for selected-row */
+tr.selected-row {
+  background-color: rgba(33, 150, 243, 0.1) !important;
+  border-left: 4px solid #2196f3 !important;
+  transition: background-color 0.3s, border 0.3s;
+}

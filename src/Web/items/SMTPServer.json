@@ -1,0 +1,14 @@
+[
+  {
+    "Id": "485d07e8-605a-4522-a901-bc9be226993b",
+    "ConfigName": "workCRM",
+    "SMTPServer": "192.168.100.7",
+    "SMTPPort": "25",
+    "SMTPAuthentication": 1,
+    "SMTPUserName": "no-reply@nti.co.th",
+    "SMTPPassword": "P@ssw0rd",
+    "SMTPEnableSSL": false,
+    "IsActive": true,
+    "Remark": "-"
+  }
+]

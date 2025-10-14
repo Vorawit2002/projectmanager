@@ -1,0 +1,92 @@
+[
+  {
+    "Id": "F803F2A9-E56F-4C28-3665-08DC9FC7FEB2",
+    "Name": "DENSO",
+    "TypeOrganization": 1
+  },
+  {
+    "Id": "F903F2A9-E56F-4C28-3665-08DC9FC7FEB3",
+    "Name": "NT",
+    "TypeOrganization": 2
+  },
+  {
+    "Id": "F003F2A9-E56F-4C28-3665-08DC9FC7FEB4",
+    "Name": "NT(TOT)",
+    "TypeOrganization": 2
+  },
+  {
+    "Id": "F103F2A9-E56F-4C28-3665-08DC9FC7FEB5",
+    "Name": "The One Solution Service",
+    "TypeOrganization": 1
+  },
+  {
+    "Id": "F203F2A9-E56F-4C28-3665-08DC9FC7FEB6",
+    "Name": "กรมแพทย์ทหารเรือ",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F303F2A9-E56F-4C28-3665-08DC9FC7FEB7",
+    "Name": "กรมโรงงานอุตสาหกรรม",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F403F2A9-E56F-4C28-3665-08DC9FC7FEB8",
+    "Name": "กรมการข้าว",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F503F2A9-E56F-4C28-3665-08DC9FC7FEB9",
+    "Name": "กรมการค้าต่างประเทศ",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F603F2A9-E56F-4C28-3665-08DC9FC7FEB0",
+    "Name": "กรมการจัดหางาน",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F703F2A9-E56F-4C28-3665-08DC9FC7FEB1",
+    "Name": "กรมกิจการผู้สูงอายุ",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F813F2A9-E56F-4C28-3665-08DC9FC7FEB2",
+    "Name": "กรมควบคุมมลพิษ",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F913F2A9-E56F-4C28-3665-08DC9FC7FEB3",
+    "Name": "กรมคุ้มครองสิทธิและเสรีภาพ",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F013F2A9-E56F-4C28-3665-08DC9FC7FEB4",
+    "Name": "กรมทรัพยากรน้ำบาดาล",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F113F2A9-E56F-4C28-3665-08DC9FC7FEB5",
+    "Name": "กรมบัญชีกลาง",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F213F2A9-E56F-4C28-3665-08DC9FC7FEB6",
+    "Name": "กรมประชาสัมพันธ์",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F313F2A9-E56F-4C28-3665-08DC9FC7FEB7",
+    "Name": "กรมปศุสัตว์ สำนักพัฒนาอาหารสัตว์สูงอายุ",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F413F2A9-E56F-4C28-3665-08DC9FC7FEB8",
+    "Name": "กรมป้องกันและบรรเทาสาธารณภัย",
+    "TypeOrganization": 0
+  },
+  {
+    "Id": "F513F2A9-E56F-4C28-3665-08DC9FC7FEB9",
+    "Name": "กรมฝนหลวงและการบินเกษตร",
+    "TypeOrganization": 0
+  }
+]

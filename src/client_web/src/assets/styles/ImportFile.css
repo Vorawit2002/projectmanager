@@ -1,0 +1,298 @@
+.bg_BTN {
+    background: #4d55cc !important;
+    color: white !important;
+}
+
+.image-wrapper {
+    position: relative;
+    display: inline-block;
+    border-radius: 12px;
+    background: rgba(20, 4, 77, 0.1);
+    transition: all 0.3s ease;
+    overflow: visible;
+    /* เปลี่ยนจาก hidden เป็น visible */
+}
+
+.image-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ปุ่มลบแบบ V-btn (แนะนำ) */
+.image-close-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 10;
+    min-width: unset !important;
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* สำหรับหน้าจอเล็ก */
+@media (max-width: 600px) {
+    .image-close-btn {
+        width: 24px;
+        height: 24px;
+        top: -6px;
+        right: -6px;
+    }
+}
+
+/* ถ้าอยากใช้ i tag แบบเดิม */
+.image-close-responsive {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 10;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    /* Responsive font size */
+    font-size: clamp(16px, 4vw, 20px);
+
+    /* หรือใช้ media queries */
+    font-size: 20px;
+}
+
+@media (max-width: 600px) {
+    .image-close-responsive {
+        font-size: 16px;
+        top: -6px;
+        right: -6px;
+    }
+}
+
+@media (max-width: 400px) {
+    .image-close-responsive {
+        font-size: 14px;
+        top: -4px;
+        right: -4px;
+    }
+}
+
+.image-close-responsive:hover {
+    transform: scale(1.1);
+    color: #d32f2f;
+}
+
+/* Alternative: ใช้ CSS Grid สำหรับจัดตำแหน่งปุ่ม */
+.image-wrapper-grid {
+    display: grid;
+    grid-template-areas: 'image';
+    place-items: center;
+    position: relative;
+}
+
+.preview-avatar-grid {
+    grid-area: image;
+}
+
+.image-close-grid {
+    grid-area: image;
+    justify-self: end;
+    align-self: start;
+    margin-top: -8px;
+    margin-right: -8px;
+    z-index: 10;
+}
+
+.card-rounded {
+    background: #fff;
+    border-radius: 10px;
+    /* box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, 0.1); */
+}
+
+.Text-subtitle {
+    font-size: 30px;
+    color: #000;
+}
+
+.Text_Upload {
+    font-size: 20px;
+    font-weight: 600;
+    color: #4d55cc;
+}
+
+.card-container {
+    background: transparent;
+    position: relative;
+}
+
+.upload-zone {
+    min-height: 200px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-zone:hover {
+    border-color: #6366f1 !important;
+    background: rgba(99, 102, 241, 0.02) !important;
+}
+
+.upload-icon {
+    transition: transform 0.3s ease;
+}
+
+.upload-zone:hover .upload-icon {
+    transform: scale(1.05);
+}
+
+.dashed-border {
+    border: 2px dashed #4d55cc !important;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+}
+
+.text-detail-uploade {
+    font-size: 18px;
+    font-weight: 500;
+    color: #4d55cc;
+    line-height: 1.4;
+    transition: all 0.3s ease;
+}
+
+/* ----------------- */
+/* From Uiverse.io by TemplateVentures */
+.loader_file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: clamp(16px, 4vw, 30px);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    box-sizing: border-box;
+}
+
+.loading_file {
+    width: 320px;
+    max-width: 90vw;
+    height: 10px;
+    margin: 16px 0 0 0;
+    background: linear-gradient(90deg, #4d55cc 30%, #818cf8 100%);
+    border-radius: 6px;
+    animation: loading-bar 1.2s infinite linear;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (max-width: 959px) {
+    .loader_file {
+        min-height: 100px;
+        max-width: 320px;
+        padding: 16px;
+    }
+
+    .loading_file {
+        width: 220px;
+        height: 8px;
+    }
+
+    .loader_file label {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 599px) {
+    .loader_file {
+        min-height: 80px;
+        max-width: 95vw;
+        padding: 10px;
+    }
+
+    .loading_file {
+        width: 120px;
+        height: 6px;
+    }
+
+    .loader_file label {
+        font-size: 0.95rem;
+    }
+}
+
+@keyframes loading-bar {
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: 200px 0;
+    }
+}
+
+/* Responsive Text Sizes */
+@media (max-width: 959px) {
+    .upload-zone {
+        min-height: 180px;
+    }
+
+    label {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 599px) {
+    .upload-zone {
+        min-height: 160px;
+    }
+
+    .dashed-border {
+        border-width: 1.5px !important;
+    }
+
+    .image-wrapper {
+        width: 100%;
+    }
+
+    .image-close {
+        top: -8px;
+        right: -8px;
+        padding: 1px;
+        font-size: 18px !important;
+    }
+
+    .loader_file {
+        padding: 16px;
+        min-height: 140px;
+    }
+
+    label {
+        font-size: 0.875rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .upload-zone {
+        background: rgba(255, 255, 255, 0.03) !important;
+    }
+
+    .upload-zone:hover {
+        background: rgba(99, 102, 241, 0.05) !important;
+    }
+
+    .text-detail-uploade {
+        color: #818cf8;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .dashed-border {
+        border: 3px dashed #000 !important;
+    }
+
+    .text-detail-uploade {
+        color: #000;
+    }
+}

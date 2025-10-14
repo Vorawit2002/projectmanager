@@ -1,0 +1,243 @@
+.border-IMG {
+  border: 2px solid #758694;
+}
+
+/* Responsive image height for mobile */
+@media (max-width: 600px) {
+  .v-img {
+    height: 200px !important;
+  }
+}
+
+.v-carousel {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.v-img {
+  transition: transform 0.3s ease;
+}
+
+.v-img:hover {
+  transform: scale(1.05);
+}
+
+.v-chip {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.v-chip:hover {
+  transform: scale(1.1);
+}
+
+/* Image Overlay Styles */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.chip-description {
+  position: absolute;
+  bottom: 12px;
+  pointer-events: auto;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  right: auto;
+  max-width: calc(100% - 24px);
+  left: 5%;
+  /* transform: translateX(-50%); */
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .chip-title,
+  .chip-category,
+  .chip-description,
+  .chip-rating {
+    font-size: 0.75rem !important;
+    height: 24px !important;
+  }
+
+  /* .chip-description {
+    right: 12px;
+    max-width: calc(100% - 24px);
+  } */
+
+  .chip-rating {
+    bottom: 50px;
+  }
+}
+.img-clickable {
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* Dialog Card Base */
+.dialog-card {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: #ff4c51 !important;
+  color: white !important;
+}
+
+/* Image Container */
+.image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Description */
+.description-text {
+  padding: 16px 24px;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+/* Download Section */
+.download-section {
+  padding: 16px 24px 24px;
+}
+
+.download-btn {
+  min-width: 120px;
+}
+
+/* Mobile Responsive (xs) */
+.mobile-card {
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+}
+
+.mobile-card .close-btn {
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+}
+
+.mobile-card .image-container {
+  flex: 1;
+  padding: 60px 16px 16px;
+}
+
+.mobile-card .preview-image {
+  max-height: 60vh;
+  object-fit: contain;
+}
+
+.mobile-card .description-text {
+  padding: 12px 16px;
+  font-size: 1rem;
+}
+
+.mobile-card .download-section {
+  padding: 16px;
+}
+
+.mobile-card .download-btn {
+  width: 100%;
+  min-width: unset;
+}
+
+/* Tablet Responsive (sm) */
+.tablet-card .image-container {
+  padding: 24px;
+}
+
+.tablet-card .preview-image {
+  max-height: 70vh;
+  max-width: 90%;
+}
+
+.tablet-card .close-btn {
+  top: 12px;
+  right: 12px;
+}
+
+.tablet-card .description-text {
+  padding: 16px 20px;
+  font-size: 1.05rem;
+}
+
+/* Desktop Responsive (md+) */
+.desktop-card .image-container {
+  padding: 32px;
+}
+
+.desktop-card .preview-image {
+  max-height: 80vh;
+  max-width: 800px;
+}
+
+.desktop-card .close-btn {
+  top: 16px;
+  right: 16px;
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+  .mobile-card .preview-image {
+    max-height: 50vh;
+  }
+
+  .mobile-card .description-text {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .preview-image {
+    image-rendering: -webkit-optimize-contrast; /* Edge 79+ support */
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .description-text {
+    color: rgba(255, 255, 255, 0.87);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .dialog-card {
+    transition: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .image-preview-dialog {
+    display: none;
+  }
+}
