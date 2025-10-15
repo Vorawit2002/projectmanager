@@ -230,12 +230,10 @@ export default defineComponent({
           console.log('Share API result:', result)
           // console.log('Share completed successfully for Report ID:', this.reportId)
 
-          // The backend sends OpenID authorize URL, but we'll show the direct shared link format
+          // Show the direct shared link format
           const directShareLink = `${window.location.origin}/activity/${this.reportId}/shared`
-          const openIdShareLink = `https://ntiportal.nti.co.th/connect/authorize?response_type=code&client_id=OPNNricj2qWgVQqo3x4JjHpaoDy6Z0&redirect_uri=https://crm.nti.co.th/login-callback?id=${this.reportId}&scope=openid profile email roles phone profile_image&code_challenge=gEKX6x8KW3Pxfna9viyf6ZHhTZlleNA15rxji0jWlvM&code_challenge_method=S256&state=authencrm`
 
           console.log('🔗 Direct Share Link:', directShareLink)
-          // console.log('🔗 OpenID Share Link (sent in email):', openIdShareLink)
 
           // Create clickable link for testing
           console.log(

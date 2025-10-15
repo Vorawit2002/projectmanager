@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/ActivityPlanContacts/CreateActivityPlanContact": {
+    "/api/activityplancontacts/CreateActivityPlanContact": {
       "post": {
         "tags": [
           "ActivityPlanContacts"
@@ -43,7 +43,7 @@
         ]
       }
     },
-    "/api/ActivityPlanContacts/GetActivityPlanContactQuery": {
+    "/api/activityplancontacts/GetActivityPlanContactQuery": {
       "get": {
         "tags": [
           "ActivityPlanContacts"
@@ -71,7 +71,7 @@
         ]
       }
     },
-    "/api/ActivityPlanContacts/GetActivityPlanContactQueryByID/{id}": {
+    "/api/activityplancontacts/GetActivityPlanContactQueryByID/{id}": {
       "get": {
         "tags": [
           "ActivityPlanContacts"
@@ -108,7 +108,7 @@
         ]
       }
     },
-    "/api/ActivityPlanContacts/GetActivityPlanContactWithPagination": {
+    "/api/activityplancontacts/GetActivityPlanContactWithPagination": {
       "post": {
         "tags": [
           "ActivityPlanContacts"
@@ -145,7 +145,7 @@
         ]
       }
     },
-    "/api/ActivityPlanContacts/GetActivityPlanContactQueryByActivityPlanId": {
+    "/api/activityplancontacts/GetActivityPlanContactQueryByActivityPlanId": {
       "post": {
         "tags": [
           "ActivityPlanContacts"
@@ -185,7 +185,7 @@
         ]
       }
     },
-    "/api/ActivityPlanContacts/UpdateActivityPlanContact": {
+    "/api/activityplancontacts/UpdateActivityPlanContact": {
       "put": {
         "tags": [
           "ActivityPlanContacts"
@@ -222,7 +222,7 @@
         ]
       }
     },
-    "/api/ActivityPlanContacts/DeleteActivityPlanContact/{id}": {
+    "/api/activityplancontacts/DeleteActivityPlanContact/{id}": {
       "delete": {
         "tags": [
           "ActivityPlanContacts"
@@ -260,7 +260,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/ShareActivityPlan": {
+    "/api/activityplan/ShareActivityPlan": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -297,7 +297,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/CreateActivityPlan": {
+    "/api/activityplan/CreateActivityPlan": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -335,7 +335,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/DuplicateActivityPlan": {
+    "/api/activityplan/DuplicateActivityPlan": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -372,7 +372,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanQuery": {
+    "/api/activityplan/GetActivityPlanQuery": {
       "get": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -400,7 +400,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanQueryByID/{id}": {
+    "/api/activityplan/GetActivityPlanQueryByID/{id}": {
       "get": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -437,7 +437,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanWithPlanNoteForExcel": {
+    "/api/activityplan/GetActivityPlanWithPlanNoteForExcel": {
       "get": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -465,7 +465,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanQueryWithYears": {
+    "/api/activityplan/GetActivityPlanQueryWithYears": {
       "get": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -490,7 +490,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetNotificationActivityPlanQueryByEmployeeId": {
+    "/api/activityplan/GetNotificationActivityPlanQueryByEmployeeId": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -530,7 +530,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanForDashboardQuery": {
+    "/api/activityplan/GetActivityPlanForDashboardQuery": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -567,7 +567,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanQueryLatest": {
+    "/api/activityplan/GetActivityPlanQueryLatest": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -606,7 +606,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanWithPagination": {
+    "/api/activityplan/GetActivityPlanWithPagination": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -643,7 +643,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanWithPlanNoteWithPaginationQuery": {
+    "/api/activityplan/GetActivityPlanWithPlanNoteWithPaginationQuery": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -680,7 +680,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/GetActivityPlanQueryByEmployeeId": {
+    "/api/activityplan/GetActivityPlanQueryByEmployeeId": {
       "post": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -720,7 +720,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/UpdateActivityPlan": {
+    "/api/activityplan/UpdateActivityPlan": {
       "put": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -757,7 +757,7 @@
         ]
       }
     },
-    "/api/ActivityPlanEndpoint/DeleteActivityPlan/{id}": {
+    "/api/activityplan/DeleteActivityPlan/{id}": {
       "delete": {
         "tags": [
           "ActivityPlanEndpoint"
@@ -795,7 +795,144 @@
         ]
       }
     },
-    "/api/Departments/CreateDepartment": {
+    "/api/authentication/login": {
+      "post": {
+        "tags": [
+          "AuthenticationEndpoint"
+        ],
+        "operationId": "Login",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/authentication/register": {
+      "post": {
+        "tags": [
+          "AuthenticationEndpoint"
+        ],
+        "operationId": "Register",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/authentication/refresh-token": {
+      "post": {
+        "tags": [
+          "AuthenticationEndpoint"
+        ],
+        "operationId": "RefreshToken",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/authentication/me": {
+      "get": {
+        "tags": [
+          "AuthenticationEndpoint"
+        ],
+        "operationId": "GetCurrentUser",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/authentication/migrate-users": {
+      "post": {
+        "tags": [
+          "AuthenticationEndpoint"
+        ],
+        "operationId": "MigrateExistingUsers",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MigrateExistingUsersCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/departments/CreateDepartment": {
       "post": {
         "tags": [
           "Departments"
@@ -832,7 +969,7 @@
         ]
       }
     },
-    "/api/Departments/GetDepartmentQuery": {
+    "/api/departments/GetDepartmentQuery": {
       "get": {
         "tags": [
           "Departments"
@@ -860,7 +997,7 @@
         ]
       }
     },
-    "/api/Departments/GetDepartmentQueryByID/{id}": {
+    "/api/departments/GetDepartmentQueryByID/{id}": {
       "get": {
         "tags": [
           "Departments"
@@ -897,7 +1034,7 @@
         ]
       }
     },
-    "/api/Departments/GetDepartmentWithPagination": {
+    "/api/departments/GetDepartmentWithPagination": {
       "post": {
         "tags": [
           "Departments"
@@ -934,7 +1071,7 @@
         ]
       }
     },
-    "/api/Departments/UpdateDepartment": {
+    "/api/departments/UpdateDepartment": {
       "put": {
         "tags": [
           "Departments"
@@ -971,7 +1108,7 @@
         ]
       }
     },
-    "/api/Departments/DeleteDepartment/{id}": {
+    "/api/departments/DeleteDepartment/{id}": {
       "delete": {
         "tags": [
           "Departments"
@@ -1009,7 +1146,7 @@
         ]
       }
     },
-    "/api/Employees/CheckAndCreateEmployee": {
+    "/api/employees/CheckAndCreateEmployee": {
       "post": {
         "tags": [
           "Employees"
@@ -1041,7 +1178,7 @@
         }
       }
     },
-    "/api/Employees/CreateEmployee": {
+    "/api/employees/CreateEmployee": {
       "post": {
         "tags": [
           "Employees"
@@ -1078,7 +1215,7 @@
         ]
       }
     },
-    "/api/Employees/GetEmployeeQuery": {
+    "/api/employees/GetEmployeeQuery": {
       "get": {
         "tags": [
           "Employees"
@@ -1106,7 +1243,7 @@
         ]
       }
     },
-    "/api/Employees/GetEmployeeQueryByID/{id}": {
+    "/api/employees/GetEmployeeQueryByID/{id}": {
       "get": {
         "tags": [
           "Employees"
@@ -1143,7 +1280,7 @@
         ]
       }
     },
-    "/api/Employees/GetEmployeeQueryByUserID/{UserId}": {
+    "/api/employees/GetEmployeeQueryByUserID/{UserId}": {
       "get": {
         "tags": [
           "Employees"
@@ -1179,7 +1316,7 @@
         ]
       }
     },
-    "/api/Employees/GetEmployeeWithPagination": {
+    "/api/employees/GetEmployeeWithPagination": {
       "post": {
         "tags": [
           "Employees"
@@ -1216,7 +1353,7 @@
         ]
       }
     },
-    "/api/Employees/GetEmployeeQueryByDepartmentId": {
+    "/api/employees/GetEmployeeQueryByDepartmentId": {
       "post": {
         "tags": [
           "Employees"
@@ -1256,7 +1393,7 @@
         ]
       }
     },
-    "/api/Employees/UpdateEmployee": {
+    "/api/employees/UpdateEmployee": {
       "put": {
         "tags": [
           "Employees"
@@ -1293,7 +1430,7 @@
         ]
       }
     },
-    "/api/Employees/DeleteEmployee/{id}": {
+    "/api/employees/DeleteEmployee/{id}": {
       "delete": {
         "tags": [
           "Employees"
@@ -1330,7 +1467,7 @@
         ]
       }
     },
-    "/api/EventType/CreateEventType": {
+    "/api/eventtype/CreateEventType": {
       "post": {
         "tags": [
           "EventType"
@@ -1367,7 +1504,7 @@
         ]
       }
     },
-    "/api/EventType/GetEventTypeQuery": {
+    "/api/eventtype/GetEventTypeQuery": {
       "get": {
         "tags": [
           "EventType"
@@ -1395,7 +1532,7 @@
         ]
       }
     },
-    "/api/EventType/GetEventTypeQueryByID/{id}": {
+    "/api/eventtype/GetEventTypeQueryByID/{id}": {
       "get": {
         "tags": [
           "EventType"
@@ -1432,7 +1569,7 @@
         ]
       }
     },
-    "/api/EventType/GetEventTypeWithPagination": {
+    "/api/eventtype/GetEventTypeWithPagination": {
       "post": {
         "tags": [
           "EventType"
@@ -1469,7 +1606,7 @@
         ]
       }
     },
-    "/api/EventType/UpdateEventType": {
+    "/api/eventtype/UpdateEventType": {
       "put": {
         "tags": [
           "EventType"
@@ -1506,7 +1643,7 @@
         ]
       }
     },
-    "/api/EventType/DeleteEventType/{id}": {
+    "/api/eventtype/DeleteEventType/{id}": {
       "delete": {
         "tags": [
           "EventType"
@@ -1543,7 +1680,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/CreateOrganizationContact": {
+    "/api/organizationcontacts/CreateOrganizationContact": {
       "post": {
         "tags": [
           "OrganizationContacts"
@@ -1580,7 +1717,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/CreateOrganizationContactJustName": {
+    "/api/organizationcontacts/CreateOrganizationContactJustName": {
       "post": {
         "tags": [
           "OrganizationContacts"
@@ -1618,7 +1755,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/GetOrganizationContactQuery": {
+    "/api/organizationcontacts/GetOrganizationContactQuery": {
       "get": {
         "tags": [
           "OrganizationContacts"
@@ -1646,7 +1783,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/GetOrganizationContactQueryByID/{id}": {
+    "/api/organizationcontacts/GetOrganizationContactQueryByID/{id}": {
       "get": {
         "tags": [
           "OrganizationContacts"
@@ -1683,7 +1820,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/GetOrganizationContactWithPagination": {
+    "/api/organizationcontacts/GetOrganizationContactWithPagination": {
       "post": {
         "tags": [
           "OrganizationContacts"
@@ -1720,7 +1857,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/GetOrganizationContactQueryByOrganizationId": {
+    "/api/organizationcontacts/GetOrganizationContactQueryByOrganizationId": {
       "post": {
         "tags": [
           "OrganizationContacts"
@@ -1760,7 +1897,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/UpdateOrganizationContact": {
+    "/api/organizationcontacts/UpdateOrganizationContact": {
       "put": {
         "tags": [
           "OrganizationContacts"
@@ -1797,7 +1934,7 @@
         ]
       }
     },
-    "/api/OrganizationContacts/DeleteOrganizationContact/{id}": {
+    "/api/organizationcontacts/DeleteOrganizationContact/{id}": {
       "delete": {
         "tags": [
           "OrganizationContacts"
@@ -1834,7 +1971,7 @@
         ]
       }
     },
-    "/api/Organizations/CreateOrganization": {
+    "/api/organizations/CreateOrganization": {
       "post": {
         "tags": [
           "Organizations"
@@ -1872,7 +2009,7 @@
         ]
       }
     },
-    "/api/Organizations/CreateOrganizationJustName": {
+    "/api/organizations/CreateOrganizationJustName": {
       "post": {
         "tags": [
           "Organizations"
@@ -1910,7 +2047,7 @@
         ]
       }
     },
-    "/api/Organizations/GetOrganizationQuery": {
+    "/api/organizations/GetOrganizationQuery": {
       "get": {
         "tags": [
           "Organizations"
@@ -1938,7 +2075,7 @@
         ]
       }
     },
-    "/api/Organizations/GetOrganizationQueryByID/{id}": {
+    "/api/organizations/GetOrganizationQueryByID/{id}": {
       "get": {
         "tags": [
           "Organizations"
@@ -1975,7 +2112,7 @@
         ]
       }
     },
-    "/api/Organizations/GetOrganizationWithPagination": {
+    "/api/organizations/GetOrganizationWithPagination": {
       "post": {
         "tags": [
           "Organizations"
@@ -2012,7 +2149,7 @@
         ]
       }
     },
-    "/api/Organizations/UpdateOrganization": {
+    "/api/organizations/UpdateOrganization": {
       "put": {
         "tags": [
           "Organizations"
@@ -2049,7 +2186,7 @@
         ]
       }
     },
-    "/api/Organizations/DeleteOrganization/{id}": {
+    "/api/organizations/DeleteOrganization/{id}": {
       "delete": {
         "tags": [
           "Organizations"
@@ -2086,7 +2223,7 @@
         ]
       }
     },
-    "/api/PlanNotes/CreatePlanNote": {
+    "/api/plannotes/CreatePlanNote": {
       "post": {
         "tags": [
           "PlanNotes"
@@ -2123,7 +2260,7 @@
         ]
       }
     },
-    "/api/PlanNotes/GetPlanNoteQuery": {
+    "/api/plannotes/GetPlanNoteQuery": {
       "get": {
         "tags": [
           "PlanNotes"
@@ -2151,7 +2288,7 @@
         ]
       }
     },
-    "/api/PlanNotes/GetPlanNoteQueryByID": {
+    "/api/plannotes/GetPlanNoteQueryByID": {
       "get": {
         "tags": [
           "PlanNotes"
@@ -2188,7 +2325,7 @@
         ]
       }
     },
-    "/api/PlanNotes/GetPlanNoteQueryByActivityPlanId": {
+    "/api/plannotes/GetPlanNoteQueryByActivityPlanId": {
       "get": {
         "tags": [
           "PlanNotes"
@@ -2225,7 +2362,7 @@
         ]
       }
     },
-    "/api/PlanNotes/GetPlanNoteWithPagination": {
+    "/api/plannotes/GetPlanNoteWithPagination": {
       "post": {
         "tags": [
           "PlanNotes"
@@ -2262,7 +2399,7 @@
         ]
       }
     },
-    "/api/PlanNotes/UpdatePlanNote": {
+    "/api/plannotes/UpdatePlanNote": {
       "put": {
         "tags": [
           "PlanNotes"
@@ -2299,7 +2436,7 @@
         ]
       }
     },
-    "/api/PlanNotes/DeletePlanNote/{id}": {
+    "/api/plannotes/DeletePlanNote/{id}": {
       "delete": {
         "tags": [
           "PlanNotes"
@@ -2336,7 +2473,7 @@
         ]
       }
     },
-    "/api/ProjectContacts/CreateProjectContact": {
+    "/api/projectcontacts/CreateProjectContact": {
       "post": {
         "tags": [
           "ProjectContacts"
@@ -2373,7 +2510,7 @@
         ]
       }
     },
-    "/api/ProjectContacts/GetProjectContactQuery": {
+    "/api/projectcontacts/GetProjectContactQuery": {
       "get": {
         "tags": [
           "ProjectContacts"
@@ -2401,7 +2538,7 @@
         ]
       }
     },
-    "/api/ProjectContacts/GetProjectContactQueryByID": {
+    "/api/projectcontacts/GetProjectContactQueryByID": {
       "get": {
         "tags": [
           "ProjectContacts"
@@ -2438,7 +2575,7 @@
         ]
       }
     },
-    "/api/ProjectContacts/GetProjectContactWithPagination": {
+    "/api/projectcontacts/GetProjectContactWithPagination": {
       "post": {
         "tags": [
           "ProjectContacts"
@@ -2475,7 +2612,7 @@
         ]
       }
     },
-    "/api/ProjectContacts/UpdateProjectContact": {
+    "/api/projectcontacts/UpdateProjectContact": {
       "put": {
         "tags": [
           "ProjectContacts"
@@ -2512,7 +2649,7 @@
         ]
       }
     },
-    "/api/ProjectContacts/DeleteProjectContact/{id}": {
+    "/api/projectcontacts/DeleteProjectContact/{id}": {
       "delete": {
         "tags": [
           "ProjectContacts"
@@ -2549,7 +2686,7 @@
         ]
       }
     },
-    "/api/Projects/CreateProject": {
+    "/api/projects/CreateProject": {
       "post": {
         "tags": [
           "Projects"
@@ -2586,7 +2723,7 @@
         ]
       }
     },
-    "/api/Projects/GetProjectQuery": {
+    "/api/projects/GetProjectQuery": {
       "get": {
         "tags": [
           "Projects"
@@ -2614,7 +2751,7 @@
         ]
       }
     },
-    "/api/Projects/GetProjectQueryByID": {
+    "/api/projects/GetProjectQueryByID": {
       "get": {
         "tags": [
           "Projects"
@@ -2651,7 +2788,7 @@
         ]
       }
     },
-    "/api/Projects/GetProjectWithPagination": {
+    "/api/projects/GetProjectWithPagination": {
       "post": {
         "tags": [
           "Projects"
@@ -2688,7 +2825,7 @@
         ]
       }
     },
-    "/api/Projects/UpdateProject": {
+    "/api/projects/UpdateProject": {
       "put": {
         "tags": [
           "Projects"
@@ -2725,7 +2862,7 @@
         ]
       }
     },
-    "/api/Projects/DeleteProject/{id}": {
+    "/api/projects/DeleteProject/{id}": {
       "delete": {
         "tags": [
           "Projects"
@@ -2762,7 +2899,7 @@
         ]
       }
     },
-    "/api/TodoItems": {
+    "/api/todoitems": {
       "get": {
         "tags": [
           "TodoItems"
@@ -2855,7 +2992,7 @@
         ]
       }
     },
-    "/api/TodoItems/{id}": {
+    "/api/todoitems/{id}": {
       "put": {
         "tags": [
           "TodoItems"
@@ -2928,7 +3065,7 @@
         ]
       }
     },
-    "/api/TodoItems/UpdateDetail/{id}": {
+    "/api/todoitems/UpdateDetail/{id}": {
       "put": {
         "tags": [
           "TodoItems"
@@ -2973,7 +3110,7 @@
         ]
       }
     },
-    "/api/TodoLists": {
+    "/api/todolists": {
       "get": {
         "tags": [
           "TodoLists"
@@ -3034,7 +3171,7 @@
         ]
       }
     },
-    "/api/TodoLists/{id}": {
+    "/api/todolists/{id}": {
       "put": {
         "tags": [
           "TodoLists"
@@ -3107,7 +3244,7 @@
         ]
       }
     },
-    "/api/Users/register": {
+    "/api/users/register": {
       "post": {
         "tags": [
           "Users"
@@ -3122,7 +3259,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3142,7 +3278,7 @@
         }
       }
     },
-    "/api/Users/login": {
+    "/api/users/login": {
       "post": {
         "tags": [
           "Users"
@@ -3177,7 +3313,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3194,7 +3329,7 @@
         }
       }
     },
-    "/api/Users/refresh": {
+    "/api/users/refresh": {
       "post": {
         "tags": [
           "Users"
@@ -3209,7 +3344,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3226,7 +3360,7 @@
         }
       }
     },
-    "/api/Users/confirmEmail": {
+    "/api/users/confirmEmail": {
       "get": {
         "tags": [
           "Users"
@@ -3236,7 +3370,6 @@
           {
             "name": "userId",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -3246,7 +3379,6 @@
           {
             "name": "code",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -3270,7 +3402,7 @@
         }
       }
     },
-    "/api/Users/resendConfirmationEmail": {
+    "/api/users/resendConfirmationEmail": {
       "post": {
         "tags": [
           "Users"
@@ -3285,7 +3417,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3295,7 +3426,7 @@
         }
       }
     },
-    "/api/Users/forgotPassword": {
+    "/api/users/forgotPassword": {
       "post": {
         "tags": [
           "Users"
@@ -3310,7 +3441,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3330,7 +3460,7 @@
         }
       }
     },
-    "/api/Users/resetPassword": {
+    "/api/users/resetPassword": {
       "post": {
         "tags": [
           "Users"
@@ -3345,7 +3475,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3365,7 +3494,7 @@
         }
       }
     },
-    "/api/Users/manage/2fa": {
+    "/api/users/manage/2fa": {
       "post": {
         "tags": [
           "Users"
@@ -3380,7 +3509,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3415,7 +3543,7 @@
         ]
       }
     },
-    "/api/Users/manage/info": {
+    "/api/users/manage/info": {
       "get": {
         "tags": [
           "Users"
@@ -3466,7 +3594,6 @@
               }
             }
           },
-          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3501,7 +3628,7 @@
         ]
       }
     },
-    "/api/WeatherForecasts": {
+    "/api/weatherforecasts": {
       "get": {
         "tags": [
           "WeatherForecasts"
@@ -3529,7 +3656,7 @@
         ]
       }
     },
-    "/api/ActivityPlanAttachmentEndpoint/CreateActivityPlanAttachment": {
+    "/api/activityplanattachment/CreateActivityPlanAttachment": {
       "post": {
         "tags": [
           "ActivityPlanAttachmentEndpoint"
@@ -3566,7 +3693,7 @@
         ]
       }
     },
-    "/api/ActivityPlanAttachmentEndpoint/GetActivityPlanAttachmentsQueryByActivityPlanId": {
+    "/api/activityplanattachment/GetActivityPlanAttachmentsQueryByActivityPlanId": {
       "post": {
         "tags": [
           "ActivityPlanAttachmentEndpoint"
@@ -3606,7 +3733,7 @@
         ]
       }
     },
-    "/api/ActivityPlanAttachmentEndpoint/DeleteActivityPlanAttachment": {
+    "/api/activityplanattachment/DeleteActivityPlanAttachment": {
       "delete": {
         "tags": [
           "ActivityPlanAttachmentEndpoint"
@@ -3643,7 +3770,7 @@
         ]
       }
     },
-    "/api/AttachmentEndpoint/GetAttachmentQueryById": {
+    "/api/attachment/GetAttachmentQueryById": {
       "get": {
         "tags": [
           "AttachmentEndpoint"
@@ -3680,7 +3807,7 @@
         ]
       }
     },
-    "/api/AuthenEndpoint/GetUserProfile": {
+    "/api/authen/GetUserProfile": {
       "get": {
         "tags": [
           "AuthenEndpoint"
@@ -3692,79 +3819,20 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthenticationUserDto"
+                  "$ref": "#/components/schemas/CurrentUserDto"
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/api/CheckInCheckOutEndpoint/CheckLineUserIdCheckInCheckOutToDay": {
-      "post": {
-        "tags": [
-          "CheckInCheckOutEndpoint"
-        ],
-        "operationId": "CheckLineUserIdCheckInCheckOutToDay",
-        "requestBody": {
-          "x-name": "query",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CheckLineUserIdCheckInCheckOutToDayQuery"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
         },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CheckLineUserIdCheckInCheckOutToDayDto"
-                }
-              }
-            }
+        "security": [
+          {
+            "JWT": []
           }
-        }
+        ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/CreateCheckInCheckOutLine": {
-      "post": {
-        "tags": [
-          "CheckInCheckOutEndpoint"
-        ],
-        "operationId": "CreateCheckInCheckOutLine",
-        "requestBody": {
-          "x-name": "query",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCheckInCheckOutForLineCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateCheckInCheckOutDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/CheckInCheckOutEndpoint/CreateCheckInCheckOut": {
+    "/api/checkincheckout/CreateCheckInCheckOut": {
       "post": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -3801,7 +3869,7 @@
         ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/GetCheckInCheckOutQueryWithPagination": {
+    "/api/checkincheckout/GetCheckInCheckOutQueryWithPagination": {
       "post": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -3838,7 +3906,7 @@
         ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/CheckEmployeeCheckInCheckOutQuery": {
+    "/api/checkincheckout/CheckEmployeeCheckInCheckOutQuery": {
       "post": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -3875,7 +3943,7 @@
         ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/GetCheckInCheckOutQuery": {
+    "/api/checkincheckout/GetCheckInCheckOutQuery": {
       "get": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -3903,7 +3971,7 @@
         ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/GetCheckInCheckOutQueryById/{Id}": {
+    "/api/checkincheckout/GetCheckInCheckOutQueryById/{Id}": {
       "get": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -3940,7 +4008,7 @@
         ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/GetCheckInCheckOutQueryByEmployeeId/{Id}": {
+    "/api/checkincheckout/GetCheckInCheckOutQueryByEmployeeId/{Id}": {
       "get": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -3980,7 +4048,7 @@
         ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/UpdateCheckInCheckOut": {
+    "/api/checkincheckout/UpdateCheckInCheckOut": {
       "put": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -4017,7 +4085,7 @@
         ]
       }
     },
-    "/api/CheckInCheckOutEndpoint/DeleteCheckInCheckOut/{Id}": {
+    "/api/checkincheckout/DeleteCheckInCheckOut/{Id}": {
       "delete": {
         "tags": [
           "CheckInCheckOutEndpoint"
@@ -4054,7 +4122,7 @@
         ]
       }
     },
-    "/api/PushSubscriptionsEndpoint/Subcriptions": {
+    "/api/pushsubscriptions/Subcriptions": {
       "post": {
         "tags": [
           "PushSubscriptionsEndpoint"
@@ -4086,7 +4154,7 @@
         }
       }
     },
-    "/api/PushSubscriptionsEndpoint/UnSubcriptions": {
+    "/api/pushsubscriptions/UnSubcriptions": {
       "post": {
         "tags": [
           "PushSubscriptionsEndpoint"
@@ -5773,6 +5841,116 @@
           "outSide": {
             "type": "boolean",
             "nullable": true
+          }
+        }
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tokenExpiration": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "requirePasswordChange": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LoginCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "emailOrUsername": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          }
+        }
+      },
+      "RefreshTokenCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "CurrentUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "MigrateExistingUsersCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "defaultPassword": {
+            "type": "string"
           }
         }
       },
@@ -7749,59 +7927,6 @@
           }
         }
       },
-      "AuthenticationUserDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "id": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
-          },
-          "displayName": {
-            "type": "string",
-            "nullable": true
-          },
-          "roleNames": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "CheckLineUserIdCheckInCheckOutToDayDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "linebotUserId": {
-            "type": "string"
-          },
-          "isFirstCheckinOfDay": {
-            "type": "boolean"
-          },
-          "checkinTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      },
-      "CheckLineUserIdCheckInCheckOutToDayQuery": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "linebotUserId": {
-            "type": "string"
-          }
-        }
-      },
       "CreateCheckInCheckOutDto": {
         "type": "object",
         "additionalProperties": false,
@@ -7813,64 +7938,6 @@
             "type": "string"
           }
         }
-      },
-      "CreateCheckInCheckOutForLineCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userId": {
-            "type": "string"
-          },
-          "latLong": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string",
-            "nullable": true
-          },
-          "ipAddress": {
-            "type": "string",
-            "nullable": true
-          },
-          "organizationName": {
-            "type": "string",
-            "nullable": true
-          },
-          "checkInCheckOutTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "projectName": {
-            "type": "string",
-            "nullable": true
-          },
-          "fileName": {
-            "type": "string"
-          },
-          "base64": {
-            "type": "string"
-          },
-          "checkInCheckOutTypes": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/CheckInCheckOutType"
-              }
-            ]
-          }
-        }
-      },
-      "CheckInCheckOutType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "CheckIn",
-          "CheckOut"
-        ],
-        "enum": [
-          0,
-          1
-        ]
       },
       "CreateCheckInCheckOutCommand": {
         "type": "object",
@@ -7920,6 +7987,18 @@
             ]
           }
         }
+      },
+      "CheckInCheckOutType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "CheckIn",
+          "CheckOut"
+        ],
+        "enum": [
+          0,
+          1
+        ]
       },
       "PaginatedListOfCheckInCheckOutDto": {
         "type": "object",

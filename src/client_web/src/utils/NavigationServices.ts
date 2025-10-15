@@ -1,5 +1,5 @@
-import router from '@/router'
 import type { SelectionMenu } from './NavigationGenerator'
+import type { Router } from 'vue-router'
 
 class NavMenu {
   mainpath = '' as string
@@ -15,7 +15,9 @@ class NavMenu {
 
 export function GeneratedAllMenu() {
   const NavMenuList: any = []
-  router.options.routes.forEach((route) => {
+  const router = (window as any).__router
+  if (!router?.options?.routes) return []
+  router.options.routes.forEach((route: any) => {
     if (route.children) {
       let childrens = route.children
       childrens.forEach((data) => {
@@ -42,7 +44,9 @@ export function GeneratedAllMenu() {
 
 export function GeneratedIncludeMenu(selectionMenu: SelectionMenu) {
   const NavMenuList: any = []
-  router.options.routes.forEach((route) => {
+  const router = (window as any).__router
+  if (!router?.options?.routes) return []
+  router.options.routes.forEach((route: any) => {
     if (route.children) {
       let childrens = route.children
       childrens.forEach((data) => {

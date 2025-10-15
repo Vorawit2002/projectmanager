@@ -366,6 +366,9 @@ namespace ProjectManagement.Infrastructure.Data.Migrations
                     b.Property<bool>("IsRevoked")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime?>("LastPasswordChangeDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
@@ -387,6 +390,9 @@ namespace ProjectManagement.Infrastructure.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequirePasswordChange")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("RevokeEnd")

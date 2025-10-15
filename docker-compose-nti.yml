@@ -22,7 +22,6 @@ services:
       - DefaultConnection=Host=postgres;Database=PM-db;Username=admin;Password=P@ssw0rd;
       - HangfireConnection=Host=postgres;Database=PM-db;Username=admin;Password=P@ssw0rd;
       - SeqServerUrl=http://seq:80
-      - Authority=https://ntiportal.nti.co.th/
       - RedisConfiguration=redis:6379
       - FreeUriTimeStamp=http://timestamp.digicert.com
       - UriTimeStamp=http://timestamp.digicert.com

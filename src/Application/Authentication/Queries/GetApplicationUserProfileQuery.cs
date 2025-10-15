@@ -1,56 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using ProjectManagement.Application.Authentication.Queries;
+﻿using ProjectManagement.Application.Authentication.Queries;
 using ProjectManagement.Application.Common.Interfaces;
-using ProjectManagement.Domain.Constants;
 using ProjectManagement.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+
 namespace ProjectManagement.Application.ApplicationUserProfile.Queries;
 
-public record GetApplicationUserProfileCommand : IRequest<AuthenticationUserDto>;
-public class GetApplicationUserProfileQueryHandler : IRequestHandler<GetApplicationUserProfileCommand, AuthenticationUserDto>
+public record GetApplicationUserProfileCommand : IRequest<CurrentUserDto>;
+
+public class GetApplicationUserProfileQueryHandler : IRequestHandler<GetApplicationUserProfileCommand, CurrentUserDto>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUser _user;
-    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public GetApplicationUserProfileQueryHandler(IApplicationDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, IUser user, RoleManager<IdentityRole> roleManager)
+    public GetApplicationUserProfileQueryHandler(
+        UserManager<ApplicationUser> userManager, 
+        IUser user)
     {
-        _context = context;
-        _mapper = mapper;
         _userManager = userManager;
         _user = user;
-        _roleManager = roleManager;
     }
-    public async Task<AuthenticationUserDto> Handle(GetApplicationUserProfileCommand request, CancellationToken cancellationToken)
-    {
 
-        ApplicationUser? appUser = await _userManager.FindByNameAsync(_user.UserName ?? "");
-        //Guard.Against.NotFound(_user.UserName ?? "", appUser);
-        if (appUser == null)
+    public async Task<CurrentUserDto> Handle(GetApplicationUserProfileCommand request, CancellationToken cancellationToken)
+    {
+        // Get current user from JWT token claims
+        var userId = _user.Id;
+        
+        if (string.IsNullOrEmpty(userId))
         {
-            return new AuthenticationUserDto
+            return new CurrentUserDto
             {
                 UserName = _user.UserName
-
             };
         }
-        else
+
+        // Find user by ID from JWT claims
+        var appUser = await _userManager.FindByIdAsync(userId);
+        
+        if (appUser == null)
         {
-            var roles = await _userManager.GetRolesAsync(appUser);
-
-            return new AuthenticationUserDto
+            return new CurrentUserDto
             {
-                UserName = appUser.UserName,
-                Id = Guid.Parse(appUser.Id),
-                RoleNames = roles.ToList(),
+                UserName = _user.UserName
             };
         }
+
+        // Get user roles
+        var roles = await _userManager.GetRolesAsync(appUser);
+
+        return new CurrentUserDto
+        {
+            UserName = appUser.UserName,
+            Id = Guid.Parse(appUser.Id),
+            RoleNames = roles.ToList(),
+            DisplayName = $"{appUser.UserName}"
+        };
     }
 }

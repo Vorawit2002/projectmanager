@@ -132,7 +132,6 @@
                   v-model="accountData.email"
                   label="อีเมล"
                   :rules="[value => !!value || 'กรุณากรอกอีเมล']"
-                  :disabled="true"
                   type="อีเมล"
                 />
               </VCol>
@@ -143,7 +142,6 @@
                 md="6"
               >
                 <VTextField
-                  :disabled="true"
                   v-model="accountData.phone"
                   label="เบอร์โทรศัพท์"
                   placeholder="061xxx1122"

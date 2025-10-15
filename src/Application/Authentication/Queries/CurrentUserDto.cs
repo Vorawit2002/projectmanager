@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ProjectManagement.Domain.Entities;
 
 namespace ProjectManagement.Application.Authentication.Queries;
-public class AuthenticationUserDto
+public class CurrentUserDto
 {
     public string? UserName { get; set; }
     public Guid? Id { get; set; }

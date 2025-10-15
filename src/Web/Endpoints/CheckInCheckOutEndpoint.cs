@@ -12,9 +12,6 @@ public class CheckInCheckOutEndpoint : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(CheckLineUserIdCheckInCheckOutToDay, "CheckLineUserIdCheckInCheckOutToDay")
-             .MapPost(CreateCheckInCheckOutLine, "CreateCheckInCheckOutLine");
-        app.MapGroup(this)
         .RequireAuthorization()
         .MapPost(CreateCheckInCheckOut, "CreateCheckInCheckOut")
         .MapPost(GetCheckInCheckOutQueryWithPagination, "GetCheckInCheckOutQueryWithPagination")
@@ -26,14 +23,6 @@ public class CheckInCheckOutEndpoint : EndpointGroupBase
         .MapDelete(DeleteCheckInCheckOut, "DeleteCheckInCheckOut/{Id}");
     }
     public async Task<CreateCheckInCheckOutDto> CreateCheckInCheckOut(ISender sender, CreateCheckInCheckOutCommand query)
-    {
-        return await sender.Send(query);
-    }
-    public async Task<CheckLineUserIdCheckInCheckOutToDayDto> CheckLineUserIdCheckInCheckOutToDay(ISender sender, CheckLineUserIdCheckInCheckOutToDayQuery query)
-    {
-        return await sender.Send(query);
-    }
-    public async Task<CreateCheckInCheckOutDto> CreateCheckInCheckOutLine(ISender sender, CreateCheckInCheckOutForLineCommand query)
     {
         return await sender.Send(query);
     }

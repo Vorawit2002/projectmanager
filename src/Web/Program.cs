@@ -43,9 +43,9 @@ else
 }
 
 app.UseHealthChecks("/health");
+app.UseCors("AllowLocalhost"); // Apply CORS policy - must be before UseHttpsRedirection
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseCors("AllowLocalhost"); // Apply CORS policy
 app.UseSwaggerUi(settings =>
 {
     settings.Path = "/api";

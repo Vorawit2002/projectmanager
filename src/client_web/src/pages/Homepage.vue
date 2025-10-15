@@ -91,7 +91,6 @@ import AnalyticsTotalProfitLineCharts from '@/views/dashboard/AnalyticsTotalProf
 import CardStatisticsVertical from '@core/components/cards/CardStatisticsVertical.vue'
 import AnalyticsBarCharts from '@/views/dashboard/AnalyticsBarCharts.vue'
 import CRMUltraFeature from '@/components/CRMUltraFeature.vue'
-import { GoLogin } from '@/constants'
 import { useAuthStore } from '@/stores'
 
 export default defineComponent({
@@ -118,7 +117,6 @@ export default defineComponent({
         subtitle: 'Yearly Project',
       },
       auth: useAuthStore(),
-      GoLogin,
       observer: null as IntersectionObserver | null,
     }
   },
@@ -130,12 +128,11 @@ export default defineComponent({
     }
     let portal = this.$route.query.portal
     if (portal === 'true') {
-      await this.GoLogin()
+      this.$router.push('/login')
       return
     }
     const isIndexPage = this.$route.path === '/'
     if (isIndexPage && this.auth.token && this.auth.roles?.includes('CRM')) {
-      await this.auth.restorelogin()
       this.$router.push('/dashboard')
     }
 
@@ -148,6 +145,9 @@ export default defineComponent({
     }
   },
   methods: {
+    GoLogin() {
+      this.$router.push('/login')
+    },
     initScrollAnimations() {
       // Create intersection observer
       this.observer = new IntersectionObserver(

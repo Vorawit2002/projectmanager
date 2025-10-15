@@ -1,32 +1,75 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-
-import logo from '@images/logo.svg?raw'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import NTiLogo from '@/assets/images/logos/NTiLogo.png'
 import authV1MaskDark from '@images/pages/auth-v1-mask-dark.png'
 import authV1MaskLight from '@images/pages/auth-v1-mask-light.png'
 import authV1Tree2 from '@images/pages/auth-v1-tree-2.png'
 import authV1Tree from '@images/pages/auth-v1-tree.png'
 
+const router = useRouter()
+const authStore = useAuthStore()
+const vuetifyTheme = useTheme()
+
 const form = ref({
-  email: '',
+  emailOrUsername: '',
   password: '',
   remember: false,
 })
 
-const vuetifyTheme = useTheme()
+const isPasswordVisible = ref(false)
+const loading = ref(false)
+const errorMessage = ref('')
+const formRef = ref()
 
 const authThemeMask = computed(() => {
   return vuetifyTheme.global.name.value === 'light' ? authV1MaskLight : authV1MaskDark
 })
 
-const isPasswordVisible = ref(false)
+// Validation rules
+const emailOrUsernameRules = [
+  (v: string) => !!v || 'กรุณากรอกอีเมลหรือชื่อผู้ใช้',
+  (v: string) => (v && v.length >= 3) || 'อีเมลหรือชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร',
+]
+
+const passwordRules = [
+  (v: string) => !!v || 'กรุณากรอกรหัสผ่าน',
+  (v: string) => (v && v.length >= 6) || 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
+]
+
+const onSubmit = async () => {
+  errorMessage.value = ''
+  
+  // Validate form using Vuetify validation
+  const { valid } = await formRef.value.validate()
+  
+  if (!valid) {
+    errorMessage.value = 'กรุณากรอกข้อมูลให้ถูกต้องและครบถ้วน'
+    return
+  }
+  
+  loading.value = true
+  
+  try {
+    const success = await authStore.login(form.value.emailOrUsername, form.value.password)
+    
+    if (success) {
+      // Redirect is handled by auth store
+      // router.push('/Homepage') is called in auth.ts
+    } else {
+      errorMessage.value = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'
+    }
+  } catch (error: any) {
+    console.error('Login error:', error)
+    errorMessage.value = error.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ กรุณาลองใหม่อีกครั้ง'
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
-  <!-- eslint-disable vue/no-v-html -->
-
   <div
     class="auth-wrapper d-flex align-center justify-center pa-4"
     style="background: #c4d9ff !important"
@@ -36,36 +79,49 @@ const isPasswordVisible = ref(false)
       max-width="448"
     >
       <VCardItem class="justify-center">
-        <RouterLink
-          to="/"
-          class="d-flex align-center gap-3"
-        >
-          <!-- eslint-disable vue/no-v-html -->
+        <div class="d-flex align-center gap-3">
           <img
             class="d-flex"
             :src="NTiLogo"
             width="120"
           />
-          <!-- <h2 class="font-weight-medium text-2xl text-uppercase">
-            Materio
-          </h2> -->
-        </RouterLink>
+        </div>
       </VCardItem>
 
       <VCardText class="pt-2">
-        <h4 class="text-h4 mb-1">Welcome to Materio! 👋🏻</h4>
-        <p class="mb-0">Please sign-in to your account and start the adventure</p>
+        <h4 class="text-h4 mb-1">ยินดีต้อนรับ! 👋🏻</h4>
+        <p class="mb-0">กรุณาเข้าสู่ระบบเพื่อเริ่มต้นใช้งาน</p>
       </VCardText>
 
       <VCardText>
-        <VForm @submit.prevent="() => {}">
+        <VForm 
+          ref="formRef"
+          @submit.prevent="onSubmit"
+        >
           <VRow>
-            <!-- email -->
+            <!-- Error message -->
+            <VCol
+              v-if="errorMessage"
+              cols="12"
+            >
+              <VAlert
+                type="error"
+                variant="tonal"
+                closable
+                @click:close="errorMessage = ''"
+              >
+                {{ errorMessage }}
+              </VAlert>
+            </VCol>
+
+            <!-- email or username -->
             <VCol cols="12">
               <VTextField
-                v-model="form.email"
-                label="Email"
-                type="email"
+                v-model="form.emailOrUsername"
+                label="อีเมลหรือชื่อผู้ใช้"
+                placeholder="กรอกอีเมลหรือชื่อผู้ใช้"
+                :rules="emailOrUsernameRules"
+                :disabled="loading"
               />
             </VCol>
 
@@ -73,11 +129,13 @@ const isPasswordVisible = ref(false)
             <VCol cols="12">
               <VTextField
                 v-model="form.password"
-                label="Password"
+                label="รหัสผ่าน"
                 placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"
-                autocomplete="password"
+                autocomplete="current-password"
                 :append-inner-icon="isPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                :rules="passwordRules"
+                :disabled="loading"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
 
@@ -85,24 +143,19 @@ const isPasswordVisible = ref(false)
               <div class="d-flex align-center justify-space-between flex-wrap my-6">
                 <VCheckbox
                   v-model="form.remember"
-                  label="Remember me"
+                  label="จดจำฉันไว้"
+                  :disabled="loading"
                 />
-
-                <a
-                  class="text-primary"
-                  href="javascript:void(0)"
-                >
-                  Forgot Password?
-                </a>
               </div>
 
               <!-- login button -->
               <VBtn
                 block
                 type="submit"
-                to="/"
+                :loading="loading"
+                :disabled="loading"
               >
-                Login
+                เข้าสู่ระบบ
               </VBtn>
             </VCol>
 
@@ -111,30 +164,13 @@ const isPasswordVisible = ref(false)
               cols="12"
               class="text-center text-base"
             >
-              <span>New on our platform?</span>
+              <span>ยังไม่มีบัญชีผู้ใช้?</span>
               <RouterLink
                 class="text-primary ms-2"
                 to="/register"
               >
-                Create an account
+                สมัครสมาชิก
               </RouterLink>
-            </VCol>
-
-            <VCol
-              cols="12"
-              class="d-flex align-center"
-            >
-              <VDivider />
-              <span class="mx-4">or</span>
-              <VDivider />
-            </VCol>
-
-            <!-- auth providers -->
-            <VCol
-              cols="12"
-              class="text-center"
-            >
-              <AuthProvider />
             </VCol>
           </VRow>
         </VForm>

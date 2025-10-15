@@ -2,20 +2,23 @@ import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useSweetAlertStore } from './sweetalert2'
 import { Client } from '@/client'
-import { BACKEND_API_URL, ClientId, ClientSecret, PortalOpenId } from '@/constants'
-// import { RoleService } from '@/utils/RoleService'
-// import { AuthenticatedApiClient } from '@/AuthenticatedApiClient'
-// import {
-//   AdministratorMenu,
-//   NATEmployeeMenu,
-//   NATMemberMenu,
-//   NoneMenu,
-// } from '@/utils/NavigationGenerator'
+import { BACKEND_API_URL } from '@/constants'
 import { Administrator, NATEmployee, NATMember } from '@/utils/ApplicationRoles'
 import { RoleService } from '@/utils/RoleService'
+import { parseAuthError, isAuthError, isValidationError } from '@/utils/authErrors'
+import { BaseClass } from '@/BaseClass'
+import { NoneMenu } from '@/utils/NavigationGenerator'
+import { NATEmployeeMenu } from '@/utils/NavigationGenerator'
+import { NATMemberMenu } from '@/utils/NavigationGenerator'
+import { AdministratorMenu } from '@/utils/NavigationGenerator'
+
 let client = new Client(BACKEND_API_URL)
-// let authClient = new AuthenticatedApiClient(BACKEND_API_URL)
 let roleService = new RoleService()
+
+// Register unauthorized callback to handle 401 responses globally
+BaseClass.onUnauthorized(() => {
+  console.log('Unauthorized callback triggered - clearing auth state')
+})
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: '',
@@ -51,136 +54,116 @@ export const useAuthStore = defineStore('auth', {
     },
   },
   actions: {
-    // async login(account: AuthenticateUserCommand) {
-    //   console.log('AuthenticateUserCommand = ', account)
-    //   try {
-    //     const response = await Client.authenticate(account)
+    async login(emailOrUsername: string, password: string): Promise<boolean> {
+      try {
+        const command = {
+          emailOrUsername,
+          password,
+        }
+        
+        const data = await client.login(command)
+        
+        // Store token
+        this.token = data.token || ''
+        localStorage.setItem('TOKEN_KEY', data.token || '')
+        
+        // Update state
+        this.isLogged = true
+        this.userId = data.userId || ''
+        this.email = data.email || ''
+        this.username = data.username || ''
+        this.firstName = data.firstName || ''
+        this.lastName = data.lastName || ''
+        this.roles = data.roles || []
+        
+        // Generate menu based on roles
+        await this.generateMenu()
+        
+        this.SweetAlert.success('เข้าสู่ระบบสำเร็จ')
+        
+        // Redirect to homepage
+        this.router.push('/Homepage')
+        
+        return true
+      } catch (error: any) {
+        console.error('Login error:', error)
+        const errorMessage = parseAuthError(error)
+        this.SweetAlert.error(errorMessage)
+        return false
+      }
+    },
+    async register(registerData: {
+      email: string
+      username: string
+      password: string
+      confirmPassword: string
+      firstName: string
+      lastName: string
+    }): Promise<{ success: boolean; message?: string }> {
+      try {
+        const command = registerData
+        
+        await client.register(command)
 
-    //     // console.log(response)
-    //     if (response.succeeded) {
-    //       let token = response.token as string
-    //       this.token = token
-    //       this.isLogged = true
-    //       localStorage.setItem('TOKEN_KEY', token)
-    //       console.log('TOKEN_KEY = ', token)
-
-    //       await this.restorelogin()
-
-    //       if (this.isLogged) {
-    //         this.SweetAlert.success('เข้าสู่ระบบสำเร็จ')
-    //       }
-
-    //       this.handleFirstLoginNavigation()
-    //     } else {
-    //       // แสดง error จาก server
-    //       if (response.errors && response.errors.length > 0) {
-    //         console.log('Error response:', response.errors)
-    //         this.SweetAlert.warning('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง') // เปลี่ยนจาก error เป็น warning
-    //       } else {
-    //         this.SweetAlert.warning('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
-    //       }
-    //     }
-    //   } catch (error: any) {
-    //     console.error('Unexpected error during login:', error)
-    //     this.SweetAlert.error('เกิดข้อผิดพลาด กรุณาลองใหม่ในภายหลัง')
-    //   }
-    // },
-
-    // async restorelogin() {
-    //   try {
-    //     //api restore data
-    //     // let response: any = await client.getApplicationProfile()
-    //     // console.log('restore login response = ', response)
-    //     this.username = response.userName
-    //     this.firstName = response.firstName
-    //     this.lastName = response.lastName
-    //     this.roles = response.roles
-    //     this.email = response.email
-    //     this.displayName = response.displayName
-    //     // this.userId = response.userId
-    //     // this.generateMenu()
-    //     this.isLogged = true
-    //   } catch (error: any) {
-    //     // this.SweetAlert.error(error.message)
-    //     // this.isLogged = false
-    //     // this.logout()
-    //     console.error('Restore login failed:', error)
-    //     // await this.logout()
-    //     this.SweetAlert.error('เกิดข้อผิดพลาด กรุณาเข้าสู่ระบบอีกครั้ง')
-    //   }
-    // },
-    async restorelogin() {
-      console.log('restore')
+        this.SweetAlert.success('สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ')
+        
+        return { success: true }
+      } catch (error: any) {
+        console.error('Register error:', error)
+        const errorMessage = parseAuthError(error)
+        this.SweetAlert.error(errorMessage)
+        return { success: false, message: errorMessage }
+      }
+    },
+    async restoreSession() {
+      console.log('Restoring session from token')
       let token = localStorage.getItem('TOKEN_KEY') || ''
       if (!token) {
         await this.logout()
         return
       }
+      
       const data = this.decodeJWT(token)
       console.log('Decoded JWT data:', data)
-      const currentTime = Math.floor(Date.now() / 1000) // เวลาปัจจุบันในหน่วยวินาที
+      
+      const currentTime = Math.floor(Date.now() / 1000)
       if (data.exp && data.exp < currentTime) {
         console.warn('Token has expired, logging out')
         await this.logout()
         return
-      } else {
-        try {
-          // const res = await client.getEmployeeQueryByUserID(data.sub)
-                  const res = await this.objEmployeeByUsernameAD(data.email)
-          this.token = token
-          this.username = data.name || null
-          this.isLogged = true
-          this.email = data.email || null
-          this.userId = data.sub
-          this.roles = data.role
-          this.image = data.profile_image !== 'No Assign' ? data.profile_image : null
-          this.phone = data.phone_number !== 'No Assign' ? data.phone_number : null
-          this.depart = data.depart !== 'No Assign' ? data.depart : null
-          this.position = data.position !== 'No Assign' ? data.position : null
-          this.titleName = data.TitleName !== 'No Assign' ? data.TitleName : null
-          this.firstName = data.FistNameTH !== 'No Assign' ? data.FistNameTH : null
-          this.lastName = data.LastNameTH !== 'No Assign' ? data.LastNameTH : null
-            this.group = res.group || ''
-        this.roleHR = res.roles || ''
-        } catch (error) {
-          console.error(error)
+      }
+      
+      try {
+        // Fetch current user data from backend using the new client method
+        const userData = await client.getApiAuthMe()
+        
+        // Update state from backend response
+        this.token = token
+        this.isLogged = true
+        this.userId = userData.userId || data.sub || ''
+        this.email = userData.email || data.email || ''
+        this.username = userData.username || data.unique_name || data.name || ''
+        this.firstName = userData.firstName || data.given_name || ''
+        this.lastName = userData.lastName || data.family_name || ''
+        this.roles = userData.roles || (Array.isArray(data.role) ? data.role : [data.role]) || []
+        
+        // Optional fields
+        this.image = userData.image || ''
+        this.phone = userData.phone || ''
+        this.depart = userData.department || ''
+        this.position = userData.position || ''
+        this.titleName = userData.titleName || ''
+        this.group = userData.group || ''
+        this.roleHR = userData.roleHR || ''
+      } catch (error) {
+        console.error('Error restoring session:', error)
+        // If it's a 401 error, the BaseClass interceptor will handle the redirect
+        if (!isAuthError(error)) {
           await this.logout()
         }
       }
     },
-    async restoreData() {
-      console.log('restore')
-      let token = localStorage.getItem('TOKEN_KEY') || ''
-      if (!token) {
-        await this.logout()
-        return
-      }
-      const data = this.decodeJWT(token)
-      console.log('Decoded JWT data:', data)
-      const currentTime = Math.floor(Date.now() / 1000) // เวลาปัจจุบันในหน่วยวินาที
-      if (data.exp && data.exp < currentTime) {
-        console.warn('Token has expired, logging out')
-        await this.logout()
-        return
-      } else {
-                const res = await this.objEmployeeByUsernameAD(data.email)
-        this.token = token
-        this.username = data.name || ''
-        this.isLogged = true
-        this.email = data.email || ''
-        this.userId = data.sub
-        this.roles = data.role
-        this.image = data.profile_image !== 'No Assign' ? data.profile_image : ''
-        this.phone = data.phone_number !== 'No Assign' ? data.phone_number : ''
-        this.depart = data.depart !== 'No Assign' ? data.depart : ''
-        this.position = data.position !== 'No Assign' ? data.position : ''
-        this.titleName = data.TitleName !== 'No Assign' ? data.TitleName : ''
-        this.firstName = data.FistNameTH !== 'No Assign' ? data.FistNameTH : ''
-        this.lastName = data.LastNameTH !== 'No Assign' ? data.LastNameTH : ''
-          this.group = res.group || ''
-        this.roleHR = res.roles || ''
-      }
-    },
+
     decodeJWT(token: string) {
       try {
         if (!token || typeof token !== 'string' || token.split('.').length !== 3) {
@@ -231,74 +214,52 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
-      console.log('ก่อน logout username = ', this.username)
-      const data = {
-        token: localStorage.getItem('TOKEN_KEY') || '',
-        token_type_hint: 'aceess_token',
-        client_id: ClientId,
-        client_secret: ClientSecret,
-      } as any
-      const formBody = Object.keys(data)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-        .join('&')
-      console.log(formBody)
-      // ส่งคำขอด้วย fetch
-      if (data.token) {
-        fetch(`${PortalOpenId}/revocation`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: formBody,
-        })
-          .then(response => response.json())
-          .then(async data => {
-            console.log(data)
-          })
-      }
+      console.log('Logging out user:', this.username)
+      
+      // Clear state
       this.username = ''
       this.isLogged = false
       this.token = ''
       this.roles = []
       this.returnUrl = ''
+      this.email = ''
+      this.userId = ''
+      this.firstName = ''
+      this.lastName = ''
       this.image = ''
+      this.phone = ''
+      this.depart = ''
+      this.position = ''
+      this.titleName = ''
+      this.displayName = ''
+      this.group = ''
+      this.roleHR = ''
+      
+      // Clear localStorage
       localStorage.removeItem('TOKEN_KEY')
-      this.router.push('/')
-      console.log('หลัง logout ', this.username)
+      
+      // Redirect to login page
+      this.router.push('/login')
+      
+      console.log('Logout complete')
     },
-  async objEmployeeByUsernameAD(username: string) {
-      let command = { usernameAD: username.toLowerCase() }
-      const response = await fetch('https://hr.nti.co.th/api/EmployeeEndpoint/ObjEmployeeByUsernameAD', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(command),
-      })
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
+    async generateMenu() {
+      switch (true) {
+        case this.hasRole(Administrator):
+          this.menu = AdministratorMenu()
+          break
+        case this.hasRole(NATMember):
+          this.menu = NATMemberMenu()
+          break
+        case roleService.isNATEmployee(this.roles):
+          this.menu = NATEmployeeMenu()
+          break
+        default:
+          this.menu = NoneMenu()
+          break
       }
-
-      const data = await response.json()
-      return data
     },
-    // async generateMenu() {
-    //   switch (true) {
-    //     case this.hasRole(Administrator):
-    //       this.menu = AdministratorMenu()
-    //       break
-    //     case this.hasRole(NATMember):
-    //       this.menu = NATMemberMenu()
-    //       break
-    //     case roleService.isNATEmployee(this.roles):
-    //       this.menu = NATEmployeeMenu()
-    //       break
-    //     default:
-    //       this.menu = NoneMenu()
-    //       break
-    //   }
-    // },
 
     hasRole(...rolesToCheck: string[]) {
       return rolesToCheck.some(role => this.roles.includes(role))

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BACKEND_API_URL, PortalOpenId, Logout } from '@/constants'
+import { BACKEND_API_URL } from '@/constants'
 import avatar1 from '@images/avatars/avatar-1.png'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores'
@@ -7,10 +7,12 @@ import { useAuthStore } from '@/stores'
 const router = useRouter()
 const auth = useAuthStore()
 
-function toLogout() {
+async function toLogout() {
   // ล้างข้อมูล notification session ก่อน logout
   clearLoginNotificationData()
-  window.location.href = `${PortalOpenId}/logout?returnUrl=${encodeURIComponent(Logout)}`
+  // ใช้ auth store logout method
+  await auth.logout()
+  router.push('/login')
 }
 
 function clearLoginNotificationData() {

@@ -63,47 +63,29 @@ public static class DependencyInjection
         builder.Services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>(); //SoftDelete
         builder.Services.AddScoped<SmartCardService>();
 
-        //builder.Services.AddAuthentication("Bearer")
-        //          .AddJwtBearer(options =>
-        //            {
-        //            options.Authority = configuration["OpenIDConnectSettings:Authority"];
-        //            options.TokenValidationParameters = new TokenValidationParameters
-        //            {
-        //            ValidateAudience = false
-        //            };
-        //            options.Events = new JwtBearerEvents
-        //            {
-        //            OnAuthenticationFailed = context =>
-        //            {
-        //            Console.WriteLine("❌ JWT auth failed: " + context.Exception?.Message);
-        //            return Task.CompletedTask;
-        //            },
-        //            OnTokenValidated = context =>
-        //            {
-        //            Console.WriteLine("✅ Token validated: " + context.SecurityToken);
-        //            return Task.CompletedTask;
-        //            }
-        //            };
-        //            });
-        
-        builder.Services.AddAuthentication("Bearer")
+        // JWT Authentication Configuration
+        var jwtSecretKey = Environment.GetEnvironmentVariable("JwtSecretKey") ?? configuration["JwtSettings:SecretKey"];
+        var jwtIssuer = Environment.GetEnvironmentVariable("JwtIssuer") ?? configuration["JwtSettings:Issuer"];
+        var jwtAudience = Environment.GetEnvironmentVariable("JwtAudience") ?? configuration["JwtSettings:Audience"];
+
+        Guard.Against.NullOrEmpty(jwtSecretKey, message: "JWT SecretKey is not configured");
+        Guard.Against.NullOrEmpty(jwtIssuer, message: "JWT Issuer is not configured");
+        Guard.Against.NullOrEmpty(jwtAudience, message: "JWT Audience is not configured");
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.Authority = Environment.GetEnvironmentVariable("Authority") ?? configuration["OpenIDConnectSettings:Authority"];
-                //options.Authority = "https://ntiportal.nti.co.th/";
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateAudience = false,
-
-                    // ✅ เพิ่มบรรทัดเหล่านี้
                     ValidateIssuer = true,
-                    ValidIssuer = Environment.GetEnvironmentVariable("Authority") ?? configuration["OpenIDConnectSettings:Authority"],
+                    ValidateAudience = true,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5), // เผื่อ time drift
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("116E1dNNRmEBzN1K7mQz73s6DrPbb680"))
-                    // หรือใช้ ValidIssuers ถ้ามีหลายเจ้า
-                    // ValidIssuers = new[] { "https://issuer1.com", "https://issuer2.com" }
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+                    ClockSkew = TimeSpan.Zero
                 };
                 options.Events = new JwtBearerEvents
                 {
@@ -114,7 +96,7 @@ public static class DependencyInjection
                     },
                     OnTokenValidated = context =>
                     {
-                        Console.WriteLine("✅ Token validated: " + context.SecurityToken);
+                        Console.WriteLine("✅ Token validated successfully");
                         return Task.CompletedTask;
                     }
                 };
@@ -151,6 +133,7 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
