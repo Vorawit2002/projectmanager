@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { BACKEND_API_URL } from '@/constants'
 import { Client } from '@/client'
 import avatar1 from '@images/avatars/avatar-1.png'
@@ -13,13 +13,26 @@ const client = new Client(BACKEND_API_URL)
 // Store user profile data
 const userProfile = ref<any>(null)
 
-// Fetch user profile on mount
-onMounted(async () => {
+// Function to fetch user profile
+const fetchUserProfile = async () => {
   try {
     userProfile.value = await client.getCurrentUser()
     console.log('UserProfile - Fetched user data:', userProfile.value)
   } catch (error) {
     console.error('UserProfile - Error fetching user data:', error)
+  }
+}
+
+// Fetch user profile on mount
+onMounted(async () => {
+  await fetchUserProfile()
+})
+
+// Watch auth.image for changes (when profile image is updated)
+watch(() => auth.image, async (newImage, oldImage) => {
+  if (newImage !== oldImage) {
+    console.log('UserProfile - auth.image changed, reloading profile')
+    await fetchUserProfile()
   }
 })
 
@@ -77,8 +90,8 @@ function goToProfile() {
   >
     
   <VAvatar
+      :key="userImage || userInitials"
       class="cursor-pointer"
-      color="primary"
       variant="tonal"
     >
       <VImg 
@@ -109,6 +122,7 @@ function goToProfile() {
                   color="success"
                 >
                   <VAvatar
+                    :key="userImage || userInitials"
                     color="primary"
                     variant="tonal"
                   >

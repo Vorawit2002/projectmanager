@@ -5,6 +5,7 @@
         <VCardText class="d-flex">
           <!-- 👉 Avatar -->
           <VAvatar
+            :key="currentImageProfile"
             rounded="lg"
             size="200"
             class="me-6 avatar-style"
@@ -68,10 +69,15 @@
                 md="2"
                 cols="12"
               >
-                <VTextField
+                <VSelect
                   v-model="accountData.titleName"
+                  :items="titleOptions"
                   label="คำนำหน้า"
-                  :rules="[(value:any)=> !!value|| 'กรุณากรอกคำนำหน้า']"
+                  variant="outlined"
+                  density="comfortable"
+                  color="primary"
+                  :rules="[(value:any)=> !!value|| 'กรุณาเลือกคำนำหน้า']"
+                  clearable
                 />
               </VCol>
               <!-- 👉 First Name -->
@@ -198,6 +204,20 @@ export default defineComponent({
       uploadingImage: false,
       imagePreview: null as string | null,
       selectedFile: null as File | null,
+      titleOptions: [
+        { title: 'นาย', value: 'นาย' },
+        { title: 'นาง', value: 'นาง' },
+        { title: 'นางสาว', value: 'นางสาว' },
+        { title: 'ดร.', value: 'ดร.' },
+        { title: 'ผศ.', value: 'ผศ.' },
+        { title: 'รศ.', value: 'รศ.' },
+        { title: 'ศ.', value: 'ศ.' },
+        { title: 'Mr.', value: 'Mr.' },
+        { title: 'Mrs.', value: 'Mrs.' },
+        { title: 'Miss', value: 'Miss' },
+        { title: 'Ms.', value: 'Ms.' },
+        { title: 'Dr.', value: 'Dr.' },
+      ],
     }
   },
   async mounted() {
@@ -215,6 +235,7 @@ export default defineComponent({
           this.accountData.titleName = response.titleName
           this.accountData.position = response.position
           this.accountData.phone = response.phone
+          this.accountData.email = response.email
           this.accountData.departmentId = response.departmentId
           this.currentImageProfile = response.imageProfile || ''
         }
@@ -303,6 +324,10 @@ export default defineComponent({
         if (response && response.imageUrl) {
           this.currentImageProfile = response.imageUrl
           this.auth.image = response.imageUrl
+          
+          // Reload account settings to get updated data
+          await this.initialize()
+          
           this.sweetAlertStore.successDeleted(response.message || 'อัพโหลดรูปโปรไฟล์สำเร็จ')
           this.imagePreview = null
           this.selectedFile = null

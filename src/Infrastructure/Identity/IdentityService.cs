@@ -123,6 +123,8 @@ public class IdentityService : IIdentityService
         {
             UserName = registerDto.Username,
             Email = registerDto.Email,
+            FirstName = registerDto.FirstName,
+            LastName = registerDto.LastName,
             RequirePasswordChange = false,
             LastPasswordChangeDate = DateTime.UtcNow
         };

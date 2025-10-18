@@ -45,9 +45,14 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
                     UserId = user.Id,
                     Username = user.UserName ?? string.Empty,
                     Email = user.Email ?? string.Empty,
-                    FirstName = employee?.FirstName,
-                    LastName = employee?.LastName,
-                    ImageProfile = employee?.ImageProfile,
+                    
+                    // Priority: Employee > ApplicationUser > Extract from email
+                    FirstName = employee?.FirstName ?? user.FirstName ?? ExtractFirstNameFromEmail(user.Email),
+                    LastName = employee?.LastName ?? user.LastName ?? ExtractLastNameFromEmail(user.Email),
+                    
+                    // Priority: ApplicationUser.ImageProfile > Employee.ImageProfile
+                    ImageProfile = user.ImageProfile ?? employee?.ImageProfile,
+                    
                     Department = employee?.Departments?.Name,
                     DepartmentId = employee?.DepartmentId,
                     Roles = roles.ToList(),
@@ -89,5 +94,35 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
         {
             return Result<List<UserDto>>.Failure(new[] { $"Error retrieving users: {ex.Message}" });
         }
+    }
+
+    private string? ExtractFirstNameFromEmail(string? email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return null;
+
+        var localPart = email.Split('@')[0];
+        var parts = localPart.Split('.');
+        
+        return parts.Length > 0 ? CapitalizeFirstLetter(parts[0]) : null;
+    }
+
+    private string? ExtractLastNameFromEmail(string? email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return null;
+
+        var localPart = email.Split('@')[0];
+        var parts = localPart.Split('.');
+        
+        return parts.Length > 1 ? CapitalizeFirstLetter(parts[1]) : null;
+    }
+
+    private string CapitalizeFirstLetter(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        return char.ToUpper(text[0]) + text.Substring(1).ToLower();
     }
 }

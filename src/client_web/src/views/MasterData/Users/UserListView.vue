@@ -63,10 +63,16 @@
   </VRow>
 
   <VCard class="card-table custom-scrollbar">
-    <v-data-table
+    <v-data-table-server
+      v-model:page="pageNumber"
+      v-model:items-per-page="pageSize"
+      :items-per-page-options="pageSizeOptions"
       :loading="isLoading"
       :headers="headers"
       :items="users"
+      :items-length="totalItems"
+      @update:page="handlePageChange"
+      @update:items-per-page="handlePageSizeChange"
       class="text-no-wrap"
     >
       <template v-slot:item.imageProfile="{ item }">
@@ -142,16 +148,27 @@
           <v-icon size="18">ri-article-line</v-icon>
         </v-btn>
       </template>
-    </v-data-table>
+    </v-data-table-server>
   </VCard>
 
-  <!-- Assign Role Dialog -->
-  <AssignRoleDialog
-    v-if="assignRoleDialog"
-    v-model="assignRoleDialog"
-    :user="selectedUser"
-    @role-assigned="handleRoleAssigned"
-  />
+  <!-- Assign Role Drawer -->
+  <v-navigation-drawer
+    v-model="assignRoleDrawer"
+    :width="$vuetify.display.xs ? '100vw' : '550'"
+    class="z-indexDialog create-activity-drawer"
+    close-on-back
+    temporary
+    transition="dialog-right-transition"
+    location="right"
+    scrollable
+  >
+    <AssignRoleDrawer
+      v-if="assignRoleDrawer"
+      :user="selectedUser"
+      @close="assignRoleDrawer = false"
+      @role-assigned="handleRoleAssigned"
+    />
+  </v-navigation-drawer>
 
   <!-- User Detail Drawer -->
   <v-navigation-drawer
@@ -177,7 +194,7 @@ import { defineComponent } from 'vue'
 import { Client } from '@/client'
 import { BACKEND_API_URL } from '@/constants'
 import { useSweetAlertStore } from '@/stores'
-import AssignRoleDialog from './AssignRoleDialog.vue'
+import AssignRoleDrawer from './AssignRoleDrawer.vue'
 import UserDetailView from './UserDetailView.vue'
 
 const client = new Client(BACKEND_API_URL)
@@ -185,7 +202,7 @@ const client = new Client(BACKEND_API_URL)
 export default defineComponent({
   name: 'UserListView',
   components: {
-    AssignRoleDialog,
+    AssignRoleDrawer,
     UserDetailView,
   },
   data() {
@@ -204,6 +221,16 @@ export default defineComponent({
       search: '',
       roleFilter: null as string | null,
       isActiveFilter: null as boolean | null,
+      pageNumber: 1,
+      pageSize: 10,
+      totalItems: 0,
+      pageSizeOptions: [
+        { value: 5, title: '5' },
+        { value: 10, title: '10' },
+        { value: 25, title: '25' },
+        { value: 50, title: '50' },
+        { value: 100, title: '100' },
+      ],
       roleOptions: [
         { title: 'Admin', value: 'Admin' },
         { title: 'Manager', value: 'Manager' },
@@ -215,7 +242,7 @@ export default defineComponent({
         { title: 'Inactive', value: false },
       ],
       isLoading: false,
-      assignRoleDialog: false,
+      assignRoleDrawer: false,
       userDetailDrawer: false,
       selectedUser: null as any,
       selectedUserId: '',
@@ -239,6 +266,15 @@ export default defineComponent({
       }
       return 'U'
     },
+    handlePageChange(page: number) {
+      this.pageNumber = page
+      this.initialize()
+    },
+    handlePageSizeChange(size: number) {
+      this.pageSize = size
+      this.pageNumber = 1
+      this.initialize()
+    },
     async initialize() {
       try {
         this.isLoading = true
@@ -248,6 +284,7 @@ export default defineComponent({
           this.isActiveFilter !== null ? this.isActiveFilter : undefined
         )
         this.users = response
+        this.totalItems = response.length // For now, use array length. Later can add pagination from backend
       } catch (error: any) {
         console.error('Error loading users:', error)
         this.sweetAlert.error('ไม่สามารถโหลดข้อมูลผู้ใช้งานได้')
@@ -266,13 +303,14 @@ export default defineComponent({
     },
     openAssignRoleDialog(user: any) {
       this.selectedUser = user
-      this.assignRoleDialog = true
+      this.assignRoleDrawer = true
     },
     openUserDetail(userId: string) {
       this.selectedUserId = userId
       this.userDetailDrawer = true
     },
     async handleRoleAssigned() {
+      this.assignRoleDrawer = false
       await this.initialize()
     },
   },

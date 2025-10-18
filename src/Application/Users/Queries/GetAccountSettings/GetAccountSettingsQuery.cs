@@ -46,14 +46,16 @@ public class GetAccountSettingsQueryHandler : IRequestHandler<GetAccountSettings
                 Email = user.Email ?? string.Empty,
                 
                 // Fallback: Try Employee first, then ApplicationUser (from email)
-                FirstName = employee?.FirstName ?? ExtractFirstNameFromEmail(user.Email),
-                LastName = employee?.LastName ?? ExtractLastNameFromEmail(user.Email),
+                FirstName = employee?.FirstName ?? user.FirstName ?? ExtractFirstNameFromEmail(user.Email),
+                LastName = employee?.LastName ?? user.LastName ?? ExtractLastNameFromEmail(user.Email),
                 
                 // Employee-specific fields
                 TitleName = employee?.TitleName,
                 Position = employee?.Position,
                 Phone = employee?.Phone,
-                ImageProfile = employee?.ImageProfile,
+                
+                // Priority: ApplicationUser.ImageProfile > Employee.ImageProfile
+                ImageProfile = user.ImageProfile ?? employee?.ImageProfile,
                 
                 // Department information
                 Department = employee?.Departments?.Name,

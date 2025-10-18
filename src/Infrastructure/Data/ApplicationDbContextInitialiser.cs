@@ -75,25 +75,56 @@ public class ApplicationDbContextInitialiser
 
     public async Task TrySeedAsync()
     {
-        //// Default roles
-        //var administratorRole = new IdentityRole(Roles.Administrator);
+        // Clear all existing users first
+        var existingUsers = await _userManager.Users.ToListAsync();
+        foreach (var user in existingUsers)
+        {
+            await _userManager.DeleteAsync(user);
+        }
+        _logger.LogInformation("Deleted {Count} existing users", existingUsers.Count);
 
-        //if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
-        //{
-        //    await _roleManager.CreateAsync(administratorRole);
-        //}
+        // Default roles
+        var adminRole = new IdentityRole("Admin");
+        var managerRole = new IdentityRole("Manager");
+        var userRole = new IdentityRole("User");
+        var viewerRole = new IdentityRole("Viewer");
 
-        //// Default users
-        //var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        if (_roleManager.Roles.All(r => r.Name != adminRole.Name))
+        {
+            await _roleManager.CreateAsync(adminRole);
+        }
+        if (_roleManager.Roles.All(r => r.Name != managerRole.Name))
+        {
+            await _roleManager.CreateAsync(managerRole);
+        }
+        if (_roleManager.Roles.All(r => r.Name != userRole.Name))
+        {
+            await _roleManager.CreateAsync(userRole);
+        }
+        if (_roleManager.Roles.All(r => r.Name != viewerRole.Name))
+        {
+            await _roleManager.CreateAsync(viewerRole);
+        }
 
-        //if (_userManager.Users.All(u => u.UserName != administrator.UserName))
-        //{
-        //    await _userManager.CreateAsync(administrator, "Administrator1!");
-        //    if (!string.IsNullOrWhiteSpace(administratorRole.Name))
-        //    {
-        //        await _userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
-        //    }
-        //}
+        // Create Admin user
+        var administrator = new ApplicationUser 
+        { 
+            UserName = "admin", 
+            Email = "admin@projectmanagement.com",
+            FirstName = "Admin",
+            LastName = "System",
+            EmailConfirmed = true
+        };
+
+        if (_userManager.Users.All(u => u.UserName != administrator.UserName))
+        {
+            await _userManager.CreateAsync(administrator, "Admin123!");
+            if (!string.IsNullOrWhiteSpace(adminRole.Name))
+            {
+                await _userManager.AddToRolesAsync(administrator, new [] { adminRole.Name });
+            }
+            _logger.LogInformation("Created admin user: {Username}", administrator.UserName);
+        }
 
         // Default data
         // Seed, if necessary
