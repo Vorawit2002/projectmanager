@@ -13,9 +13,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
-    public DbSet<TodoList> TodoLists => Set<TodoList>();
-
-    public DbSet<TodoItem> TodoItems => Set<TodoItem>();
     public DbSet<Department> Departments => Set<Department>();
 
     public DbSet<ActivityPlan> ActivityPlans => Set<ActivityPlan>();

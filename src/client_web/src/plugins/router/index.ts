@@ -18,27 +18,24 @@ const router = createRouter({
 router.beforeEach(async (to: any, from: any, next: any) => {
   const auth = useAuthStore()
 
-  // Public routes that don't require authentication
-  const publicRoutes = ['/login', '/register', '/report', '/not-authorized', '/']
-  const isPublicRoute = publicRoutes.some(route => {
-    // Exact match for homepage
-    if (route === '/' && to.path === '/') return true
-    // Prefix match for other routes
-    if (route !== '/' && to.path.startsWith(route)) return true
-    return false
-  })
-
   // Get token from localStorage
   const token = localStorage.getItem('TOKEN_KEY')
 
-  // If accessing a public route, allow access
-  if (isPublicRoute) {
-    // If already logged in and trying to access login/register, redirect to dashboard
-    if ((to.path === '/login' || to.path === '/register') && token && auth.isLogged) {
-      next('/dashboard')
+  // If not logged in, only allow access to homepage
+  if (!token) {
+    if (to.path === '/') {
+      next()
       return
     }
-    next()
+    // Redirect to homepage for any other route
+    console.log('Not logged in, redirecting to homepage')
+    next('/')
+    return
+  }
+
+  // If logged in and accessing homepage, redirect to dashboard
+  if (to.path === '/' && token && auth.isLogged) {
+    next('/dashboard')
     return
   }
 
