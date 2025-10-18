@@ -1291,42 +1291,6 @@
         ]
       }
     },
-    "/api/employees/GetEmployeeQueryByUserID/{UserId}": {
-      "get": {
-        "tags": [
-          "Employees"
-        ],
-        "operationId": "GetEmployeeQueryByUserID",
-        "parameters": [
-          {
-            "name": "UserId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
     "/api/employees/GetEmployeeWithPagination": {
       "post": {
         "tags": [
@@ -1392,6 +1356,42 @@
                   "items": {
                     "$ref": "#/components/schemas/EmployeeDto"
                   }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/employees/GetEmployeeQueryByUserID/{UserId}": {
+      "get": {
+        "tags": [
+          "Employees"
+        ],
+        "operationId": "GetEmployeeQueryByUserID",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
                 }
               }
             }
@@ -4788,6 +4788,14 @@
               "userId": {
                 "type": "string"
               },
+              "user": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ApplicationUser"
+                  }
+                ]
+              },
               "titleName": {
                 "type": "string",
                 "nullable": true
@@ -4847,6 +4855,132 @@
             }
           }
         ]
+      },
+      "ApplicationUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUser"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "isRevoked": {
+                "type": "boolean"
+              },
+              "revokeStart": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "revokeEnd": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "requirePasswordChange": {
+                "type": "boolean"
+              },
+              "lastPasswordChangeDate": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "imageProfile": {
+                "type": "string",
+                "nullable": true
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastName": {
+                "type": "string",
+                "nullable": true
+              },
+              "employee": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Employee"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "IdentityUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUserOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "IdentityUserOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedUserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailConfirmed": {
+            "type": "boolean"
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "securityStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumberConfirmed": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "lockoutEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lockoutEnabled": {
+            "type": "boolean"
+          },
+          "accessFailedCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "Department": {
         "allOf": [
@@ -6044,6 +6178,17 @@
             "items": {
               "type": "string",
               "format": "guid"
+            }
+          },
+          "currentUserId": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentUserRoles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
             }
           }
         }
@@ -8279,6 +8424,10 @@
             "nullable": true
           },
           "imageProfile": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
             "type": "string",
             "nullable": true
           },

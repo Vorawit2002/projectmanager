@@ -23,7 +23,7 @@
                 variant="tonal"
               >
                 <template v-if="item.employees?.imageProfile">
-                  <VImg :src="item.employees.imageProfile" />
+                  <VImg :src="getImageUrl(item.employees.imageProfile)" />
                 </template>
                 <template v-else>
                   {{ getInitials(item.employees?.firstName, item.employees?.lastName) }}
@@ -395,6 +395,7 @@ export default defineComponent({
     UpdateCustomerDailySchedule,
     CustomerDailyScheduleDetailView,
   },
+  emits: ['pagesize', 'pagenumber', 'refreshNeeded', 'update:highlightedId'],
   setup() {
     const authStore = useAuthStore()
     const auth = computed(() => {
@@ -481,6 +482,14 @@ export default defineComponent({
     }
   },
   mounted() {
+    console.log('[CardAppointmentDetailView] Mounted with props:', {
+      local_data: this.local_data,
+      length: this.local_data?.length,
+      pagenumber: this.pagenumber,
+      pagesize: this.pagesize,
+      itemlength: this.itemlength,
+      filterType: this.filterType
+    })
     window.addEventListener('keydown', this.handleEscCloseDrawer)
   },
 
@@ -528,6 +537,17 @@ export default defineComponent({
       const firstInitial = firstName.trim().charAt(0) || ''
       const lastInitial = lastName.trim().charAt(0) || ''
       return (firstInitial + lastInitial).toUpperCase()
+    },
+    getImageUrl(imageProfile: string): string {
+      if (!imageProfile) return ''
+      
+      // If it's already a full URL (http/https) or data URL (data:), use as is
+      if (imageProfile.startsWith('http') || imageProfile.startsWith('data:')) {
+        return imageProfile
+      }
+      
+      // If it's a relative path, prepend BACKEND_API_URL
+      return `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
     },
     async handlePageChange(page: number) {
       this.pageNumber = page
@@ -793,8 +813,13 @@ export default defineComponent({
   watch: {
     local_data: {
       immediate: true,
+      deep: true,
       handler(newVal: any[]) {
-        // ไม่ต้องเซ็ต Activity แล้ว ให้ใช้ prop local_data ตรง ๆ
+        console.log('[CardAppointmentDetailView] local_data changed:', {
+          newVal,
+          isArray: Array.isArray(newVal),
+          length: newVal?.length
+        })
       },
     },
     itemlength: {
@@ -840,7 +865,17 @@ export default defineComponent({
 
   computed: {
     filteredItems(): any[] {
-      if (!Array.isArray(this.local_data)) return []
+      console.log('[CardAppointmentDetailView] Computing filteredItems', {
+        local_data: this.local_data,
+        isArray: Array.isArray(this.local_data),
+        length: this.local_data?.length,
+        filterType: this.filterType
+      })
+      
+      if (!Array.isArray(this.local_data)) {
+        console.warn('[CardAppointmentDetailView] local_data is not an array:', this.local_data)
+        return []
+      }
 
       if (this.filterType === 'summary') {
         return this.local_data.filter((x: any) => x.planNote || x.hasPlanNote)

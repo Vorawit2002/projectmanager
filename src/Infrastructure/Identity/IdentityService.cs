@@ -136,6 +136,15 @@ public class IdentityService : IIdentityService
             return (result.ToApplicationResult(), string.Empty);
         }
 
+        // Assign default "Viewer" role to new user
+        var roleResult = await _userManager.AddToRoleAsync(user, "Viewer");
+        if (!roleResult.Succeeded)
+        {
+            // Log warning but don't fail registration
+            // User can be assigned role later by admin
+            Console.WriteLine($"Warning: Failed to assign Viewer role to user {user.UserName}");
+        }
+
         return (Result.Success(), user.Id);
     }
 

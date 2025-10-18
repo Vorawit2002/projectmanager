@@ -53,11 +53,10 @@
                   <v-avatar
                     size="80"
                     class="mr-4"
-                    color="primary"
                   >
                     <v-img
                       v-if="user.imageProfile"
-                      :src="user.imageProfile"
+                      :src="getImageUrl(user.imageProfile)"
                       :alt="user.firstName + ' ' + user.lastName"
                     />
                     <span
@@ -350,6 +349,17 @@ export default defineComponent({
       if (event.key === 'Escape' && !this.isLoading) {
         this.$emit('close')
       }
+    },
+    getImageUrl(imageProfile: string): string {
+      if (!imageProfile) return ''
+      
+      // If it's already a full URL (http/https) or data URL (data:), use as is
+      if (imageProfile.startsWith('http') || imageProfile.startsWith('data:')) {
+        return imageProfile
+      }
+      
+      // If it's a relative path, prepend BACKEND_API_URL
+      return `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
     },
     getUserInitials(): string {
       if (!this.user) return 'U'

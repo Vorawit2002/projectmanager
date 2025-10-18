@@ -45,9 +45,15 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
                 UserId = user.Id,
                 Username = user.UserName ?? string.Empty,
                 Email = user.Email ?? string.Empty,
-                FirstName = employee?.FirstName,
-                LastName = employee?.LastName,
-                ImageProfile = employee?.ImageProfile,
+                
+                // Priority: Employee > ApplicationUser
+                FirstName = employee?.FirstName ?? user.FirstName,
+                LastName = employee?.LastName ?? user.LastName,
+                
+                // Priority: ApplicationUser.ImageProfile > Employee.ImageProfile
+                ImageProfile = user.ImageProfile ?? employee?.ImageProfile,
+                
+                Position = employee?.Position,
                 Department = employee?.Departments?.Name,
                 DepartmentId = employee?.DepartmentId,
                 Roles = roles.ToList(),

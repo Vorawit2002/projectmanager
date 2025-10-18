@@ -171,7 +171,7 @@ export default defineComponent({
       type: String,
     },
     selectedDateTime: {
-      type: String as any,
+      type: [String, Date] as any,
     },
     placeholder: {
       type: String as any,

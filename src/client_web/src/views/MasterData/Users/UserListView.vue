@@ -79,12 +79,11 @@
         <v-avatar
           size="40"
           class="my-2"
-          color="primary"
           variant="tonal"
         >
           <v-img
             v-if="item.imageProfile"
-            :src="item.imageProfile"
+            :src="getImageUrl(item.imageProfile)"
             :alt="item.firstName + ' ' + item.lastName"
           />
           <span v-else class="text-subtitle-1 font-weight-medium">
@@ -212,6 +211,7 @@ export default defineComponent({
         { title: 'รูปโปรไฟล์', value: 'imageProfile', align: 'center', sortable: false },
         { title: 'ชื่อ-นามสกุล', value: 'fullName' },
         { title: 'อีเมล', value: 'email' },
+        { title: 'ตำแหน่ง', value: 'position' },
         { title: 'แผนก', value: 'department' },
         { title: 'Role', value: 'roles', sortable: false },
         { title: 'สถานะ', value: 'isActive', align: 'center' },
@@ -252,6 +252,17 @@ export default defineComponent({
     await this.initialize()
   },
   methods: {
+    getImageUrl(imageProfile: string): string {
+      if (!imageProfile) return ''
+      
+      // If it's already a full URL (http/https) or data URL (data:), use as is
+      if (imageProfile.startsWith('http') || imageProfile.startsWith('data:')) {
+        return imageProfile
+      }
+      
+      // If it's a relative path, prepend BACKEND_API_URL
+      return `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
+    },
     getUserInitials(item: any): string {
       const firstName = item.firstName || ''
       const lastName = item.lastName || ''

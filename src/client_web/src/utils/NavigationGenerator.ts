@@ -51,9 +51,10 @@ export function AdministratorMenu() {
 export function NATEmployeeMenu() {
   let selectionMenu = new SelectionMenu()
   selectionMenu.Menu = selectionMenu.Menu = [
-    { menuName: 'ข้อมูลเอกสารจดหมายเหตุ(ตัวอย่าง)', menuOrder: 1 },
-    { menuName: 'ข้อมูลจดหมายราชการ', menuOrder: 2 },
-    { menuName: 'บทความ', menuOrder: 3 },
+    { menuName: 'ปฏิทิน', menuOrder: 1 },
+    { menuName: 'ข้อมูลเอกสารจดหมายเหตุ(ตัวอย่าง)', menuOrder: 2 },
+    { menuName: 'ข้อมูลจดหมายราชการ', menuOrder: 3 },
+    { menuName: 'บทความ', menuOrder: 4 },
     { menuName: 'รายชื่อสมาชิก', menuOrder: 1 },
     { menuName: 'ที่ต้องพิจารณาอนุมัติ', menuOrder: 1 },
     { menuName: 'รายการที่พิจารณาแล้ว', menuOrder: 2 },
@@ -99,9 +100,10 @@ export function NATEmployeeMenu() {
 export function NATMemberMenu() {
     let selectionMenu = new SelectionMenu()
   selectionMenu.Menu = selectionMenu.Menu = [
-    { menuName: 'ข้อมูลเอกสารจดหมายเหตุ(ตัวอย่าง)', menuOrder: 1 },
-    { menuName: 'ข้อมูลจดหมายราชการ', menuOrder: 2 },
-    { menuName: 'บทความ', menuOrder: 3 },
+    { menuName: 'ปฏิทิน', menuOrder: 1 },
+    { menuName: 'ข้อมูลเอกสารจดหมายเหตุ(ตัวอย่าง)', menuOrder: 2 },
+    { menuName: 'ข้อมูลจดหมายราชการ', menuOrder: 3 },
+    { menuName: 'บทความ', menuOrder: 4 },
   ]
 
   selectionMenu.Group = selectionMenu.Group = [

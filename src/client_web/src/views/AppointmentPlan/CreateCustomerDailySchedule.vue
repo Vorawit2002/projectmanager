@@ -66,18 +66,10 @@
                     <label class="mb-2">วันที่เริ่มต้น <span class="text-error">*</span> </label>
                     <div>
                       <TextFieldDatepicker
-                        v-if="createCommand.startDate"
                         placeholder="กรุณาระบุวันที่เริ่มต้นนัดหมาย"
                         :rules="appointmentStartDateRules"
                         :AllDay="createCommand.allDay"
-                        :selectedDateTime="createCommand.startDate"
-                        @selectedDateTime="changeTimestartDate"
-                      />
-                      <TextFieldDatepicker
-                        v-else
-                        placeholder="กรุณาระบุวันที่เริ่มต้นนัดหมาย"
-                        :rules="appointmentStartDateRules"
-                        :AllDay="createCommand.allDay"
+                        :selectedDateTime="formattedStartDate"
                         @selectedDateTime="changeTimestartDate"
                       />
                     </div>
@@ -91,20 +83,11 @@
                     <label class="mb-2">วันที่สิ้นสุด <span class="text-error">*</span> </label>
                     <div>
                       <TextFieldDatepicker
-                        v-if="createCommand.endDate"
                         placeholder="กรุณาระบุวันที่สิ้นสุดนัดหมาย"
+                        :minDate="formattedStartDate"
                         :rules="appointmentEndDateRules"
                         :AllDay="createCommand.allDay"
-                        :selectedDateTime="createCommand.endDate"
-                        @selectedDateTime="changeTimeendDate"
-                      />
-                      <TextFieldDatepicker
-                        v-else
-                        placeholder="กรุณาระบุวันที่สิ้นสุดนัดหมาย"
-                        :minDate="createCommand.startDate"
-                        :rules="appointmentEndDateRules"
-                        :AllDay="createCommand.allDay"
-                        :selectedDateTime="createCommand.endDate"
+                        :selectedDateTime="formattedEndDate"
                         @selectedDateTime="changeTimeendDate"
                       />
                     </div>
@@ -612,6 +595,12 @@ export default defineComponent({
     }
   },
   computed: {
+    formattedStartDate(): string {
+      return this.createCommand.startDate ? this.createCommand.startDate.toISOString() : ''
+    },
+    formattedEndDate(): string {
+      return this.createCommand.endDate ? this.createCommand.endDate.toISOString() : ''
+    },
     switchLabel() {
       return this.createCommand.outSide ? 'ออกนอกสถานที่' : 'เข้าออฟฟิศ'
     },

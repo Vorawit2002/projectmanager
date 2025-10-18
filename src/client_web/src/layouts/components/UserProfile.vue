@@ -36,9 +36,27 @@ watch(() => auth.image, async (newImage, oldImage) => {
   }
 })
 
-// Use imageProfile from fetched data
+// Watch auth.isLogged to reload profile when user logs in
+watch(() => auth.isLogged, async (isLogged) => {
+  if (isLogged) {
+    console.log('UserProfile - User logged in, fetching profile')
+    await fetchUserProfile()
+  }
+})
+
+// Use imageProfile from fetched data with proper URL handling
 const userImage = computed(() => {
-  return userProfile.value?.imageProfile || null
+  const imageProfile = userProfile.value?.imageProfile || auth.image || null
+  
+  if (!imageProfile) return null
+  
+  // If it's already a full URL (http/https) or data URL (data:), use as is
+  if (imageProfile.startsWith('http') || imageProfile.startsWith('data:')) {
+    return imageProfile
+  }
+  
+  // If it's a relative path, prepend BACKEND_API_URL
+  return `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
 })
 
 // Get user initials for avatar
@@ -62,7 +80,7 @@ async function toLogout() {
   clearLoginNotificationData()
   // ใช้ auth store logout method
   await auth.logout()
-  router.push('/login')
+  router.push('/')
 }
 
 function clearLoginNotificationData() {

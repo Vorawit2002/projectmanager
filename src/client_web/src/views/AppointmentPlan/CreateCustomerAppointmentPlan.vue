@@ -365,7 +365,7 @@ import { defineComponent } from 'vue'
 const client = new Client(BACKEND_API_URL)
 export default defineComponent({
   name: 'CreateCustomerAppointmentPlan',
-  emits: ['close'],
+  emits: ['close', 'created'],
   components: {
     DemoFormLayoutVerticalFormWithIcons,
     TextFieldDatepicker,

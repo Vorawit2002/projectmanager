@@ -5,11 +5,11 @@
         <VCardText class="d-flex">
           <!-- 👉 Avatar -->
           <VAvatar
-            :key="currentImageProfile"
+            :key="displayImageProfile"
             rounded="lg"
             size="200"
             class="me-6 avatar-style"
-            :image="imagePreview || currentImageProfile || avatar1"
+            :image="imagePreview || displayImageProfile || avatar1"
           />
 
           <!-- 👉 Upload Photo -->
@@ -225,6 +225,19 @@ export default defineComponent({
     await this.initialize()
     await this.getDepartments()
   },
+  computed: {
+    displayImageProfile(): string {
+      if (!this.currentImageProfile) return ''
+      
+      // If it's already a full URL (http/https) or data URL (data:), use as is
+      if (this.currentImageProfile.startsWith('http') || this.currentImageProfile.startsWith('data:')) {
+        return this.currentImageProfile
+      }
+      
+      // If it's a relative path, prepend BACKEND_API_URL
+      return `${BACKEND_API_URL}${this.currentImageProfile.startsWith('/') ? '' : '/'}${this.currentImageProfile}`
+    }
+  },
   methods: {
     async initialize() {
       try {
@@ -238,6 +251,14 @@ export default defineComponent({
           this.accountData.email = response.email
           this.accountData.departmentId = response.departmentId
           this.currentImageProfile = response.imageProfile || ''
+          
+          // Sync with auth store
+          const imageProfile = response.imageProfile || ''
+          if (imageProfile && !imageProfile.startsWith('http') && !imageProfile.startsWith('data:')) {
+            this.auth.image = `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
+          } else {
+            this.auth.image = imageProfile
+          }
         }
       } catch (error) {
         console.error('Error initializing account settings:', error)
@@ -323,7 +344,14 @@ export default defineComponent({
         const response = await client.postApiUsersProfileImage(fileParameter)
         if (response && response.imageUrl) {
           this.currentImageProfile = response.imageUrl
-          this.auth.image = response.imageUrl
+          
+          // Update auth store with proper URL handling
+          const imageUrl = response.imageUrl
+          if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:')) {
+            this.auth.image = `${BACKEND_API_URL}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`
+          } else {
+            this.auth.image = imageUrl
+          }
           
           // Reload account settings to get updated data
           await this.initialize()

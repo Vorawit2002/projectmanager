@@ -37,7 +37,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const goToDashboard = () => {
-  router.push('/Homepage')
+  router.push('/')
 }
 </script>
 

@@ -4,6 +4,7 @@ using ProjectManagement.Application.ActivityPlans.Commands.DeleteActivityPlan;
 using ProjectManagement.Application.ActivityPlans.Commands.ShareActivityPlan;
 using ProjectManagement.Application.ActivityPlans.Commands.UpdateActivityPlan;
 using ProjectManagement.Application.ActivityPlans.Queries;
+using ProjectManagement.Application.Common.Interfaces;
 using ProjectManagement.Application.Common.Models;
 using ProjectManagement.Domain.Constants;
 
@@ -87,8 +88,24 @@ public class ActivityPlanEndpoint : EndpointGroupBase
         GetActivityPlanWithPlanNoteQueryForExcel query = new GetActivityPlanWithPlanNoteQueryForExcel();
         return await sender.Send(query);
     }
-    public async Task<IEnumerable<ActivityPlanDto>> GetActivityPlanQueryByEmployeeId(ISender sender, GetActivityPlanByEmployeeIdQuery query)
+    public async Task<IEnumerable<ActivityPlanDto>> GetActivityPlanQueryByEmployeeId(ISender sender, IUser currentUser, HttpContext httpContext, GetActivityPlanByEmployeeIdQuery query)
     {
+        // Set current user info for role-based filtering
+        query.CurrentUserId = currentUser.Id;
+        
+        // Get user roles from claims
+        var roles = httpContext.User.Claims
+            .Where(c => c.Type == System.Security.Claims.ClaimTypes.Role)
+            .Select(c => c.Value)
+            .ToList();
+        query.CurrentUserRoles = roles;
+        
+        // Debug logging
+        Console.WriteLine($"[Calendar API] User ID: {currentUser.Id}");
+        Console.WriteLine($"[Calendar API] Roles: {string.Join(", ", roles)}");
+        Console.WriteLine($"[Calendar API] Query EmployeeId: {string.Join(", ", query.EmployeeId ?? new List<Guid>())}");
+        Console.WriteLine($"[Calendar API] Query DepartmentId: {query.DepartmentId}");
+        
         return await sender.Send(query);
     }
     public async Task<ActivityPlanDto> GetActivityPlanQueryByID(ISender sender, Guid id)

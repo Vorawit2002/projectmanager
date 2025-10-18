@@ -139,8 +139,9 @@ export default defineComponent({
   },
   props: {
     id: {
-      type: [String, Number],
-      required: true,
+      type: [String, Number, null],
+      required: false,
+      default: null,
     },
     activitytab: {
       type: String,

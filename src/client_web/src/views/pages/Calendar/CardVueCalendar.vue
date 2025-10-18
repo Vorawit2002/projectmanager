@@ -848,19 +848,25 @@ export default {
     this.request.years = '2025'
     if (this.auth.userId) {
       this.request.employeeId = [] as string[]
-      const result = await client.getEmployeeQueryByUserID(this.auth.userId)
-      // Store defaults (use once for clear/reset fallback)
-      this.defaultDepartmentId = result.departmentId || ''
-      this.defaultEmployeeId = result.id || ''
+      try {
+        const result = await client.getEmployeeQueryByUserID(this.auth.userId)
+        // Store defaults (use once for clear/reset fallback)
+        this.defaultDepartmentId = result.departmentId || ''
+        this.defaultEmployeeId = result.id || ''
 
-      // Apply defaults to current filters (selected arrays used by multi-select)
-      if (result.departmentId) {
-        this.selectedDepartmentIds = [result.departmentId]
-        this.request.departmentId = result.departmentId
-      }
-      if (result.id) {
-        this.selectedEmployeeIds = [result.id]
-        this.request.employeeId?.push(result.id as any)
+        // Apply defaults to current filters (selected arrays used by multi-select)
+        if (result.departmentId) {
+          this.selectedDepartmentIds = [result.departmentId]
+          this.request.departmentId = result.departmentId
+        }
+        if (result.id) {
+          this.selectedEmployeeIds = [result.id]
+          this.request.employeeId?.push(result.id as any)
+        }
+      } catch (error) {
+        console.warn('No employee record found for current user. Calendar will show all data based on role permissions.')
+        // If no employee record, don't set any default filters
+        // Role-based filtering in backend will handle access control
       }
     }
     // โหลดข้อมูลพื้นฐาน

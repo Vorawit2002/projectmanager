@@ -75,14 +75,6 @@ public class ApplicationDbContextInitialiser
 
     public async Task TrySeedAsync()
     {
-        // Clear all existing users first
-        var existingUsers = await _userManager.Users.ToListAsync();
-        foreach (var user in existingUsers)
-        {
-            await _userManager.DeleteAsync(user);
-        }
-        _logger.LogInformation("Deleted {Count} existing users", existingUsers.Count);
-
         // Default roles
         var adminRole = new IdentityRole("Admin");
         var managerRole = new IdentityRole("Manager");

@@ -69,19 +69,10 @@
                     <label class="mb-2">วันที่เริ่มต้น <span class="text-error">*</span> </label>
                     <div>
                       <TextFieldDatepicker
-                        v-if="updateCommand.startDate"
                         placeholder="กรุณาระบุวันที่เริ่มต้นนัดหมาย"
                         :rules="appointmentStartDateRules"
                         :AllDay="updateCommand.allDay"
-                        :selectedDateTime="updateCommand.startDate"
-                        @selectedDateTime="changeTimestartDate"
-                        :readonly="ConditionReadonly"
-                      />
-                      <TextFieldDatepicker
-                        v-else
-                        placeholder="กรุณาระบุวันที่เริ่มต้นนัดหมาย"
-                        :rules="appointmentStartDateRules"
-                        :AllDay="updateCommand.allDay"
+                        :selectedDateTime="formattedStartDate"
                         @selectedDateTime="changeTimestartDate"
                         :readonly="ConditionReadonly"
                       />
@@ -96,21 +87,11 @@
                     <label class="mb-2">วันที่สิ้นสุด <span class="text-error">*</span> </label>
                     <div>
                       <TextFieldDatepicker
-                        v-if="updateCommand.endDate"
                         placeholder="กรุณาระบุวันที่สิ้นสุดนัดหมาย"
+                        :minDate="formattedStartDate"
                         :rules="appointmentEndDateRules"
                         :AllDay="updateCommand.allDay"
-                        :selectedDateTime="updateCommand.endDate"
-                        @selectedDateTime="changeTimeendDate"
-                        :readonly="ConditionReadonly"
-                      />
-                      <TextFieldDatepicker
-                        v-else
-                        placeholder="กรุณาระบุวันที่สิ้นสุดนัดหมาย"
-                        :minDate="updateCommand.startDate"
-                        :rules="appointmentEndDateRules"
-                        :AllDay="updateCommand.allDay"
-                        :selectedDateTime="updateCommand.endDate"
+                        :selectedDateTime="formattedEndDate"
                         @selectedDateTime="changeTimeendDate"
                         :readonly="ConditionReadonly"
                       />
@@ -550,6 +531,12 @@ export default defineComponent({
     }
   },
   computed: {
+    formattedStartDate(): string {
+      return this.updateCommand.startDate ? this.updateCommand.startDate.toISOString() : ''
+    },
+    formattedEndDate(): string {
+      return this.updateCommand.endDate ? this.updateCommand.endDate.toISOString() : ''
+    },
     switchLabel() {
       return this.updateCommand.outSide ? 'ออกนอกสถานที่' : 'เข้าออฟฟิศ'
     },

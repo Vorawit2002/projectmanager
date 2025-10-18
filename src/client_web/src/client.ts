@@ -1532,45 +1532,6 @@ export class Client extends BaseClass {
         return Promise.resolve<EmployeeDto>(null as any);
     }
 
-    getEmployeeQueryByUserID(userId: string): Promise<EmployeeDto> {
-        let url_ = this.baseUrl + "/api/employees/GetEmployeeQueryByUserID/{UserId}";
-        if (userId === undefined || userId === null)
-            throw new Error("The parameter 'userId' must be defined.");
-        url_ = url_.replace("{UserId}", encodeURIComponent("" + userId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetEmployeeQueryByUserID(_response);
-        });
-    }
-
-    protected processGetEmployeeQueryByUserID(response: Response): Promise<EmployeeDto> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EmployeeDto.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<EmployeeDto>(null as any);
-    }
-
     getEmployeeWithPagination(query: GetEmployeeWithPaginationQuery): Promise<PaginatedListOfEmployeeDto> {
         let url_ = this.baseUrl + "/api/employees/GetEmployeeWithPagination";
         url_ = url_.replace(/[?&]$/, "");
@@ -1656,6 +1617,45 @@ export class Client extends BaseClass {
             });
         }
         return Promise.resolve<EmployeeDto[]>(null as any);
+    }
+
+    getEmployeeQueryByUserID(userId: string): Promise<EmployeeDto> {
+        let url_ = this.baseUrl + "/api/employees/GetEmployeeQueryByUserID/{UserId}";
+        if (userId === undefined || userId === null)
+            throw new Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{UserId}", encodeURIComponent("" + userId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetEmployeeQueryByUserID(_response);
+        });
+    }
+
+    protected processGetEmployeeQueryByUserID(response: Response): Promise<EmployeeDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EmployeeDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<EmployeeDto>(null as any);
     }
 
     createEmployee(command: CreateEmployeeCommand): Promise<boolean> {
@@ -5618,6 +5618,7 @@ export interface IActivityPlan extends IBaseAuditableEntity {
 
 export class Employee extends BaseAuditableEntity implements IEmployee {
     userId?: string;
+    user?: ApplicationUser | undefined;
     titleName?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
@@ -5640,6 +5641,7 @@ export class Employee extends BaseAuditableEntity implements IEmployee {
         super.init(_data);
         if (_data) {
             this.userId = _data["userId"];
+            this.user = _data["user"] ? ApplicationUser.fromJS(_data["user"]) : <any>undefined;
             this.titleName = _data["titleName"];
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
@@ -5666,6 +5668,7 @@ export class Employee extends BaseAuditableEntity implements IEmployee {
     override toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
         data["titleName"] = this.titleName;
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
@@ -5686,6 +5689,7 @@ export class Employee extends BaseAuditableEntity implements IEmployee {
 
 export interface IEmployee extends IBaseAuditableEntity {
     userId?: string;
+    user?: ApplicationUser | undefined;
     titleName?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
@@ -5699,6 +5703,190 @@ export interface IEmployee extends IBaseAuditableEntity {
     subscription?: boolean | undefined;
     roles?: string | undefined;
     group?: string | undefined;
+}
+
+export class IdentityUserOfString implements IIdentityUserOfString {
+    id?: string | undefined;
+    userName?: string | undefined;
+    normalizedUserName?: string | undefined;
+    email?: string | undefined;
+    normalizedEmail?: string | undefined;
+    emailConfirmed?: boolean;
+    passwordHash?: string | undefined;
+    securityStamp?: string | undefined;
+    concurrencyStamp?: string | undefined;
+    phoneNumber?: string | undefined;
+    phoneNumberConfirmed?: boolean;
+    twoFactorEnabled?: boolean;
+    lockoutEnd?: Date | undefined;
+    lockoutEnabled?: boolean;
+    accessFailedCount?: number;
+
+    constructor(data?: IIdentityUserOfString) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.userName = _data["userName"];
+            this.normalizedUserName = _data["normalizedUserName"];
+            this.email = _data["email"];
+            this.normalizedEmail = _data["normalizedEmail"];
+            this.emailConfirmed = _data["emailConfirmed"];
+            this.passwordHash = _data["passwordHash"];
+            this.securityStamp = _data["securityStamp"];
+            this.concurrencyStamp = _data["concurrencyStamp"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.phoneNumberConfirmed = _data["phoneNumberConfirmed"];
+            this.twoFactorEnabled = _data["twoFactorEnabled"];
+            this.lockoutEnd = _data["lockoutEnd"] ? new Date(_data["lockoutEnd"].toString()) : <any>undefined;
+            this.lockoutEnabled = _data["lockoutEnabled"];
+            this.accessFailedCount = _data["accessFailedCount"];
+        }
+    }
+
+    static fromJS(data: any): IdentityUserOfString {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdentityUserOfString();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["userName"] = this.userName;
+        data["normalizedUserName"] = this.normalizedUserName;
+        data["email"] = this.email;
+        data["normalizedEmail"] = this.normalizedEmail;
+        data["emailConfirmed"] = this.emailConfirmed;
+        data["passwordHash"] = this.passwordHash;
+        data["securityStamp"] = this.securityStamp;
+        data["concurrencyStamp"] = this.concurrencyStamp;
+        data["phoneNumber"] = this.phoneNumber;
+        data["phoneNumberConfirmed"] = this.phoneNumberConfirmed;
+        data["twoFactorEnabled"] = this.twoFactorEnabled;
+        data["lockoutEnd"] = this.lockoutEnd ? this.lockoutEnd.toISOString() : <any>undefined;
+        data["lockoutEnabled"] = this.lockoutEnabled;
+        data["accessFailedCount"] = this.accessFailedCount;
+        return data;
+    }
+}
+
+export interface IIdentityUserOfString {
+    id?: string | undefined;
+    userName?: string | undefined;
+    normalizedUserName?: string | undefined;
+    email?: string | undefined;
+    normalizedEmail?: string | undefined;
+    emailConfirmed?: boolean;
+    passwordHash?: string | undefined;
+    securityStamp?: string | undefined;
+    concurrencyStamp?: string | undefined;
+    phoneNumber?: string | undefined;
+    phoneNumberConfirmed?: boolean;
+    twoFactorEnabled?: boolean;
+    lockoutEnd?: Date | undefined;
+    lockoutEnabled?: boolean;
+    accessFailedCount?: number;
+}
+
+export class IdentityUser extends IdentityUserOfString implements IIdentityUser {
+
+    constructor(data?: IIdentityUser) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+    }
+
+    static override fromJS(data: any): IdentityUser {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdentityUser();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IIdentityUser extends IIdentityUserOfString {
+}
+
+export class ApplicationUser extends IdentityUser implements IApplicationUser {
+    isRevoked?: boolean;
+    revokeStart?: Date;
+    revokeEnd?: Date;
+    requirePasswordChange?: boolean;
+    lastPasswordChangeDate?: Date | undefined;
+    imageProfile?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    employee?: Employee | undefined;
+
+    constructor(data?: IApplicationUser) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.isRevoked = _data["isRevoked"];
+            this.revokeStart = _data["revokeStart"] ? new Date(_data["revokeStart"].toString()) : <any>undefined;
+            this.revokeEnd = _data["revokeEnd"] ? new Date(_data["revokeEnd"].toString()) : <any>undefined;
+            this.requirePasswordChange = _data["requirePasswordChange"];
+            this.lastPasswordChangeDate = _data["lastPasswordChangeDate"] ? new Date(_data["lastPasswordChangeDate"].toString()) : <any>undefined;
+            this.imageProfile = _data["imageProfile"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.employee = _data["employee"] ? Employee.fromJS(_data["employee"]) : <any>undefined;
+        }
+    }
+
+    static override fromJS(data: any): ApplicationUser {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApplicationUser();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isRevoked"] = this.isRevoked;
+        data["revokeStart"] = this.revokeStart ? this.revokeStart.toISOString() : <any>undefined;
+        data["revokeEnd"] = this.revokeEnd ? this.revokeEnd.toISOString() : <any>undefined;
+        data["requirePasswordChange"] = this.requirePasswordChange;
+        data["lastPasswordChangeDate"] = this.lastPasswordChangeDate ? this.lastPasswordChangeDate.toISOString() : <any>undefined;
+        data["imageProfile"] = this.imageProfile;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["employee"] = this.employee ? this.employee.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IApplicationUser extends IIdentityUser {
+    isRevoked?: boolean;
+    revokeStart?: Date;
+    revokeEnd?: Date;
+    requirePasswordChange?: boolean;
+    lastPasswordChangeDate?: Date | undefined;
+    imageProfile?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    employee?: Employee | undefined;
 }
 
 export class Department extends BaseAuditableEntity implements IDepartment {
@@ -7403,6 +7591,8 @@ export class GetActivityPlanByEmployeeIdQuery implements IGetActivityPlanByEmplo
     years?: string;
     departmentId?: string | undefined;
     eventTypeId?: string[] | undefined;
+    currentUserId?: string | undefined;
+    currentUserRoles?: string[] | undefined;
 
     constructor(data?: IGetActivityPlanByEmployeeIdQuery) {
         if (data) {
@@ -7426,6 +7616,12 @@ export class GetActivityPlanByEmployeeIdQuery implements IGetActivityPlanByEmplo
                 this.eventTypeId = [] as any;
                 for (let item of _data["eventTypeId"])
                     this.eventTypeId!.push(item);
+            }
+            this.currentUserId = _data["currentUserId"];
+            if (Array.isArray(_data["currentUserRoles"])) {
+                this.currentUserRoles = [] as any;
+                for (let item of _data["currentUserRoles"])
+                    this.currentUserRoles!.push(item);
             }
         }
     }
@@ -7451,6 +7647,12 @@ export class GetActivityPlanByEmployeeIdQuery implements IGetActivityPlanByEmplo
             for (let item of this.eventTypeId)
                 data["eventTypeId"].push(item);
         }
+        data["currentUserId"] = this.currentUserId;
+        if (Array.isArray(this.currentUserRoles)) {
+            data["currentUserRoles"] = [];
+            for (let item of this.currentUserRoles)
+                data["currentUserRoles"].push(item);
+        }
         return data;
     }
 }
@@ -7460,6 +7662,8 @@ export interface IGetActivityPlanByEmployeeIdQuery {
     years?: string;
     departmentId?: string | undefined;
     eventTypeId?: string[] | undefined;
+    currentUserId?: string | undefined;
+    currentUserRoles?: string[] | undefined;
 }
 
 export class ShareActivityPlanCommand implements IShareActivityPlanCommand {
@@ -11885,6 +12089,7 @@ export class UserDto implements IUserDto {
     firstName?: string | undefined;
     lastName?: string | undefined;
     imageProfile?: string | undefined;
+    position?: string | undefined;
     department?: string | undefined;
     departmentId?: string | undefined;
     roles?: string[];
@@ -11908,6 +12113,7 @@ export class UserDto implements IUserDto {
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
             this.imageProfile = _data["imageProfile"];
+            this.position = _data["position"];
             this.department = _data["department"];
             this.departmentId = _data["departmentId"];
             if (Array.isArray(_data["roles"])) {
@@ -11935,6 +12141,7 @@ export class UserDto implements IUserDto {
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
         data["imageProfile"] = this.imageProfile;
+        data["position"] = this.position;
         data["department"] = this.department;
         data["departmentId"] = this.departmentId;
         if (Array.isArray(this.roles)) {
@@ -11955,6 +12162,7 @@ export interface IUserDto {
     firstName?: string | undefined;
     lastName?: string | undefined;
     imageProfile?: string | undefined;
+    position?: string | undefined;
     department?: string | undefined;
     departmentId?: string | undefined;
     roles?: string[];

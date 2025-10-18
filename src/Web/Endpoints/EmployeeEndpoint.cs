@@ -24,9 +24,13 @@ public class Employees : EndpointGroupBase
             .RequireAuthorization(Policies.CanViewDepartmentData)
             .MapGet(GetEmployeeQuery, "GetEmployeeQuery")
             .MapGet(GetEmployeeQueryByID, "GetEmployeeQueryByID/{id}")
-            .MapGet(GetEmployeeQueryByUserID, "GetEmployeeQueryByUserID/{UserId}")
             .MapPost(GetEmployeeWithPagination, "GetEmployeeWithPagination")
             .MapPost(GetEmployeeQueryByDepartmentId, "GetEmployeeQueryByDepartmentId");
+            
+        // GetEmployeeQueryByUserID - all authenticated users can view their own employee data
+        app.MapGroup(this)
+            .RequireAuthorization()
+            .MapGet(GetEmployeeQueryByUserID, "GetEmployeeQueryByUserID/{UserId}");
             
         // Write operations - requires CanManageMasterData (Admin and Manager)
         app.MapGroup(this)

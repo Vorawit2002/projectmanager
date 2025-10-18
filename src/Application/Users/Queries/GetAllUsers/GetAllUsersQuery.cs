@@ -53,6 +53,7 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
                     // Priority: ApplicationUser.ImageProfile > Employee.ImageProfile
                     ImageProfile = user.ImageProfile ?? employee?.ImageProfile,
                     
+                    Position = employee?.Position,
                     Department = employee?.Departments?.Name,
                     DepartmentId = employee?.DepartmentId,
                     Roles = roles.ToList(),

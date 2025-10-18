@@ -41,27 +41,43 @@ public class UpdateAccountSettingsCommandHandler : IRequestHandler<UpdateAccount
 
             if (employee == null)
             {
-                return Result<bool>.Failure(new[] { "Employee record not found" });
+                // Create new employee record if it doesn't exist
+                employee = new Domain.Entities.Employee
+                {
+                    UserId = userId,
+                    TitleName = request.TitleName ?? string.Empty,
+                    FirstName = request.FirstName ?? string.Empty,
+                    LastName = request.LastName ?? string.Empty,
+                    Email = string.Empty, // Required field
+                    Position = request.Position,
+                    Phone = request.Phone,
+                    DepartmentId = request.DepartmentId,
+                    isActive = true
+                };
+                
+                _context.Employees.Add(employee);
             }
-
-            // Update employee fields
-            if (!string.IsNullOrEmpty(request.TitleName))
-                employee.TitleName = request.TitleName;
-            
-            if (!string.IsNullOrEmpty(request.FirstName))
-                employee.FirstName = request.FirstName;
-            
-            if (!string.IsNullOrEmpty(request.LastName))
-                employee.LastName = request.LastName;
-            
-            if (!string.IsNullOrEmpty(request.Position))
-                employee.Position = request.Position;
-            
-            if (!string.IsNullOrEmpty(request.Phone))
-                employee.Phone = request.Phone;
-            
-            if (request.DepartmentId.HasValue)
-                employee.DepartmentId = request.DepartmentId.Value;
+            else
+            {
+                // Update existing employee fields
+                if (!string.IsNullOrEmpty(request.TitleName))
+                    employee.TitleName = request.TitleName;
+                
+                if (!string.IsNullOrEmpty(request.FirstName))
+                    employee.FirstName = request.FirstName;
+                
+                if (!string.IsNullOrEmpty(request.LastName))
+                    employee.LastName = request.LastName;
+                
+                if (!string.IsNullOrEmpty(request.Position))
+                    employee.Position = request.Position;
+                
+                if (!string.IsNullOrEmpty(request.Phone))
+                    employee.Phone = request.Phone;
+                
+                if (request.DepartmentId.HasValue)
+                    employee.DepartmentId = request.DepartmentId.Value;
+            }
 
             await _context.SaveChangesAsync(cancellationToken);
 

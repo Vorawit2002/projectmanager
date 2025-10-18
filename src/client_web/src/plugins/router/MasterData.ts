@@ -64,6 +64,24 @@ export default [
           roles: ['Admin']
         }
       },
+      {
+        path: 'MasterData/DepartmentListView',
+        name: 'DepartmentListView',
+        component: () => import('@/views/MasterData/Departments/DepartmentListView.vue'),
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin', 'Manager']
+        }
+      },
+      {
+        path: 'MasterData/EmployeeListView',
+        name: 'EmployeeListView',
+        component: () => import('@/views/MasterData/Employees/EmployeeListView.vue'),
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin', 'Manager']
+        }
+      },
     ],
 
   }
