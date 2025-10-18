@@ -8,6 +8,7 @@ export interface AclProperties {
 // 👉 Vertical nav section title
 export interface NavSectionTitle extends Partial<AclProperties> {
   heading: string
+  roles?: string[]
 }
 
 // 👉 Vertical nav link

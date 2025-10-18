@@ -56,6 +56,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
   <VerticalNavSectionTitle
     :item="{
       heading: 'ตั้งค่าข้อมูล',
+      roles: ['Admin', 'Manager', 'User'],
     }"
   />
 
@@ -75,7 +76,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'หน่วยงาน',
       icon: 'ri-community-line',
       to: '/MasterData/OrganizationListView',
-      roles: ['Admin', 'Manager'],
+      roles: ['Admin', 'Manager', 'User'],
     }"
   />
 
@@ -84,7 +85,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'โครงการ',
       icon: 'ri-article-line',
       to: '/MasterData/ProjectListView',
-      roles: ['Admin', 'Manager', 'User', 'Viewer'],
+      roles: ['Admin', 'Manager', 'User'],
     }"
   />
 
@@ -93,7 +94,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'ผู้ติดต่อโครงการ',
       icon: 'ri-group-line',
       to: '/MasterData/ProjectContactListView',
-      roles: ['Admin', 'Manager', 'User', 'Viewer'],
+      roles: ['Admin', 'Manager', 'User'],
     }"
   />
 
@@ -102,7 +103,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'ผู้ติดต่อหน่วยงาน',
       icon: 'ri-contacts-line',
       to: '/MasterData/OrganizationContactListView',
-      roles: ['Admin', 'Manager'],
+      roles: ['Admin', 'Manager', 'User'],
     }"
   />
 
@@ -120,6 +121,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
   <VerticalNavSectionTitle
     :item="{
       heading: 'ตั้งค่าระบบ',
+      roles: ['Admin'],
     }"
   />
 
