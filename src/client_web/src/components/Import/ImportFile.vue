@@ -192,7 +192,8 @@ export default defineComponent({
   methods: {
     async initialize() {
       try {
-        if (this.id) {
+        // ตรวจสอบว่า id มีค่าและไม่ใช่ 'null' string
+        if (this.id && this.id !== 'null' && this.id !== '') {
           // ทำการดึงข้อมูลหรือเตรียมค่าที่จำเป็นสำหรับ id ที่ได้รับ
           this.request.activityPlanId = this.id
           const response = await client.getActivityPlanAttachmentsQueryByActivityPlanId(this.request)
@@ -203,6 +204,8 @@ export default defineComponent({
             }
           })
           console.log('Fetched attachments:', this.nameInput)
+        } else {
+          console.log('ImportFile: Skipping initialization - no valid ID provided')
         }
       } catch (error) {
         console.error('Error initializing component:', error)

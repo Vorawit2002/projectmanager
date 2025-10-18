@@ -45,6 +45,7 @@ else
 }
 
 app.UseHealthChecks("/health");
+app.UseResponseCompression(); // Enable response compression
 app.UseCors("AllowLocalhost"); // Apply CORS policy - must be before UseHttpsRedirection
 app.UseHttpsRedirection();
 app.UseStaticFiles();

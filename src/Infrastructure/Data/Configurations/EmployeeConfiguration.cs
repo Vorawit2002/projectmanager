@@ -48,7 +48,7 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .HasMaxLength(20);
 
         builder.Property(e => e.ImageProfile)
-            .HasMaxLength(1000); // Increased to accommodate longer URLs/base64 strings
+            .HasColumnType("text"); // Use text type for Base64 images (no length limit)
 
         builder.Property(e => e.Roles)
             .HasMaxLength(500);

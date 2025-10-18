@@ -60,7 +60,7 @@ const data = {
     </template>
 
     <template #vertical-nav-header="{ toggleIsOverlayNavActive }">
-      <center>
+      <div class="d-flex justify-center">
         <RouterLink
           to="/dashboard"
           class="app-logo app-title-wrapper text-center justify-center"
@@ -74,7 +74,7 @@ const data = {
           <!-- eslint-enable -->
           <!-- <span class="text-menu text-primary-darken-0">CRM</span> -->
         </RouterLink>
-      </center>
+      </div>
 
       <IconBtn
         class="d-block d-lg-none"

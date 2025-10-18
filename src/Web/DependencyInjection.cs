@@ -37,6 +37,12 @@ public static class DependencyInjection
             options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
         });
 
+        // Add response compression to reduce payload size
+        builder.Services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+        });
+
         builder.Services.AddOpenApiDocument((configure, sp) =>
         {
             configure.Title = "ProjectManagement API";

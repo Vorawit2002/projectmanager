@@ -189,14 +189,17 @@ public class GetActivityPlanWithPaginationQueryHandler : IRequestHandler<GetActi
         }
         #endregion
         var countitem = await QueryActivityPlans.CountAsync();
-        var items = await QueryActivityPlans.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize)
+        
+        // Load with minimal navigation properties using IgnoreAutoIncludes
+        var items = await QueryActivityPlans
+              .AsNoTracking()
+              .IgnoreAutoIncludes()
+              .Skip((request.PageNumber - 1) * request.PageSize)
+              .Take(request.PageSize)
               .Include(ap => ap.Employees)
-        .Include(ap => ap.Projects)
-        .Include(ap => ap.Organizations)
-         .Include(ap => ap.ActivityPlanAttachments)
-        .ThenInclude(at => at.Attachments)
-        .Include(ap => ap.EventTypes)
-        .Include(ap => ap.PlanNotes) // เพิ่ม Include ตรงนี้
+              .Include(ap => ap.Projects)
+              .Include(ap => ap.Organizations)
+              .Include(ap => ap.EventTypes)
               .Select(activity => new ActivityPlanDto
               {
                   Id = activity.Id,
@@ -216,15 +219,73 @@ public class GetActivityPlanWithPaginationQueryHandler : IRequestHandler<GetActi
                   HaveCost = activity.HaveCost,
                   CostDetail = activity.CostDetail,
                   Cost = activity.Cost,
-                   EventTypeId = activity.EventTypeId,
+                  EventTypeId = activity.EventTypeId,
                   EventTypes = activity.EventTypes,
               })
               .ToListAsync(cancellationToken);
+        
+        // Debug logging
+        if (items.Any())
+        {
+            var firstItem = items.First();
+            Console.WriteLine($"[DEBUG] First item ID: {firstItem.Id}");
+            Console.WriteLine($"[DEBUG] Employee: {firstItem.Employees?.FirstName} {firstItem.Employees?.LastName}");
+            Console.WriteLine($"[DEBUG] ImageProfile: {firstItem.Employees?.ImageProfile ?? "NULL"}");
+        }
 
         var pagedList = new PaginatedListForActivity<ActivityPlanDto>(items, countitem, request.PageNumber, request.PageSize);
-        pagedList.All = await _context.ActivityPlans.CountAsync();
-        pagedList.Summary  = await _context.ActivityPlans.Include(x => x.PlanNotes).Where(x => x.PlanNotes.Any()).CountAsync();
-        pagedList.NotSummary = await _context.ActivityPlans.Include(x => x.PlanNotes).Where(x => !x.PlanNotes.Any()).CountAsync();
+        
+        // Apply the same base filters for summary counts
+        var baseQuery = _context.ActivityPlans.AsQueryable();
+        baseQuery = await _dataFilterService.ApplyRoleBasedFilterAsync(baseQuery, userId, roles);
+        
+        // Apply the same filters as the main query
+        if (request.EventTypeId?.Any() == true)
+        {
+            baseQuery = baseQuery.Where(x => x.EventTypeId.HasValue && request.EventTypeId.Contains(x.EventTypeId.Value));
+        }
+        if (!string.IsNullOrEmpty(request.Date))
+        {
+            if (request.Date.Contains("วันนี้"))
+            {
+                baseQuery = baseQuery.Where(x => x.StartDate.Date <= DateTime.Now.Date && x.EndDate.Date >= DateTime.Now.Date);
+            }
+            else if (request.Date.Contains("สัปดาห์นี้"))
+            {
+                var diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+                var weekStart = today.AddDays(-diff);
+                var weekEnd = weekStart.AddDays(6);
+                baseQuery = baseQuery.Where(x => x.StartDate.Date <= weekEnd && x.EndDate.Date >= weekStart);
+            }
+            else if (request.Date.Contains("เดือนนี้"))
+            {
+                var monthStart = new DateTime(today.Year, today.Month, 1);
+                var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+                baseQuery = baseQuery.Where(x => x.StartDate.Date <= monthEnd && x.EndDate.Date >= monthStart);
+            }
+            else if (request.Date.Contains("ช่วงเวลา") && request.StartDate.HasValue && request.EndDate.HasValue)
+            {
+                var startDate = request.StartDate.Value.ToLocalTime();
+                var endDate = request.EndDate.Value.ToLocalTime();
+                baseQuery = baseQuery.Where(x => x.StartDate.Date >= startDate.Date && x.EndDate.Date <= endDate.Date);
+            }
+        }
+        if (request.DepartmentId?.Any() == true)
+        {
+            var employeeIds = _context.Employees
+                .Where(e => e.DepartmentId != null && request.DepartmentId.Contains((Guid)e.DepartmentId))
+                .Select(e => e.Id)
+                .ToList();
+            baseQuery = baseQuery.Where(x => employeeIds.Contains(x.EmployeeId));
+        }
+        if (request.EmployeeId?.Any() == true)
+        {
+            baseQuery = baseQuery.Where(x => request.EmployeeId.Contains(x.EmployeeId));
+        }
+        
+        pagedList.All = await baseQuery.CountAsync();
+        pagedList.Summary = await baseQuery.Where(x => x.PlanNotes.Any()).CountAsync();
+        pagedList.NotSummary = await baseQuery.Where(x => !x.PlanNotes.Any()).CountAsync();
 
         return pagedList;
 

@@ -9,7 +9,7 @@
         พนักงาน</span
       >
 
-      <v-btn 
+      <!-- <v-btn 
         v-if="canModifyMasterData()"
         @click="OpenDialogCreate"
         ><v-icon
@@ -17,7 +17,7 @@
           icon="ri-add-circle-line"
         />
         เพิ่มพนักงาน</v-btn
-      >
+      > -->
     </v-col>
   </VRow>
 
@@ -93,7 +93,8 @@
           :class="{ 'selected-row': item.id === id }"
           @click="debugRowClick(item)"
         >
-          <td class="text-center align-center">
+          <!-- จัดการ - ซ่อนไว้ชั่วคราว -->
+          <!-- <td class="text-center align-center">
             <v-btn
               class="text-white mr-2"
               density="compact"
@@ -129,7 +130,7 @@
             >
               <v-icon size="18">ri-delete-bin-6-line</v-icon>
             </v-btn>
-          </td>
+          </td> -->
           <td class="text-center">
             <v-avatar
               v-if="item.imageProfile"
@@ -243,7 +244,7 @@ export default defineComponent({
       auth: useAuthStore(),
       sweetAlert: useSweetAlertStore(),
       header: [
-        { title: 'จัดการ', value: 'actions', align: 'center' },
+        // { title: 'จัดการ', value: 'actions', align: 'center' }, // ซ่อนไว้ชั่วคราว
         { title: 'รูปโปรไฟล์', value: 'imageProfile', align: 'center' },
         { title: 'ชื่อ-นามสกุล', value: 'fullName' },
         { title: 'อีเมล', value: 'email' },

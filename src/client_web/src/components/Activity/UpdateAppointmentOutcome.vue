@@ -302,6 +302,12 @@ export default defineComponent({
   methods: {
     async initialize() {
       try {
+        // ตรวจสอบว่า id มีค่าและไม่ใช่ 'null' string
+        if (!this.id || this.id === 'null' || this.id === '') {
+          console.log('UpdateAppointmentOutcome: Skipping initialization - no valid ID provided')
+          return
+        }
+
         const resultEmp = await client.getEmployeeQueryByUserID(this.auth.userId)
         this.UserId = resultEmp.id
         const response = await client.getActivityPlanQueryByID(this.id)

@@ -61,26 +61,6 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
 
-  <!-- 👉 User Management (Admin only) -->
-  <VerticalNavLink
-    :item="{
-      title: 'จัดการผู้ใช้งาน',
-      icon: 'ri-user-settings-line',
-      to: '/MasterData/UserListView',
-      roles: ['Admin'],
-    }"
-  />
-
-  <!-- 👉 Employees -->
-  <VerticalNavLink
-    :item="{
-      title: 'พนักงาน',
-      icon: 'ri-user-line',
-      to: '/MasterData/EmployeeListView',
-      roles: ['Admin', 'Manager'],
-    }"
-  />
-
   <!-- 👉 Departments -->
   <VerticalNavLink
     :item="{
@@ -118,7 +98,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
-  
+
   <VerticalNavLink
     :item="{
       title: 'ผู้ติดต่อหน่วยงาน',
@@ -134,6 +114,33 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'ประเภทกิจกรรม',
       icon: 'ri-home-office-line',
       to: '/MasterData/EventTypeListView',
+      roles: ['Admin', 'Manager'],
+    }"
+  />
+
+  <!-- 👉 Master Data Section -->
+  <VerticalNavSectionTitle
+    :item="{
+      heading: 'ตั้งค่าระบบ',
+    }"
+  />
+
+  <!-- 👉 User Management (Admin only) -->
+  <VerticalNavLink
+    :item="{
+      title: 'จัดการผู้ใช้งาน',
+      icon: 'ri-user-settings-line',
+      to: '/MasterData/UserListView',
+      roles: ['Admin'],
+    }"
+  />
+
+  <!-- 👉 Employees -->
+  <VerticalNavLink
+    :item="{
+      title: 'ผู้ใช้งานระบบ',
+      icon: 'ri-user-line',
+      to: '/MasterData/EmployeeListView',
       roles: ['Admin', 'Manager'],
     }"
   />

@@ -377,7 +377,7 @@
                       variant="tonal"
                     >
                       <template v-if="item.employees?.imageProfile">
-                        <VImg :src="item.employees.imageProfile" />
+                        <VImg :src="getImageUrl(item.employees.imageProfile)" />
                       </template>
                       <template v-else>
                         {{ getInitials(item.employees?.firstName, item.employees?.lastName) }}
@@ -1259,6 +1259,18 @@ export default defineComponent({
       const lastInitial = lastName.trim().charAt(0) || ''
       return (firstInitial + lastInitial).toUpperCase()
     },
+    getImageUrl(imageProfile: string): string {
+      if (!imageProfile) return ''
+      
+      // If it's already a full URL (http/https) or data URL (data:), use as is
+      if (imageProfile.startsWith('http') || imageProfile.startsWith('data:')) {
+        return imageProfile
+      }
+      
+      // If it's a relative path, prepend BACKEND_API_URL
+      const BACKEND_API_URL = 'https://localhost:5001'
+      return `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
+    },
     getEmployeeStatusClass(item: any): string {
       if (item.haveCost === true || item.haveCost === false) {
         return 'status-online' // สีเขียว - บันทึกรายงานแล้ว
@@ -1387,6 +1399,13 @@ export default defineComponent({
           const response = await client.getActivityPlanWithPagination(this.request)
           this.Activity = response.items || []
           this.Itemlength = response.totalCount || 0
+          
+          // Debug: Check if imageProfile is in response
+          if (this.Activity.length > 0) {
+            console.log('First activity item:', this.Activity[0])
+            console.log('Employee data:', this.Activity[0].employees)
+            console.log('ImageProfile:', this.Activity[0].employees?.imageProfile)
+          }
         // }
 
         if (this.Activity.length > 0) {

@@ -42,6 +42,7 @@ public class UploadProfileImageCommandHandler : IRequestHandler<UploadProfileIma
 
             // Find the employee record for this user
             var employee = await _context.Employees
+                .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.UserId == request.UserId, cancellationToken);
 
             _logger.LogInformation("Employee record: {HasEmployee}", employee != null ? "Found" : "Not Found");
@@ -82,7 +83,15 @@ public class UploadProfileImageCommandHandler : IRequestHandler<UploadProfileIma
             if (employee != null)
             {
                 _logger.LogInformation("Updating Employee.ImageProfile...");
-                employee.ImageProfile = imageUrl;
+                
+                // Use ExecuteUpdateAsync to avoid tracking issues
+                await _context.Employees
+                    .Where(e => e.Id == employee.Id)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(e => e.ImageProfile, imageUrl), 
+                        cancellationToken);
+                
+                _logger.LogInformation("Employee.ImageProfile updated successfully");
             }
 
             // Update ApplicationUser.ImageProfile
@@ -96,8 +105,8 @@ public class UploadProfileImageCommandHandler : IRequestHandler<UploadProfileIma
                 return Result<string>.Failure(new[] { "ไม่สามารถบันทึกข้อมูลผู้ใช้ได้" });
             }
 
-            _logger.LogInformation("Saving changes to database...");
-            await _context.SaveChangesAsync(cancellationToken);
+            // No need to call SaveChangesAsync since ExecuteUpdateAsync already saves
+            _logger.LogInformation("All changes saved successfully");
 
             _logger.LogInformation("=== Profile image uploaded successfully for user {UserId} ===", request.UserId);
 
