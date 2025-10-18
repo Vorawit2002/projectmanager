@@ -32,8 +32,6 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
 
-  
-
   <!-- 👉 Check-in/Check-out -->
   <VerticalNavLink
     :item="{
@@ -135,13 +133,12 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
 
-  <!-- 👉 Employees -->
-  <VerticalNavLink
+  <!-- <VerticalNavLink
     :item="{
       title: 'ผู้ใช้งานระบบ',
       icon: 'ri-user-line',
       to: '/MasterData/EmployeeListView',
       roles: ['Admin', 'Manager'],
     }"
-  />
+  /> -->
 </template>

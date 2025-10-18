@@ -1,77 +1,85 @@
 <template>
-  <v-row class="d-flex align-center justify-center">
-    <v-col
-      cols="12"
-      md="12"
-    >
-      <v-card class="elevation-10 mb-4 pa-3 card-Dialog dialog-scrollbar">
-        <v-card-text>
-          <span class="text-sub-title">
-            <v-icon icon="ri-edit-2-line" class="mr-2" />
-            แก้ไขข้อมูลแผนก
-          </span>
-
-          <v-form
-            ref="form"
-            @submit.prevent="save"
-            class="text-black"
-          >
-            <v-row class="px-5 mt-3">
-              <v-col cols="12">
-                <label class="mb-2">
-                  ชื่อแผนก <span class="text-error">*</span>
-                </label>
+  <div class="page-container scroll-content dialog-scrollbar">
+    <div class="pa-4">
+      <span class="text-sub-title">แก้ไขข้อมูลแผนก</span>
+      <v-form
+        ref="form"
+        @submit.prevent="save"
+        class="text-black"
+      >
+            <v-row class="px-1 px-sm-3 px-md-5 mt-3">
+              <!-- ชื่อแผนก -->
+              <v-col
+                cols="12"
+                md="12"
+              >
+                <label class="form-label">ชื่อแผนก <span class="text-error">*</span></label>
                 <v-text-field
                   v-model="updateCommand.name"
                   placeholder="ระบุชื่อแผนก"
                   variant="outlined"
                   density="comfortable"
                   color="primary-darken-0"
-                  dense
                   :rules="nameRules"
                   :loading="loading"
                   :disabled="loading"
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12">
+              <!-- สถานะการใช้งาน -->
+              <v-col
+                cols="12"
+                md="12"
+              >
+                <label class="form-label">สถานะ</label>
                 <v-checkbox
                   v-model="updateCommand.isActive"
                   label="สถานะการใช้งาน"
                   color="primary"
                   density="comfortable"
                   :disabled="loading"
+                  hide-details
                 ></v-checkbox>
               </v-col>
 
+              <!-- ปุ่มควบคุม -->
               <v-col
                 cols="12"
-                class="d-flex justify-center"
+                class="pt-6"
               >
-                <v-btn
-                  class="mr-4"
-                  rounded="lg"
-                  color="error"
-                  @click="cancel"
-                  :disabled="loading"
-                >
-                  ยกเลิก
-                </v-btn>
-                <v-btn
-                  color="success-darken-2"
-                  rounded="lg"
-                  type="submit"
-                  :loading="loading"
-                >
-                  บันทึก
-                </v-btn>
+                <div class="button-container">
+                  <v-btn
+                    class="mobile-btn cancel-btn"
+                    rounded="lg"
+                    color="error"
+                    @click="cancel"
+                    :disabled="loading"
+                    block
+                  >
+                    <v-icon
+                      icon="ri-close-line"
+                      class="mr-2"
+                    ></v-icon>
+                    ยกเลิก
+                  </v-btn>
+                  <v-btn
+                    class="mobile-btn submit-btn"
+                    rounded="lg"
+                    color="success-darken-2"
+                    type="submit"
+                    :loading="loading"
+                    :disabled="loading"
+                    block
+                  >
+                    <v-icon class="mr-2">ri-save-3-fill</v-icon>
+                    บันทึก
+                  </v-btn>
+                </div>
               </v-col>
             </v-row>
           </v-form>
-        </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -174,23 +182,72 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.card-Dialog {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 12px;
-}
-
 .text-sub-title {
-  font-size: 25px;
-  font-weight: bold;
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 700;
   color: #2b3086;
+  background: linear-gradient(135deg, #2b3086 0%, #667eea 100%);
   background-clip: text;
   -webkit-background-clip: text;
-  text-shadow: 5px 5px 8px rgba(65, 69, 92, 0.447);
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  display: block;
+  margin: 0 0 24px 0;
+  padding: 0;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+
+.page-container {
+  width: 100%;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 0 32px 0;
+  scroll-behavior: smooth;
+  position: relative;
 }
 
 .text-black {
   color: #000 !important;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.button-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.mobile-btn {
+  min-width: 200px;
+  min-height: 52px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none !important;
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.05);
+  text-transform: none;
+  letter-spacing: 0.025em;
+}
+
+.mobile-btn .v-icon {
+  font-size: 20px;
+}
+
+.mobile-btn:disabled {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
 }
 </style>

@@ -41,18 +41,6 @@
               >
                 <div class="button-container">
                   <v-btn
-                    class="mobile-btn submit-btn"
-                    rounded="lg"
-                    color="success-darken-2"
-                    type="submit"
-                    block
-                    :loading="loading"
-                    :disabled="loading"
-                  >
-                    <v-icon class="mr-2">ri-save-3-fill</v-icon>
-                    บันทึก
-                  </v-btn>
-                  <v-btn
                     class="mobile-btn cancel-btn"
                     rounded="lg"
                     color="error"
@@ -64,6 +52,18 @@
                       class="mr-2"
                     ></v-icon>
                     ยกเลิก
+                  </v-btn>
+                  <v-btn
+                    class="mobile-btn submit-btn"
+                    rounded="lg"
+                    color="success-darken-2"
+                    type="submit"
+                    block
+                    :loading="loading"
+                    :disabled="loading"
+                  >
+                    <v-icon class="mr-2">ri-save-3-fill</v-icon>
+                    บันทึก
                   </v-btn>
                 </div>
               </v-col>
