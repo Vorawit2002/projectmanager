@@ -6,6 +6,54 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/users/profile-image": {
+      "post": {
+        "operationId": "PostApiUsersProfileImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "imageFile": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileImageUploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/activityplancontacts/CreateActivityPlanContact": {
       "post": {
         "tags": [
@@ -241,118 +289,6 @@
             "x-position": 1
           }
         ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
-    "/api/activityplan/ShareActivityPlan": {
-      "post": {
-        "tags": [
-          "ActivityPlanEndpoint"
-        ],
-        "operationId": "ShareActivityPlan",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ShareActivityPlanCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
-    "/api/activityplan/CreateActivityPlan": {
-      "post": {
-        "tags": [
-          "ActivityPlanEndpoint"
-        ],
-        "operationId": "CreateActivityPlan",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateActivityPlanCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "guid"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
-    "/api/activityplan/DuplicateActivityPlan": {
-      "post": {
-        "tags": [
-          "ActivityPlanEndpoint"
-        ],
-        "operationId": "DuplicateActivityPlan",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DuplicateActivityPlanCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
         "responses": {
           "200": {
             "description": "",
@@ -720,6 +656,118 @@
         ]
       }
     },
+    "/api/activityplan/ShareActivityPlan": {
+      "post": {
+        "tags": [
+          "ActivityPlanEndpoint"
+        ],
+        "operationId": "ShareActivityPlan",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShareActivityPlanCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/activityplan/CreateActivityPlan": {
+      "post": {
+        "tags": [
+          "ActivityPlanEndpoint"
+        ],
+        "operationId": "CreateActivityPlan",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateActivityPlanCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "guid"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/activityplan/DuplicateActivityPlan": {
+      "post": {
+        "tags": [
+          "ActivityPlanEndpoint"
+        ],
+        "operationId": "DuplicateActivityPlan",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DuplicateActivityPlanCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/activityplan/UpdateActivityPlan": {
       "put": {
         "tags": [
@@ -932,43 +980,6 @@
         ]
       }
     },
-    "/api/departments/CreateDepartment": {
-      "post": {
-        "tags": [
-          "Departments"
-        ],
-        "operationId": "CreateDepartment",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateDepartmentCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
     "/api/departments/GetDepartmentQuery": {
       "get": {
         "tags": [
@@ -1059,6 +1070,43 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedListOfDepartmentDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/departments/CreateDepartment": {
+      "post": {
+        "tags": [
+          "Departments"
+        ],
+        "operationId": "CreateDepartment",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDepartmentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
                 }
               }
             }
@@ -1176,43 +1224,6 @@
             }
           }
         }
-      }
-    },
-    "/api/employees/CreateEmployee": {
-      "post": {
-        "tags": [
-          "Employees"
-        ],
-        "operationId": "CreateEmployee",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateEmployeeCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
       }
     },
     "/api/employees/GetEmployeeQuery": {
@@ -1381,6 +1392,43 @@
                   "items": {
                     "$ref": "#/components/schemas/EmployeeDto"
                   }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/employees/CreateEmployee": {
+      "post": {
+        "tags": [
+          "Employees"
+        ],
+        "operationId": "CreateEmployee",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmployeeCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
                 }
               }
             }
@@ -1971,82 +2019,6 @@
         ]
       }
     },
-    "/api/organizations/CreateOrganization": {
-      "post": {
-        "tags": [
-          "Organizations"
-        ],
-        "operationId": "CreateOrganization",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrganizationCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "guid"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
-    "/api/organizations/CreateOrganizationJustName": {
-      "post": {
-        "tags": [
-          "Organizations"
-        ],
-        "operationId": "CreateOrganizationJustName",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrganizationJustNameCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "guid"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
     "/api/organizations/GetOrganizationQuery": {
       "get": {
         "tags": [
@@ -2137,6 +2109,82 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedListOfOrganizationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/organizations/CreateOrganization": {
+      "post": {
+        "tags": [
+          "Organizations"
+        ],
+        "operationId": "CreateOrganization",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "guid"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/organizations/CreateOrganizationJustName": {
+      "post": {
+        "tags": [
+          "Organizations"
+        ],
+        "operationId": "CreateOrganizationJustName",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationJustNameCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "guid"
                 }
               }
             }
@@ -2686,43 +2734,6 @@
         ]
       }
     },
-    "/api/projects/CreateProject": {
-      "post": {
-        "tags": [
-          "Projects"
-        ],
-        "operationId": "CreateProject",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProjectCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
     "/api/projects/GetProjectQuery": {
       "get": {
         "tags": [
@@ -2813,6 +2824,43 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedListOfProjectDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/projects/CreateProject": {
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "CreateProject",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
                 }
               }
             }
@@ -3259,6 +3307,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3313,6 +3362,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3344,6 +3394,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3370,6 +3421,7 @@
           {
             "name": "userId",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -3379,6 +3431,7 @@
           {
             "name": "code",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -3417,6 +3470,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3441,6 +3495,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3475,6 +3530,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3509,6 +3565,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3594,6 +3651,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -3619,6 +3677,311 @@
           },
           "404": {
             "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetAllUsers",
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "roleFilter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "isActiveFilter",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/users/assign-role": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "AssignRole",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignRoleCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/users/{id}/roles/{roleName}": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "RemoveRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "roleName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/users/account-settings": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetAccountSettings",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountSettingsDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "UpdateAccountSettings",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountSettingsCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -4210,6 +4573,18 @@
   },
   "components": {
     "schemas": {
+      "ProfileImageUploadResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "imageUrl": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
       "CreateActivityPlanContactCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -5006,108 +5381,6 @@
           }
         }
       },
-      "ShareActivityPlanCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "activityPlanId": {
-            "type": "string",
-            "format": "guid"
-          },
-          "title": {
-            "type": "string"
-          },
-          "emails": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "remarks": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "CreateActivityPlanCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "employeeId": {
-            "type": "string",
-            "format": "guid"
-          },
-          "objective": {
-            "type": "string",
-            "nullable": true
-          },
-          "objectiveDetail": {
-            "type": "string",
-            "nullable": true
-          },
-          "detail": {
-            "type": "string",
-            "nullable": true
-          },
-          "projectId": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
-          },
-          "allDay": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "startDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "location": {
-            "type": "string",
-            "nullable": true
-          },
-          "haveCost": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "costDetail": {
-            "type": "string",
-            "nullable": true
-          },
-          "cost": {
-            "type": "number",
-            "format": "decimal",
-            "nullable": true
-          },
-          "outSide": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "eventType": {
-            "type": "string"
-          }
-        }
-      },
-      "DuplicateActivityPlanCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "activityId": {
-            "type": "string",
-            "format": "guid"
-          }
-        }
-      },
       "ActivityPlanDto": {
         "type": "object",
         "additionalProperties": false,
@@ -5775,6 +6048,108 @@
           }
         }
       },
+      "ShareActivityPlanCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "activityPlanId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "emails": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateActivityPlanCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "objective": {
+            "type": "string",
+            "nullable": true
+          },
+          "objectiveDetail": {
+            "type": "string",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "allDay": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "haveCost": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "costDetail": {
+            "type": "string",
+            "nullable": true
+          },
+          "cost": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "outSide": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "eventType": {
+            "type": "string"
+          }
+        }
+      },
+      "DuplicateActivityPlanCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "activityId": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
       "UpdateActivityPlanCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -5924,9 +6299,68 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
           "userName": {
             "type": "string",
             "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "titleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "department": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "imageProfile": {
+            "type": "string",
+            "nullable": true
+          },
+          "group": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleHR": {
+            "type": "string",
+            "nullable": true
+          },
+          "employeeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "id": {
             "type": "string",
@@ -5951,18 +6385,6 @@
         "properties": {
           "defaultPassword": {
             "type": "string"
-          }
-        }
-      },
-      "CreateDepartmentCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "boolean"
           }
         }
       },
@@ -6042,6 +6464,18 @@
           }
         }
       },
+      "CreateDepartmentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
       "UpdateDepartmentCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -6103,36 +6537,6 @@
           "group": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "CreateEmployeeCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "titleName": {
-            "type": "string",
-            "nullable": true
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "position": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "imageProfile": {
-            "type": "string",
-            "nullable": true
-          },
-          "departmentId": {
-            "type": "string",
-            "format": "guid"
           }
         }
       },
@@ -6265,6 +6669,36 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "departmentId": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
+      "CreateEmployeeCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "titleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "imageProfile": {
+            "type": "string",
+            "nullable": true
+          },
           "departmentId": {
             "type": "string",
             "format": "guid"
@@ -6664,56 +7098,6 @@
           }
         }
       },
-      "CreateOrganizationCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "typeOrganization": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/TypeOrganization"
-              }
-            ]
-          },
-          "address": {
-            "type": "string",
-            "nullable": true
-          },
-          "coordinates": {
-            "type": "string",
-            "nullable": true
-          },
-          "webSite": {
-            "type": "string",
-            "nullable": true
-          },
-          "phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "fax": {
-            "type": "string",
-            "nullable": true
-          },
-          "shortName": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "CreateOrganizationJustNameCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          }
-        }
-      },
       "OrganizationDto": {
         "type": "object",
         "additionalProperties": false,
@@ -6820,6 +7204,56 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "CreateOrganizationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "typeOrganization": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TypeOrganization"
+              }
+            ]
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "coordinates": {
+            "type": "string",
+            "nullable": true
+          },
+          "webSite": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "fax": {
+            "type": "string",
+            "nullable": true
+          },
+          "shortName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateOrganizationJustNameCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -7137,56 +7571,6 @@
           }
         }
       },
-      "CreateProjectCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "projectCode": {
-            "type": "string"
-          },
-          "projectName": {
-            "type": "string"
-          },
-          "contractNumber": {
-            "type": "string"
-          },
-          "contractSignedDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "startDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "warrantyEndDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "guid"
-          },
-          "projectCost": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "projectType": {
-            "$ref": "#/components/schemas/ProjectType"
-          },
-          "shortName": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
       "ProjectDto": {
         "type": "object",
         "additionalProperties": false,
@@ -7313,6 +7697,56 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "CreateProjectCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "projectCode": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "contractNumber": {
+            "type": "string"
+          },
+          "contractSignedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "warrantyEndDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "projectCost": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "projectType": {
+            "$ref": "#/components/schemas/ProjectType"
+          },
+          "shortName": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -7819,6 +8253,156 @@
           },
           "oldPassword": {
             "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageProfile": {
+            "type": "string",
+            "nullable": true
+          },
+          "department": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "lastLoginDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "AssignRoleCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountSettingsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "titleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "department": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "imageProfile": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateAccountSettingsCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "titleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "guid",
             "nullable": true
           }
         }

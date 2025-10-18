@@ -9,4 +9,5 @@ public class ApplicationUser : IdentityUser
     public DateTime RevokeEnd { get; set; }
     public bool RequirePasswordChange { get; set; }
     public DateTime? LastPasswordChangeDate { get; set; }
+    public string? ImageProfile { get; set; }
 }

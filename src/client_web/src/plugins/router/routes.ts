@@ -80,6 +80,10 @@ export const routes = [
         component: () => import('@/pages/register.vue'),
       },
       {
+        path: 'not-authorized',
+        component: () => import('@/pages/not-authorized.vue'),
+      },
+      {
         path: '/:pathMatch(.*)*',
         component: () => import('@/pages/[...error].vue'),
       },

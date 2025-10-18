@@ -363,6 +363,9 @@ namespace ProjectManagement.Infrastructure.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("ImageProfile")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsRevoked")
                         .HasColumnType("boolean");
 

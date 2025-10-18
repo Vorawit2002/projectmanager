@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hangfire;
+using ProjectManagement.Application.Common.Exceptions;
 using ProjectManagement.Application.Common.Interfaces;
 using ProjectManagement.Domain.Entities;
 using ProjectManagement.Domain.Enums;
@@ -31,15 +32,43 @@ public class UpdateActivityPlanCommandHandler : IRequestHandler<UpdateActivityPl
 {
     private readonly IApplicationDbContext _context;
     private readonly IEmailSenderService _emailSenderService;
-    public UpdateActivityPlanCommandHandler(IApplicationDbContext context, IEmailSenderService emailSenderService)
+    private readonly IUser _currentUser;
+    private readonly IIdentityService _identityService;
+    private readonly IDataFilterService _dataFilterService;
+    
+    public UpdateActivityPlanCommandHandler(
+        IApplicationDbContext context, 
+        IEmailSenderService emailSenderService,
+        IUser currentUser,
+        IIdentityService identityService,
+        IDataFilterService dataFilterService)
     {
         _context = context;
         _emailSenderService = emailSenderService;
+        _currentUser = currentUser;
+        _identityService = identityService;
+        _dataFilterService = dataFilterService;
     }
+    
     public async Task<bool> Handle(UpdateActivityPlanCommand request, CancellationToken cancellationToken)
     {
         var activityPlans = await _context.ActivityPlans.Include(x => x.EventTypes).Include(x => x.Employees).FirstOrDefaultAsync(x => x.Id == request.Id);
         Guard.Against.NotFound(request.Id, activityPlans);
+        
+        // Check authorization
+        var userId = _currentUser.Id ?? throw new UnauthorizedAccessException();
+        var roles = (await _identityService.GetUserRolesAsync(userId)).ToArray();
+        
+        var canAccess = await _dataFilterService.CanAccessResourceAsync(
+            userId, 
+            roles, 
+            activityPlans.CreatedBy,
+            activityPlans.Employees?.DepartmentId);
+            
+        if (!canAccess)
+        {
+            throw new ForbiddenAccessException();
+        }
         var tenAMToday = DateTime.Today.AddHours(10);
         // Check if start and end date are the same day with 00:00 time, set as all-day event
         var isAllDayEvent = request.StartDate.TimeOfDay == TimeSpan.Zero &&

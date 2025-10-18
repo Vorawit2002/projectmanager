@@ -77,6 +77,9 @@
     </Exec>
 
     <Message Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' == '0'" Importance="low" />
+    
+    <!-- Clean up generated client.ts file -->
+    <Exec Command="node clean-generated-client.js" WorkingDirectory="$(ProjectDir)" Condition="'$(NSwagExitCode)' == '0'" />
   </Target>
 
 </Project>

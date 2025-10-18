@@ -2,6 +2,7 @@
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -18,6 +19,7 @@ using ProjectManagement.Infrastructure.Data;
 using ProjectManagement.Infrastructure.Data.Interceptors;
 using ProjectManagement.Infrastructure.FileStorage;
 using ProjectManagement.Infrastructure.Identity;
+using ProjectManagement.Infrastructure.Identity.Authorization;
 using ProjectManagement.Infrastructure.Services;
 using Serilog;
 using Serilog.Core;
@@ -134,8 +136,46 @@ public static class DependencyInjection
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
         builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+        builder.Services.AddScoped<IDataFilterService, DataFilterService>();
 
+        // Register Authorization Handlers
+        builder.Services.AddScoped<IAuthorizationHandler, DepartmentAuthorizationHandler>();
+        builder.Services.AddScoped<IAuthorizationHandler, RoleAuthorizationHandler>();
+
+        // Register Authorization Policies
         builder.Services.AddAuthorization(options =>
-            options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
+        {
+            // Existing policy
+            options.AddPolicy(Policies.CanPurge, policy => 
+                policy.RequireRole(Roles.Administrator));
+
+            // CanManageUsers - Admin only
+            options.AddPolicy(Policies.CanManageUsers, policy =>
+                policy.Requirements.Add(new RoleRequirement(Roles.Admin, Roles.Administrator)));
+
+            // CanManageMasterData - Admin and Manager
+            options.AddPolicy(Policies.CanManageMasterData, policy =>
+                policy.Requirements.Add(new RoleRequirement(Roles.Admin, Roles.Administrator, Roles.Manager)));
+
+            // CanViewMasterData - Admin and Manager
+            options.AddPolicy(Policies.CanViewMasterData, policy =>
+                policy.Requirements.Add(new RoleRequirement(Roles.Admin, Roles.Administrator, Roles.Manager)));
+
+            // CanViewDepartmentData - Admin and Manager
+            options.AddPolicy(Policies.CanViewDepartmentData, policy =>
+                policy.Requirements.Add(new RoleRequirement(Roles.Admin, Roles.Administrator, Roles.Manager)));
+
+            // CanViewOwnData - All authenticated users
+            options.AddPolicy(Policies.CanViewOwnData, policy =>
+                policy.RequireAuthenticatedUser());
+
+            // CanModifyData - Admin, Manager, and User (not Viewer)
+            options.AddPolicy(Policies.CanModifyData, policy =>
+                policy.Requirements.Add(new RoleRequirement(Roles.Admin, Roles.Administrator, Roles.Manager, Roles.User)));
+
+            // ReadOnly - Viewer role
+            options.AddPolicy(Policies.ReadOnly, policy =>
+                policy.Requirements.Add(new RoleRequirement(Roles.Viewer)));
+        });
     }
 }

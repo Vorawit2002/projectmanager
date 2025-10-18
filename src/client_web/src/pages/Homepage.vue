@@ -36,17 +36,32 @@
           และช่วยให้ธุรกิจเข้าถึงความต้องการของลูกค้าอย่างลึกซึ้งมากขึ้น.
         </p>
 
-        <v-btn
-          @click="GoLogin"
-          class="mt-md-8 btn-glow magnetic-button"
-          size="large"
-        >
-          <i
-            class="ri-login-box-line mr-2"
-            size="30"
-          ></i>
-          เข้าใช้งานระบบ
-        </v-btn>
+        <div class="d-flex flex-wrap gap-4 mt-md-8">
+          <v-btn
+            @click="GoLogin"
+            class="btn-glow magnetic-button"
+            size="large"
+          >
+            <i
+              class="ri-login-box-line mr-2"
+              size="30"
+            ></i>
+            เข้าสู่ระบบ
+          </v-btn>
+
+          <v-btn
+            @click="GoRegister"
+            class="btn-outline magnetic-button"
+            size="large"
+            variant="outlined"
+          >
+            <i
+              class="ri-user-add-line mr-2"
+              size="30"
+            ></i>
+            สมัครสมาชิก
+          </v-btn>
+        </div>
       </v-col>
 
       <!-- ส่วนที่แสดงการ์ด (แสดงในหน้าจอคอม) -->
@@ -147,6 +162,9 @@ export default defineComponent({
   methods: {
     GoLogin() {
       this.$router.push('/login')
+    },
+    GoRegister() {
+      this.$router.push('/register')
     },
     initScrollAnimations() {
       // Create intersection observer
@@ -409,8 +427,56 @@ export default defineComponent({
   box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
 }
 
+/* Outline Button */
+.btn-outline {
+  background: transparent;
+  color: #0c359e;
+  border: 2px solid #0c359e;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  min-width: 200px;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-outline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0c359e 0%, #2b3086 100%);
+  transition: left 0.5s;
+  z-index: -1;
+}
+
+.btn-outline:hover {
+  color: white;
+  border-color: #2b3086;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(43, 48, 134, 0.4);
+}
+
+.btn-outline:hover::before {
+  left: 0;
+}
+
 .scroll-reveal-item.active .btn-glow {
   animation: buttonSlideIn 1s ease-out 0.6s forwards;
+}
+
+.scroll-reveal-item.active .btn-outline {
+  animation: buttonSlideIn 1s ease-out 0.7s forwards;
 }
 
 @keyframes buttonSlideIn {
@@ -421,6 +487,24 @@ export default defineComponent({
   100% {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+/* Button Container */
+.gap-4 {
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .gap-4 {
+    gap: 0.75rem;
+  }
+  
+  .btn-glow,
+  .btn-outline {
+    min-width: 160px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
   }
 }
 

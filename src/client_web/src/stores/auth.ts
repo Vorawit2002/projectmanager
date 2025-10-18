@@ -41,6 +41,8 @@ export const useAuthStore = defineStore('auth', {
     position: '' as any,
         group: '',
     roleHR: '',
+    employeeId: '' as string,
+    departmentId: '' as string,
   }),
   getters: {
     IsLogged(state) {
@@ -75,6 +77,33 @@ export const useAuthStore = defineStore('auth', {
         this.firstName = data.firstName || ''
         this.lastName = data.lastName || ''
         this.roles = data.roles || []
+        
+        // Fetch full user profile after login to get all details including image
+        try {
+          const userData = await client.getCurrentUser()
+          
+          // Update additional user details
+          this.titleName = userData.titleName || ''
+          this.position = userData.position || ''
+          this.phone = userData.phone || ''
+          this.depart = userData.department || ''
+          this.group = userData.group || ''
+          this.roleHR = userData.roleHR || ''
+          this.employeeId = userData.employeeId || ''
+          this.departmentId = userData.departmentId || ''
+          
+          // Handle image URL - support both data URLs (Base64) and relative paths
+          const imageProfile = userData.imageProfile || ''
+          if (imageProfile && !imageProfile.startsWith('http') && !imageProfile.startsWith('data:')) {
+            // It's a relative path, prepend BACKEND_API_URL
+            this.image = `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
+          } else {
+            // It's either a full URL (http/https) or a data URL (data:)
+            this.image = imageProfile
+          }
+        } catch (error) {
+          console.warn('Failed to fetch full user profile after login:', error)
+        }
         
         // Generate menu based on roles
         await this.generateMenu()
@@ -119,7 +148,8 @@ export const useAuthStore = defineStore('auth', {
       console.log('Restoring session from token')
       let token = localStorage.getItem('TOKEN_KEY') || ''
       if (!token) {
-        await this.logout()
+        console.log('No token found in localStorage')
+        this.isLogged = false
         return
       }
       
@@ -134,33 +164,92 @@ export const useAuthStore = defineStore('auth', {
       }
       
       try {
-        // Fetch current user data from backend using the new client method
-        const userData = await client.getApiAuthMe()
+        // Fetch current user data from backend
+        const userData = await client.getCurrentUser()
+        
+        console.log('Full userData from backend:', userData)
+        console.log('userData type:', typeof userData)
+        console.log('userData.roles:', userData.roles)
+        console.log('userData.roleNames:', userData.roleNames)
         
         // Update state from backend response
         this.token = token
         this.isLogged = true
         this.userId = userData.userId || data.sub || ''
         this.email = userData.email || data.email || ''
-        this.username = userData.username || data.unique_name || data.name || ''
+        this.username = userData.userName || userData.username || data.unique_name || data.name || ''
         this.firstName = userData.firstName || data.given_name || ''
         this.lastName = userData.lastName || data.family_name || ''
-        this.roles = userData.roles || (Array.isArray(data.role) ? data.role : [data.role]) || []
+        
+        // Handle roles - ensure it's always an array
+        // Try both 'roles' and 'roleNames' properties
+        let userRoles = userData.roles || userData.roleNames || []
+        console.log('userRoles after first check:', userRoles, 'isArray:', Array.isArray(userRoles))
+        
+        if (!Array.isArray(userRoles) || userRoles.length === 0) {
+          // If roles come from JWT token
+          console.log('No roles from backend, trying JWT token')
+          const jwtRole = data.role
+          userRoles = Array.isArray(jwtRole) ? jwtRole : (jwtRole ? [jwtRole] : [])
+        }
+        this.roles = userRoles
+        
+        console.log('Final user roles restored:', this.roles)
         
         // Optional fields
-        this.image = userData.image || ''
+        // Handle image URL - support both data URLs (Base64) and relative paths
+        const imageProfile = userData.imageProfile || ''
+        if (imageProfile && !imageProfile.startsWith('http') && !imageProfile.startsWith('data:')) {
+          // It's a relative path, prepend BACKEND_API_URL
+          this.image = `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
+        } else {
+          // It's either a full URL (http/https) or a data URL (data:)
+          this.image = imageProfile
+        }
+        
         this.phone = userData.phone || ''
         this.depart = userData.department || ''
         this.position = userData.position || ''
         this.titleName = userData.titleName || ''
         this.group = userData.group || ''
         this.roleHR = userData.roleHR || ''
-      } catch (error) {
+        this.employeeId = userData.employeeId || ''
+        this.departmentId = userData.departmentId || ''
+        
+        // Generate menu based on restored roles
+        await this.generateMenu()
+        
+        console.log('Session restored successfully for user:', this.username)
+      } catch (error: any) {
         console.error('Error restoring session:', error)
-        // If it's a 401 error, the BaseClass interceptor will handle the redirect
-        if (!isAuthError(error)) {
+        
+        // Check if it's a 401 Unauthorized error
+        if (error?.status === 401 || isAuthError(error)) {
+          console.log('Unauthorized error during session restore, logging out')
           await this.logout()
+          return
         }
+        
+        // For other errors, try to use JWT data as fallback
+        console.warn('Failed to fetch user data from backend, using JWT data as fallback')
+        
+        // Use JWT data as fallback
+        this.token = token
+        this.isLogged = true
+        this.userId = data.sub || ''
+        this.email = data.email || ''
+        this.username = data.unique_name || data.name || ''
+        this.firstName = data.given_name || ''
+        this.lastName = data.family_name || ''
+        
+        // Handle roles from JWT
+        const jwtRole = data.role
+        this.roles = Array.isArray(jwtRole) ? jwtRole : (jwtRole ? [jwtRole] : [])
+        
+        console.log('Using JWT fallback data, roles:', this.roles)
+        
+        // Generate menu based on JWT roles
+        await this.generateMenu()
       }
     },
 
@@ -234,6 +323,8 @@ export const useAuthStore = defineStore('auth', {
       this.displayName = ''
       this.group = ''
       this.roleHR = ''
+      this.employeeId = ''
+      this.departmentId = ''
       
       // Clear localStorage
       localStorage.removeItem('TOKEN_KEY')
@@ -245,6 +336,28 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async generateMenu() {
+      // Check for new role management roles first (Admin, Manager, User, Viewer)
+      if (roleService.isAdmin(this.roles)) {
+        this.menu = AdministratorMenu()
+        return
+      }
+      
+      if (roleService.isManager(this.roles)) {
+        this.menu = AdministratorMenu() // Manager has same menu as Admin
+        return
+      }
+      
+      if (roleService.isUser(this.roles)) {
+        this.menu = NATEmployeeMenu() // User has employee menu without Master Data
+        return
+      }
+      
+      if (roleService.isViewer(this.roles)) {
+        this.menu = NATEmployeeMenu() // Viewer has employee menu (read-only)
+        return
+      }
+      
+      // Fallback to legacy role checking
       switch (true) {
         case this.hasRole(Administrator):
           this.menu = AdministratorMenu()
@@ -262,6 +375,9 @@ export const useAuthStore = defineStore('auth', {
     },
 
     hasRole(...rolesToCheck: string[]) {
+      if (!this.roles || this.roles.length === 0) {
+        return false
+      }
       return rolesToCheck.some(role => this.roles.includes(role))
     },
   },

@@ -5,6 +5,7 @@ using ProjectManagement.Application.ActivityPlans.Commands.ShareActivityPlan;
 using ProjectManagement.Application.ActivityPlans.Commands.UpdateActivityPlan;
 using ProjectManagement.Application.ActivityPlans.Queries;
 using ProjectManagement.Application.Common.Models;
+using ProjectManagement.Domain.Constants;
 
 namespace ProjectManagement.Web.Endpoints;
 
@@ -12,11 +13,9 @@ public class ActivityPlanEndpoint : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
+        // Read operations - all authenticated users
         app.MapGroup(this)
             .RequireAuthorization()
-            .MapPost(ShareActivityPlan, "ShareActivityPlan")
-            .MapPost(CreateActivityPlan, "CreateActivityPlan")
-            .MapPost(DuplicateActivityPlan, "DuplicateActivityPlan")
             .MapGet(GetActivityPlanQuery, "GetActivityPlanQuery")
             .MapGet(GetActivityPlanQueryByID, "GetActivityPlanQueryByID/{id}")
             .MapGet(GetActivityPlanWithPlanNoteForExcel, "GetActivityPlanWithPlanNoteForExcel")
@@ -26,7 +25,14 @@ public class ActivityPlanEndpoint : EndpointGroupBase
             .MapPost(GetActivityPlanQueryLatest, "GetActivityPlanQueryLatest")
             .MapPost(GetActivityPlanWithPagination, "GetActivityPlanWithPagination")
             .MapPost(GetActivityPlanWithPlanNoteWithPagination, "GetActivityPlanWithPlanNoteWithPaginationQuery")
-            .MapPost(GetActivityPlanQueryByEmployeeId, "GetActivityPlanQueryByEmployeeId")
+            .MapPost(GetActivityPlanQueryByEmployeeId, "GetActivityPlanQueryByEmployeeId");
+            
+        // Write operations - requires CanModifyData policy (excludes Viewer role)
+        app.MapGroup(this)
+            .RequireAuthorization(Policies.CanModifyData)
+            .MapPost(ShareActivityPlan, "ShareActivityPlan")
+            .MapPost(CreateActivityPlan, "CreateActivityPlan")
+            .MapPost(DuplicateActivityPlan, "DuplicateActivityPlan")
             .MapPut(UpdateActivityPlan, "UpdateActivityPlan")
             .MapDelete(DeleteActivityPlan, "DeleteActivityPlan/{id}");
     }

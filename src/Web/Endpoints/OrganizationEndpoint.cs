@@ -5,6 +5,7 @@ using ProjectManagement.Application.Organizations.Queries;
 using ProjectManagement.Application.Organizations.Commands.CreateOrganization;
 using ProjectManagement.Application.Organizations.Commands.UpdateOrganization;
 using ProjectManagement.Application.Organizations.Commands.DeleteOrganization;
+using ProjectManagement.Domain.Constants;
 
 
 namespace ProjectManagement.Web.Endpoints;
@@ -14,12 +15,15 @@ public class Organizations : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
-            .MapPost(CreateOrganization, "CreateOrganization")
-            .MapPost(CreateOrganizationJustName, "CreateOrganizationJustName")
+            .RequireAuthorization(Policies.CanViewMasterData)
             .MapGet(GetOrganizationQuery, "GetOrganizationQuery")
             .MapGet(GetOrganizationQueryByID, "GetOrganizationQueryByID/{id}")
-            .MapPost(GetOrganizationWithPagination, "GetOrganizationWithPagination")
+            .MapPost(GetOrganizationWithPagination, "GetOrganizationWithPagination");
+            
+        app.MapGroup(this)
+            .RequireAuthorization(Policies.CanManageMasterData)
+            .MapPost(CreateOrganization, "CreateOrganization")
+            .MapPost(CreateOrganizationJustName, "CreateOrganizationJustName")
             .MapPut(UpdateOrganization, "UpdateOrganization")
             .MapDelete(DeleteOrganization, "DeleteOrganization/{id}");
     }

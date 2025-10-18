@@ -15,17 +15,20 @@ public class IdentityService : IIdentityService
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IApplicationDbContext _context;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService,
-        IJwtTokenService jwtTokenService)
+        IJwtTokenService jwtTokenService,
+        IApplicationDbContext context)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
         _jwtTokenService = jwtTokenService;
+        _context = context;
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
@@ -176,5 +179,118 @@ public class IdentityService : IIdentityService
         };
 
         return (Result.Success(), response);
+    }
+
+    public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
+    {
+        return await _userManager.Users.ToListAsync();
+    }
+
+    public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
+    {
+        return await _userManager.FindByIdAsync(userId);
+    }
+
+    public async Task<Result> AssignRoleAsync(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return Result.Failure(new[] { "ไม่พบผู้ใช้งาน" });
+        }
+
+        // Check if role exists
+        var roleExists = await _userManager.GetRolesAsync(user);
+        
+        // Remove all existing roles first
+        if (roleExists.Any())
+        {
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, roleExists);
+            if (!removeResult.Succeeded)
+            {
+                return removeResult.ToApplicationResult();
+            }
+        }
+
+        // Add new role
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            return result.ToApplicationResult();
+        }
+
+        // Update Employee.Roles field if employee record exists
+        var employee = await _context.Employees
+            .FirstOrDefaultAsync(e => e.UserId == userId);
+        
+        if (employee != null)
+        {
+            employee.Roles = roleName;
+            await _context.SaveChangesAsync(CancellationToken.None);
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<Result> RemoveRoleAsync(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return Result.Failure(new[] { "ไม่พบผู้ใช้งาน" });
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            return result.ToApplicationResult();
+        }
+
+        // Update Employee.Roles field if employee record exists
+        var employee = await _context.Employees
+            .FirstOrDefaultAsync(e => e.UserId == userId);
+        
+        if (employee != null)
+        {
+            var remainingRoles = await _userManager.GetRolesAsync(user);
+            employee.Roles = remainingRoles.Any() ? string.Join(",", remainingRoles) : null;
+            await _context.SaveChangesAsync(CancellationToken.None);
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return Enumerable.Empty<string>();
+        }
+
+        return await _userManager.GetRolesAsync(user);
+    }
+
+    public async Task<IEnumerable<ApplicationUser>> GetUsersByDepartmentAsync(Guid departmentId)
+    {
+        // Get all employee user IDs in the department
+        var employeeUserIds = await _context.Employees
+            .Where(e => e.DepartmentId == departmentId)
+            .Select(e => e.UserId)
+            .ToListAsync();
+
+        // Get users by IDs
+        var users = await _userManager.Users
+            .Where(u => employeeUserIds.Contains(u.Id))
+            .ToListAsync();
+
+        return users;
+    }
+
+    public async Task<Result> UpdateUserAsync(ApplicationUser user)
+    {
+        var result = await _userManager.UpdateAsync(user);
+
+        return result.ToApplicationResult();
     }
 }

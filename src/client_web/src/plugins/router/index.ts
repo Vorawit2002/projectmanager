@@ -4,6 +4,7 @@ import { routes } from './routes'
 import MasterData from './MasterData'
 import AppointmentPlan from './AppointmentPlan'
 import { useAuthStore } from '@/stores'
+import { roleGuard } from '@/router/guards'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,17 +19,23 @@ router.beforeEach(async (to: any, from: any, next: any) => {
   const auth = useAuthStore()
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/login', '/register', '/report']
-  const isPublicRoute = publicRoutes.some(route => to.path.startsWith(route))
+  const publicRoutes = ['/login', '/register', '/report', '/not-authorized', '/']
+  const isPublicRoute = publicRoutes.some(route => {
+    // Exact match for homepage
+    if (route === '/' && to.path === '/') return true
+    // Prefix match for other routes
+    if (route !== '/' && to.path.startsWith(route)) return true
+    return false
+  })
 
   // Get token from localStorage
   const token = localStorage.getItem('TOKEN_KEY')
 
   // If accessing a public route, allow access
   if (isPublicRoute) {
-    // If already logged in and trying to access login/register, redirect to homepage
+    // If already logged in and trying to access login/register, redirect to dashboard
     if ((to.path === '/login' || to.path === '/register') && token && auth.isLogged) {
-      next('/Homepage')
+      next('/dashboard')
       return
     }
     next()
@@ -61,10 +68,20 @@ router.beforeEach(async (to: any, from: any, next: any) => {
 
       // Token is valid, restore session if not already logged in
       if (!auth.isLogged) {
+        console.log('Restoring session before navigation')
         await auth.restoreSession()
+        
+        // After restore, check if still logged in
+        if (!auth.isLogged) {
+          console.log('Session restore failed, redirecting to login')
+          next('/login')
+          return
+        }
       }
 
-      next()
+      // Check role-based access after authentication
+      roleGuard(to, from, next)
+      return // Important: return after roleGuard to prevent double navigation
     } catch (error) {
       // Invalid token, logout and redirect to login
       console.error('Invalid token:', error)

@@ -23,4 +23,19 @@ public interface IIdentityService
     Task<(Result Result, string UserId)> RegisterUserAsync(RegisterDto registerDto);
     
     Task<(Result Result, LoginResponseDto Data)> AuthenticateAsync(string emailOrUsername, string password);
+
+    // User management methods
+    Task<IEnumerable<ApplicationUser>> GetAllUsersAsync();
+    
+    Task<ApplicationUser?> GetUserByIdAsync(string userId);
+    
+    Task<Result> AssignRoleAsync(string userId, string roleName);
+    
+    Task<Result> RemoveRoleAsync(string userId, string roleName);
+    
+    Task<IEnumerable<string>> GetUserRolesAsync(string userId);
+    
+    Task<IEnumerable<ApplicationUser>> GetUsersByDepartmentAsync(Guid departmentId);
+    
+    Task<Result> UpdateUserAsync(ApplicationUser user);
 }

@@ -5,6 +5,7 @@ using ProjectManagement.Application.Projects.Command.DeleteProject;
 using ProjectManagement.Application.Projects.Queries;
 using ProjectManagement.Application.Projects.Command.UpdateProject;
 using ProjectManagement.Application.Projects.Command.CreateProject;
+using ProjectManagement.Domain.Constants;
 
 
 namespace ProjectManagement.Web.Endpoints;
@@ -13,12 +14,17 @@ public class Projects : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
+        // Read operations - all authenticated users
         app.MapGroup(this)
             .RequireAuthorization()
-            .MapPost(CreateProject, "CreateProject")
             .MapGet(GetProjectQuery, "GetProjectQuery")
             .MapGet(GetProjectQueryByID, "GetProjectQueryByID")
-            .MapPost(GetProjectWithPagination, "GetProjectWithPagination")
+            .MapPost(GetProjectWithPagination, "GetProjectWithPagination");
+            
+        // Write operations - requires CanModifyData policy (excludes Viewer role)
+        app.MapGroup(this)
+            .RequireAuthorization(Policies.CanModifyData)
+            .MapPost(CreateProject, "CreateProject")
             .MapPut(UpdateProject, "UpdateProject")
             .MapDelete(DeleteProject, "DeleteProject/{id}");
     }

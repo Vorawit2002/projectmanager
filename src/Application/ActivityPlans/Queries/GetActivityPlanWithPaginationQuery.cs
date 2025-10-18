@@ -38,17 +38,41 @@ public class GetActivityPlanWithPaginationQueryHandler : IRequestHandler<GetActi
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IUser _currentUser;
+    private readonly IIdentityService _identityService;
+    private readonly IDataFilterService _dataFilterService;
 
-    public GetActivityPlanWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetActivityPlanWithPaginationQueryHandler(
+        IApplicationDbContext context, 
+        IMapper mapper,
+        IUser currentUser,
+        IIdentityService identityService,
+        IDataFilterService dataFilterService)
     {
         _context = context;
         _mapper = mapper;
+        _currentUser = currentUser;
+        _identityService = identityService;
+        _dataFilterService = dataFilterService;
     }
+    
     public async Task<PaginatedListForActivity<ActivityPlanDto>> Handle(GetActivityPlanWithPaginationQuery request, CancellationToken cancellationToken)
     {
-
-        var QueryActivityPlans = _context.ActivityPlans.Include(x => x.Organizations).Include(x => x.Projects).Include(x => x.PlanNotes)
-            .OrderByDescending(x => x.Created).AsQueryable();
+        // Apply role-based filtering first
+        var userId = _currentUser.Id ?? throw new UnauthorizedAccessException();
+        var roles = (await _identityService.GetUserRolesAsync(userId)).ToArray();
+        
+        var QueryActivityPlans = _context.ActivityPlans
+            .Include(x => x.Organizations)
+            .Include(x => x.Projects)
+            .Include(x => x.PlanNotes)
+            .Include(x => x.Employees)
+            .AsQueryable();
+            
+        // Apply role-based filtering
+        QueryActivityPlans = await _dataFilterService.ApplyRoleBasedFilterAsync(QueryActivityPlans, userId, roles);
+        
+        QueryActivityPlans = QueryActivityPlans.OrderByDescending(x => x.Created);
         DateTime oneWeekAgo = DateTime.Today.AddDays(-7);
         var today = DateTime.Today;
         #region filter

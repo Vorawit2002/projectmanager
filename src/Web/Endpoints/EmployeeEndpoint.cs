@@ -7,6 +7,7 @@ using ProjectManagement.Application.Employees.Commands.CreateEmployee;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using ProjectManagement.Application.Employees.Commands.UpdateEmployee;
 using ProjectManagement.Application.Employees.Commands.DeleteEmployee;
+using ProjectManagement.Domain.Constants;
 
 namespace ProjectManagement.Web.Endpoints;
 
@@ -14,18 +15,23 @@ public class Employees : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
+        // Public endpoint for employee creation during registration
         app.MapGroup(this)
-          //.RequireAuthorization()
           .MapPost(CheckAndCreateEmployee, "CheckAndCreateEmployee");
+          
+        // Read operations - requires CanViewDepartmentData (Admin and Manager can view)
         app.MapGroup(this)
-            .RequireAuthorization()
-            .MapPost(CreateEmployee, "CreateEmployee")
-            //.MapPost(CheckAndCreateEmployee, "CheckAndCreateEmployee")
+            .RequireAuthorization(Policies.CanViewDepartmentData)
             .MapGet(GetEmployeeQuery, "GetEmployeeQuery")
             .MapGet(GetEmployeeQueryByID, "GetEmployeeQueryByID/{id}")
             .MapGet(GetEmployeeQueryByUserID, "GetEmployeeQueryByUserID/{UserId}")
             .MapPost(GetEmployeeWithPagination, "GetEmployeeWithPagination")
-            .MapPost(GetEmployeeQueryByDepartmentId, "GetEmployeeQueryByDepartmentId")
+            .MapPost(GetEmployeeQueryByDepartmentId, "GetEmployeeQueryByDepartmentId");
+            
+        // Write operations - requires CanManageMasterData (Admin and Manager)
+        app.MapGroup(this)
+            .RequireAuthorization(Policies.CanManageMasterData)
+            .MapPost(CreateEmployee, "CreateEmployee")
             .MapPut(UpdateEmployee, "UpdateEmployee")
             .MapDelete(DeleteEmployee, "DeleteEmployee/{id}");
     }

@@ -9,7 +9,9 @@
         หน่วยงาน</span
       >
 
-      <v-btn @click="OpenDialogCreate"
+      <v-btn 
+        v-if="canModifyMasterData()"
+        @click="OpenDialogCreate"
         ><v-icon
           class="mr-2"
           icon="ri-add-circle-line"
@@ -70,6 +72,7 @@
               <v-icon size="18">ri-article-line</v-icon>
             </v-btn>
             <v-btn
+              v-if="canModifyMasterData()"
               class="text-white mr-2"
               density="compact"
               color="warning"
@@ -81,6 +84,7 @@
               <v-icon size="18">ri-edit-2-line</v-icon>
             </v-btn>
             <v-btn
+              v-if="canModifyMasterData()"
               class="text-white mr-2"
               density="compact"
               color="error-darken-1"
@@ -157,12 +161,14 @@
 import { TypeOrganizationEnum } from '@/@layouts/enums'
 import { Client, GetOrganizationWithPaginationQuery } from '@/client'
 import { BACKEND_API_URL } from '@/constants'
-import { useSweetAlertStore } from '@/stores'
+import { useAuthStore, useSweetAlertStore } from '@/stores'
+import { RoleService } from '@/utils/RoleService'
 import { defineComponent } from 'vue'
 import CreateOrganizationDetailView from './CreateOrganizationDetailView.vue'
 import OrganizationDetail from './OrganizationDetail.vue'
 import UpdateOrganization from './UpdateOrganization.vue'
 const client = new Client(BACKEND_API_URL)
+const roleService = new RoleService()
 export default defineComponent({
   name: 'OrganizationListView',
   components: {
@@ -172,6 +178,7 @@ export default defineComponent({
   },
   data() {
     return {
+      auth: useAuthStore(),
       sweetAlert: useSweetAlertStore(),
       header: [
         { title: 'จัดการ', value: 'actions', align: 'center' },
@@ -198,6 +205,14 @@ export default defineComponent({
   },
   async mounted() {
     this.forceCloseAllDrawers() // บังคับปิด Drawer ทั้งหมดเมื่อ Component ถูก Mount
+    
+    // Check if user has access to Master Data
+    if (!this.canAccessMasterData()) {
+      this.sweetAlert.error('คุณไม่มีสิทธิ์เข้าถึงข้อมูลหลัก (Master Data)')
+      this.$router.push('/Homepage')
+      return
+    }
+    
     await this.initialize()
     window.addEventListener('keydown', this.handleEscCloseDrawer)
     window.addEventListener('popstate', this.handleBackButton) // เพิ่ม listener สำหรับ back button บนมือถือ
@@ -390,6 +405,16 @@ export default defineComponent({
           this.data.map((item: any) => item.id),
         ) // Debug log
       }
+    },
+    canAccessMasterData(): boolean {
+      // Only Admin and Manager can access Master Data
+      return roleService.canAccessMasterData(this.auth.roles)
+    },
+    canModifyMasterData(): boolean {
+      // Only Admin and Manager can modify Master Data
+      // Viewer cannot modify
+      return roleService.canModifyData(this.auth.roles) && 
+             roleService.canAccessMasterData(this.auth.roles)
     },
   },
 })

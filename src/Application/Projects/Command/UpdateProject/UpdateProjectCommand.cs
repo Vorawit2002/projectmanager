@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProjectManagement.Application.Common.Exceptions;
 using ProjectManagement.Application.Common.Interfaces;
 using ProjectManagement.Domain.Entities;
 using ProjectManagement.Domain.Enums;
@@ -26,15 +27,40 @@ public class UpdateProjectCommand : IRequest<bool>
 public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, bool>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUser _currentUser;
+    private readonly IIdentityService _identityService;
+    private readonly IDataFilterService _dataFilterService;
 
-    public UpdateProjectCommandHandler(IApplicationDbContext context)
+    public UpdateProjectCommandHandler(
+        IApplicationDbContext context,
+        IUser currentUser,
+        IIdentityService identityService,
+        IDataFilterService dataFilterService)
     {
         _context = context;
+        _currentUser = currentUser;
+        _identityService = identityService;
+        _dataFilterService = dataFilterService;
     }
+    
     public async Task<bool> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {
         var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == request.Id);
         Guard.Against.NotFound(request.Id, project);
+        
+        // Check authorization
+        var userId = _currentUser.Id ?? throw new UnauthorizedAccessException();
+        var roles = (await _identityService.GetUserRolesAsync(userId)).ToArray();
+        
+        var canAccess = await _dataFilterService.CanAccessResourceAsync(
+            userId, 
+            roles, 
+            project.CreatedBy);
+            
+        if (!canAccess)
+        {
+            throw new ForbiddenAccessException();
+        }
         project.ProjectCode = request.ProjectCode;
         project.ProjectName = request.ProjectName;
         project.ContractNumber = request.ContractNumber;

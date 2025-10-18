@@ -6,6 +6,7 @@ using ProjectManagement.Application.Departments.Commands.CreateDepartment;
 using ProjectManagement.Application.ActivityPlanContacts.Command.CreateActivityPlanContact;
 using ProjectManagement.Application.Departments.Commands.UpdateDepartment;
 using ProjectManagement.Application.Departments.Commands.DeleteDepartment;
+using ProjectManagement.Domain.Constants;
 
 namespace ProjectManagement.Web.Endpoints;
 
@@ -14,11 +15,14 @@ public class Departments : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
-            .MapPost(CreateDepartment, "CreateDepartment")
+            .RequireAuthorization(Policies.CanViewMasterData)
             .MapGet(GetDepartmentQuery, "GetDepartmentQuery")
             .MapGet(GetDepartmentQueryByID, "GetDepartmentQueryByID/{id}")
-            .MapPost(GetDepartmentWithPagination, "GetDepartmentWithPagination")
+            .MapPost(GetDepartmentWithPagination, "GetDepartmentWithPagination");
+            
+        app.MapGroup(this)
+            .RequireAuthorization(Policies.CanManageMasterData)
+            .MapPost(CreateDepartment, "CreateDepartment")
             .MapPut(UpdateDepartment, "UpdateDepartment")
             .MapDelete(DeleteDepartment, "DeleteDepartment/{id}");
     }

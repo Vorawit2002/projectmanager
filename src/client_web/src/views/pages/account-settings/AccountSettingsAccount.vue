@@ -8,47 +8,49 @@
             rounded="lg"
             size="200"
             class="me-6 avatar-style"
-            :image="auth.image || avatar1"
+            :image="imagePreview || currentImageProfile || avatar1"
           />
 
           <!-- 👉 Upload Photo -->
           <form class="d-flex flex-column justify-center gap-5">
             <div class="d-flex flex-wrap gap-2">
-              <!-- <VBtn
+              <VBtn
                 color="primary"
                 @click="refInputEl?.click()"
+                :loading="uploadingImage"
               >
                 <VIcon
                   icon="ri-upload-cloud-line"
                   class="d-sm-none"
                 />
-                <span class="d-none d-sm-block">Upload new photo</span>
-              </VBtn> -->
+                <span class="d-none d-sm-block">อัพโหลดรูปใหม่</span>
+              </VBtn>
 
               <input
                 ref="refInputEl"
                 type="file"
                 name="file"
-                accept=".jpeg,.png,.jpg,GIF"
+                accept="image/jpeg,image/png,image/jpg,image/gif"
                 hidden
-                @input="changeAvatar"
+                @change="changeAvatar"
               />
 
-              <!-- <VBtn
+              <VBtn
                 type="reset"
                 color="error"
                 variant="outlined"
                 @click="resetAvatar"
+                :disabled="!currentImageProfile"
               >
-                <span class="d-none d-sm-block">Reset</span>
+                <span class="d-none d-sm-block">รีเซ็ท</span>
                 <VIcon
                   icon="ri-refresh-line"
                   class="d-sm-none"
                 />
-              </VBtn> -->
+              </VBtn>
             </div>
 
-            <!-- <p class="text-body-1 mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p> -->
+            <p class="text-body-1 mb-0">รองรับไฟล์ JPG, GIF, PNG ขนาดไม่เกิน 5MB</p>
           </form>
         </VCardText>
 
@@ -176,7 +178,7 @@
 </template>
 
 <script lang="ts">
-import { Client, UpdateEmployeeCommand } from '@/client'
+import { Client, UpdateAccountSettingsCommand, AccountSettingsDto } from '@/client'
 import { BACKEND_API_URL } from '@/constants'
 import { useAuthStore, useSweetAlertStore } from '@/stores'
 import avatar1 from '@images/avatars/avatar-1.png'
@@ -184,7 +186,8 @@ const client = new Client(BACKEND_API_URL)
 export default defineComponent({
   data() {
     return {
-      accountData: new UpdateEmployeeCommand(),
+      accountData: new UpdateAccountSettingsCommand(),
+      currentImageProfile: '' as string,
       refInputEl: null as HTMLElement | null,
       isAccountDeactivated: false,
       auth: useAuthStore(),
@@ -192,6 +195,9 @@ export default defineComponent({
       Departments: [] as any,
       sweetAlertStore: useSweetAlertStore(),
       loading: false,
+      uploadingImage: false,
+      imagePreview: null as string | null,
+      selectedFile: null as File | null,
     }
   },
   async mounted() {
@@ -202,19 +208,19 @@ export default defineComponent({
   methods: {
     async initialize() {
       try {
-        if (this.auth.userId) {
-          const response = await client.getEmployeeQueryByUserID(this.auth.userId)
-          if (response) {
-            this.accountData = { ...response } as UpdateEmployeeCommand
-            if (!this.accountData.phone && this.auth.phone) {
-              this.accountData.phone = this.auth.phone
-            }
-          }
-        } else {
-          return
+        const response = await client.getAccountSettings()
+        if (response) {
+          this.accountData.firstName = response.firstName
+          this.accountData.lastName = response.lastName
+          this.accountData.titleName = response.titleName
+          this.accountData.position = response.position
+          this.accountData.phone = response.phone
+          this.accountData.departmentId = response.departmentId
+          this.currentImageProfile = response.imageProfile || ''
         }
       } catch (error) {
         console.error('Error initializing account settings:', error)
+        this.sweetAlertStore.errorDeleted('ไม่สามารถโหลดข้อมูลบัญชีได้')
       }
     },
     async getDepartments() {
@@ -222,7 +228,6 @@ export default defineComponent({
         const response = await client.getDepartmentQuery()
         if (response) {
           this.Departments = response
-          console.log(response)
         }
       } catch (error) {
         console.error('Error fetching departments:', error)
@@ -234,27 +239,89 @@ export default defineComponent({
       if (valid) {
         this.loading = true
         try {
-          const response = await client.updateEmployee(this.accountData)
-          if (response) {
-            this.sweetAlertStore.successDeleted('บันทึกการเปลี่ยนแปลงเสร็จสิ้น')
-            this.loading = false
-          }
+          await client.updateAccountSettings(this.accountData)
+          this.sweetAlertStore.successDeleted('บันทึกการเปลี่ยนแปลงเสร็จสิ้น')
+          await this.initialize()
         } catch (error) {
           console.error(error)
+          this.sweetAlertStore.errorDeleted('ไม่สามารถบันทึกการเปลี่ยนแปลงได้')
+        } finally {
           this.loading = false
         }
       }
     },
-    changeAvatar(file: Event) {
-      const fileReader = new FileReader()
-      const { files } = file.target as HTMLInputElement
+    changeAvatar(event: Event) {
+      const input = event.target as HTMLInputElement
+      const { files } = input
 
       if (files && files.length) {
-        fileReader.readAsDataURL(files[0])
-        fileReader.onload = () => {
-          // if (typeof fileReader.result === 'string') this.accountDataLocal.avatarImg = fileReader.result
+        const file = files[0]
+        
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif']
+        if (!validTypes.includes(file.type)) {
+          this.sweetAlertStore.errorDeleted('กรุณาเลือกไฟล์รูปภาพประเภท JPEG, PNG, JPG หรือ GIF')
+          input.value = ''
+          return
         }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+        if (file.size > maxSize) {
+          this.sweetAlertStore.errorDeleted('ขนาดไฟล์ต้องไม่เกิน 5MB')
+          input.value = ''
+          return
+        }
+
+        this.selectedFile = file
+
+        // Show preview
+        const fileReader = new FileReader()
+        fileReader.readAsDataURL(file)
+        fileReader.onload = () => {
+          if (typeof fileReader.result === 'string') {
+            this.imagePreview = fileReader.result
+          }
+        }
+
+        // Auto upload
+        this.uploadProfileImage()
       }
+    },
+    async uploadProfileImage() {
+      if (!this.selectedFile) return
+
+      this.uploadingImage = true
+      try {
+        // Create FileParameter object for NSwag client
+        const fileParameter = {
+          data: this.selectedFile,
+          fileName: this.selectedFile.name
+        }
+        
+        const response = await client.postApiUsersProfileImage(fileParameter)
+        if (response && response.imageUrl) {
+          this.currentImageProfile = response.imageUrl
+          this.auth.image = response.imageUrl
+          this.sweetAlertStore.successDeleted(response.message || 'อัพโหลดรูปโปรไฟล์สำเร็จ')
+          this.imagePreview = null
+          this.selectedFile = null
+        }
+      } catch (error) {
+        console.error('Error uploading profile image:', error)
+        this.sweetAlertStore.errorDeleted('ไม่สามารถอัพโหลดรูปโปรไฟล์ได้')
+        this.imagePreview = null
+        this.selectedFile = null
+      } finally {
+        this.uploadingImage = false
+      }
+    },
+    resetAvatar() {
+      this.currentImageProfile = ''
+      this.auth.image = ''
+      this.imagePreview = null
+      this.selectedFile = null
+      this.sweetAlertStore.successDeleted('รีเซ็ทรูปโปรไฟล์สำเร็จ')
     },
     resetForm() {
       this.accountData.titleName = undefined

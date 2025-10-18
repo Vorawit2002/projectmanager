@@ -22,6 +22,7 @@ declare module 'vue' {
     ImportFile: typeof import('./src/components/Import/ImportFile.vue')['default']
     MoreBtn: typeof import('./src/@core/components/MoreBtn.vue')['default']
     NationalIdCardReader: typeof import('./src/components/NationalIdCardReader.vue')['default']
+    PermissionButton: typeof import('./src/components/PermissionButton.vue')['default']
     PushNotification: typeof import('./src/components/PushNotification.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

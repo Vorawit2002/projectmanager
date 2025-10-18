@@ -9,16 +9,17 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'Dashboard',
       icon: 'ri-bar-chart-fill',
       to: '/dashboard',
-      roles: ['Manager', 'Admin'],
+      roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
 
+  <!-- 👉 Activity Plans -->
   <VerticalNavLink
     :item="{
       title: 'นัดหมาย',
       icon: 'ri-id-card-line',
       to: '/CustomerAppointmentListView',
-      roles: ['CRM'],
+      roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
 
@@ -27,72 +28,113 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'มุมมองปฏิทิน',
       icon: 'ri-calendar-todo-fill',
       to: '/Calendar',
-      roles: ['CRM'],
+      roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
 
+  
+
+  <!-- 👉 Check-in/Check-out -->
   <VerticalNavLink
     :item="{
       title: 'ลงเวลาเข้า - ออกงาน',
       icon: 'ri-time-line',
       to: '/OnsiteViews',
-      roles: ['Manager', 'CRM'],
+      roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
 
+  <!-- 👉 Reports -->
   <VerticalNavLink
     :item="{
       title: 'รายงานผล',
       icon: 'ri-file-chart-line',
       to: '/ReportCustomerAppointmentPlanListView',
-      roles: ['Manager', 'Admin'],
+      roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
 
-  <!-- 👉 Apps & Pages -->
+  <!-- 👉 Master Data Section -->
   <VerticalNavSectionTitle
     :item="{
       heading: 'ตั้งค่าข้อมูล',
     }"
   />
+
+  <!-- 👉 User Management (Admin only) -->
+  <VerticalNavLink
+    :item="{
+      title: 'จัดการผู้ใช้งาน',
+      icon: 'ri-user-settings-line',
+      to: '/MasterData/UserListView',
+      roles: ['Admin'],
+    }"
+  />
+
+  <!-- 👉 Employees -->
+  <VerticalNavLink
+    :item="{
+      title: 'พนักงาน',
+      icon: 'ri-user-line',
+      to: '/MasterData/EmployeeListView',
+      roles: ['Admin', 'Manager'],
+    }"
+  />
+
+  <!-- 👉 Departments -->
+  <VerticalNavLink
+    :item="{
+      title: 'แผนก',
+      icon: 'ri-building-line',
+      to: '/MasterData/DepartmentListView',
+      roles: ['Admin', 'Manager'],
+    }"
+  />
+
+  <!-- 👉 Organizations -->
   <VerticalNavLink
     :item="{
       title: 'หน่วยงาน',
       icon: 'ri-community-line',
       to: '/MasterData/OrganizationListView',
-      roles: ['CRM'],
+      roles: ['Admin', 'Manager'],
     }"
   />
-  <VerticalNavLink
-    :item="{
-      title: 'ผู้ติดต่อหน่วยงาน',
-      icon: 'ri-contacts-line',
-      to: '/MasterData/OrganizationContactListView',
-      roles: ['CRM'],
-    }"
-  />
+
   <VerticalNavLink
     :item="{
       title: 'โครงการ',
       icon: 'ri-article-line',
       to: '/MasterData/ProjectListView',
-      roles: ['CRM'],
+      roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
+
   <VerticalNavLink
     :item="{
       title: 'ผู้ติดต่อโครงการ',
       icon: 'ri-group-line',
       to: '/MasterData/ProjectContactListView',
-      roles: ['CRM'],
+      roles: ['Admin', 'Manager', 'User', 'Viewer'],
     }"
   />
+  
+  <VerticalNavLink
+    :item="{
+      title: 'ผู้ติดต่อหน่วยงาน',
+      icon: 'ri-contacts-line',
+      to: '/MasterData/OrganizationContactListView',
+      roles: ['Admin', 'Manager'],
+    }"
+  />
+
+  <!-- 👉 Event Types -->
   <VerticalNavLink
     :item="{
       title: 'ประเภทกิจกรรม',
       icon: 'ri-home-office-line',
       to: '/MasterData/EventTypeListView',
-      roles: ['Admin'],
+      roles: ['Admin', 'Manager'],
     }"
   />
 </template>

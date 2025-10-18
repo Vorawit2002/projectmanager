@@ -228,6 +228,38 @@ export const useSweetAlertStore = defineStore('sweetAlert', {
         icon: 'error',
       })
     },
+    async errorDeleted(message: string, timer?: number) {
+      await Swal.fire({
+        title: 'ข้อผิดพลาด!',
+        text: message,
+        icon: 'error',
+        showConfirmButton: false,
+        timer: timer || 2000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'bg-white rounded-popup',
+          title: 'text-error fw-bold',
+          timerProgressBar: 'bg-error',
+        },
+        didOpen: () => {
+          const popup = Swal.getPopup()
+          const container = Swal.getContainer()
+          if (popup) {
+            popup.style.zIndex = '999999'
+            popup.style.borderRadius = '20px'
+          }
+          if (container) {
+            container.style.zIndex = '999999'
+          }
+        },
+        didRender: () => {
+          const textElement = document.querySelector('.swal2-html-container') as HTMLElement
+          if (textElement) {
+            textElement.style.color = 'black'
+          }
+        },
+      })
+    },
 
     async warning(message: string, title?: string) {
       return await this.showAlert({

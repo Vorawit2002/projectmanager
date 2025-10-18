@@ -9,7 +9,9 @@
         โครงการ</span
       >
 
-      <v-btn @click="OpenDialogCreate"
+      <v-btn 
+        v-if="canModifyProjects()"
+        @click="OpenDialogCreate"
         ><v-icon
           class="mr-2"
           icon="ri-add-circle-line"
@@ -101,6 +103,7 @@
               <v-icon size="18">ri-article-line</v-icon>
             </v-btn>
             <v-btn
+              v-if="canModifyProjects()"
               class="text-white mr-2"
               density="compact"
               color="warning"
@@ -112,6 +115,7 @@
               <v-icon size="18">ri-edit-2-line</v-icon>
             </v-btn>
             <v-btn
+              v-if="canModifyProjects()"
               class="text-white mr-2"
               density="compact"
               color="error-darken-1"
@@ -192,13 +196,15 @@
 import { ProjectTypeEnum, TypeOrganizationEnum } from '@/@layouts/enums'
 import { Client, GetProjectWithPaginationQuery, ProjectType } from '@/client'
 import { BACKEND_API_URL } from '@/constants'
-import { useSweetAlertStore } from '@/stores'
+import { useAuthStore, useSweetAlertStore } from '@/stores'
+import { RoleService } from '@/utils/RoleService'
 import moment from 'moment'
 import { defineComponent } from 'vue'
 import CreateProject from './CreateProject.vue'
 import ProjectDetail from './ProjectDetail.vue'
 import UpdateProject from './UpdateProject.vue'
 const client = new Client(BACKEND_API_URL)
+const roleService = new RoleService()
 export default defineComponent({
   name: 'OrganizationListView',
   components: {
@@ -208,6 +214,7 @@ export default defineComponent({
   },
   data() {
     return {
+      auth: useAuthStore(),
       sweetAlert: useSweetAlertStore(),
       selectedProjectTypeObj: { title: 'ทั้งหมด', value: -1 },
       header: [
@@ -245,6 +252,14 @@ export default defineComponent({
   },
   async mounted() {
     this.forceCloseAllDrawers() // บังคับปิด Drawer ทั้งหมดเมื่อ Component ถูก Mount
+    
+    // Check if user has access to view projects
+    if (!this.canViewProjects()) {
+      this.sweetAlert.error('คุณไม่มีสิทธิ์เข้าถึงหน้านี้')
+      this.$router.push('/Homepage')
+      return
+    }
+    
     this.request.projectType = -1 // Set default project type to "ทั้งหมด"
     await this.initialize()
 
@@ -496,6 +511,22 @@ export default defineComponent({
       if (cost == null || cost === '') return ''
       const number = typeof cost === 'string' ? parseFloat(cost) : cost
       return isNaN(number) ? '' : number.toLocaleString('en-US')
+    },
+    canViewProjects(): boolean {
+      // Admin and Manager can view all projects
+      // User and Viewer can view projects (backend will filter based on their involvement)
+      return roleService.isAdmin(this.auth.roles) || 
+             roleService.isManager(this.auth.roles) || 
+             roleService.isUser(this.auth.roles) || 
+             roleService.isViewer(this.auth.roles)
+    },
+    canModifyProjects(): boolean {
+      // Only Admin, Manager, and User can modify projects
+      // Viewer is read-only
+      return roleService.canModifyData(this.auth.roles) && 
+             (roleService.isAdmin(this.auth.roles) || 
+              roleService.isManager(this.auth.roles) || 
+              roleService.isUser(this.auth.roles))
     },
   },
 })

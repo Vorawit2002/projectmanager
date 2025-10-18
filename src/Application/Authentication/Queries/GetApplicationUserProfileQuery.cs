@@ -11,13 +11,16 @@ public class GetApplicationUserProfileQueryHandler : IRequestHandler<GetApplicat
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUser _user;
+    private readonly IApplicationDbContext _context;
 
     public GetApplicationUserProfileQueryHandler(
         UserManager<ApplicationUser> userManager, 
-        IUser user)
+        IUser user,
+        IApplicationDbContext context)
     {
         _userManager = userManager;
         _user = user;
+        _context = context;
     }
 
     public async Task<CurrentUserDto> Handle(GetApplicationUserProfileCommand request, CancellationToken cancellationToken)
@@ -47,12 +50,33 @@ public class GetApplicationUserProfileQueryHandler : IRequestHandler<GetApplicat
         // Get user roles
         var roles = await _userManager.GetRolesAsync(appUser);
 
+        // Get employee data if exists
+        var employee = await _context.Employees
+            .Include(e => e.Departments)
+            .FirstOrDefaultAsync(e => e.UserId == userId, cancellationToken);
+
         return new CurrentUserDto
         {
+            UserId = appUser.Id,
             UserName = appUser.UserName,
+            Email = appUser.Email,
+            FirstName = employee?.FirstName,
+            LastName = employee?.LastName,
+            TitleName = employee?.TitleName,
+            Position = employee?.Position,
+            Phone = employee?.Phone,
+            Department = employee?.Departments?.Name,
+            DepartmentId = employee?.DepartmentId,
+            ImageProfile = appUser.ImageProfile ?? employee?.ImageProfile,
+            Group = employee?.Group,
+            RoleHR = employee?.Roles, // Use Roles property from Employee
+            EmployeeId = employee?.Id.ToString(),
+            Roles = roles.ToList(),
+            
+            // Legacy properties
             Id = Guid.Parse(appUser.Id),
             RoleNames = roles.ToList(),
-            DisplayName = $"{appUser.UserName}"
+            DisplayName = $"{employee?.FirstName} {employee?.LastName}".Trim()
         };
     }
 }

@@ -14,40 +14,54 @@ export default [
         path: 'MasterData/OrganizationListView',
         name: 'OrganizationListView',
         component: OrganizationListView,
-          meta:{
-          requiresAuth:true
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin', 'Manager']
         }
       },
       {
         path: 'MasterData/OrganizationContactListView',
         name: 'OrganizationContactListView',
         component: OrganizationContactListView,
-          meta:{
-          requiresAuth:true
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin', 'Manager']
         }
       },
       {
         path: 'MasterData/ProjectListView',
         name: 'ProjectListView',
         component: ProjectListView,
-          meta:{
-          requiresAuth:true
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin', 'Manager']
         }
       },
       {
         path: 'MasterData/ProjectContactListView',
         name: 'ProjectContactListView',
         component: ProjectContactListView,
-          meta:{
-          requiresAuth:true
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin', 'Manager']
         }
       },
       {
         path: 'MasterData/EventTypeListView',
         name: 'EventTypeListView',
         component: EventTypeListView,
-          meta:{
-          requiresAuth:true
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin', 'Manager']
+        }
+      },
+      {
+        path: 'MasterData/UserListView',
+        name: 'UserListView',
+        component: () => import('@/views/MasterData/Users/UserListView.vue'),
+        meta: {
+          requiresAuth: true,
+          roles: ['Admin']
         }
       },
     ],

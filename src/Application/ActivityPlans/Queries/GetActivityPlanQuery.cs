@@ -17,20 +17,40 @@ public class GetActivityPlanQueryHandler : IRequestHandler<GetActivityPlanQuery,
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IUser _currentUser;
+    private readonly IIdentityService _identityService;
+    private readonly IDataFilterService _dataFilterService;
 
-    public GetActivityPlanQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetActivityPlanQueryHandler(
+        IApplicationDbContext context, 
+        IMapper mapper,
+        IUser currentUser,
+        IIdentityService identityService,
+        IDataFilterService dataFilterService)
     {
         _context = context;
         _mapper = mapper;
+        _currentUser = currentUser;
+        _identityService = identityService;
+        _dataFilterService = dataFilterService;
     }
+    
     public async Task<IEnumerable<ActivityPlanDto>> Handle(GetActivityPlanQuery request, CancellationToken cancellationToken)
     {
-        return await _context.ActivityPlans
+        var userId = _currentUser.Id ?? throw new UnauthorizedAccessException();
+        var roles = (await _identityService.GetUserRolesAsync(userId)).ToArray();
+        
+        var query = _context.ActivityPlans
             .Include(x => x.Employees)
             .Include(x => x.Projects)
             .Include(x => x.Organizations)
+            .AsQueryable();
+            
+        // Apply role-based filtering
+        query = await _dataFilterService.ApplyRoleBasedFilterAsync(query, userId, roles);
+        
+        return await query
             .ProjectTo<ActivityPlanDto>(_mapper.ConfigurationProvider)
-            .ToListAsync();
-         
+            .ToListAsync(cancellationToken);
     }
 }

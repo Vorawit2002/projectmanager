@@ -30,6 +30,12 @@ public static class DependencyInjection
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
+        
+        // Configure JSON serialization to include null values
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
+        });
 
         builder.Services.AddOpenApiDocument((configure, sp) =>
         {
