@@ -100,27 +100,50 @@ router.beforeEach(async (to: any, from: any, next: any) => {
       }
 
       // Check if profile is complete only when accessing Homepage
-      if (to.path === '/Homepage' && !profileDialogShown && !isProfileComplete(auth)) {
-        profileDialogShown = true
+      if (to.path === '/Homepage' && !profileDialogShown) {
+        // Fetch fresh user data from database
+        try {
+          const client = new (await import('@/client')).Client((await import('@/constants')).BACKEND_API_URL)
+          const userData = await client.getCurrentUser()
+          
+          // Check required fields from database
+          const requiredFields = [
+            userData.firstName,
+            userData.lastName,
+            userData.email,
+            userData.phone,
+            userData.department,  // แผนก
+            userData.position,    // ตำแหน่ง
+          ]
+          
+          const isComplete = requiredFields.every(field => field && field.trim() !== '')
+          
+          // Only show dialog if profile is incomplete
+          if (!isComplete) {
+            profileDialogShown = true
 
-        // Allow navigation first
-        next()
+            // Allow navigation first
+            next()
 
-        // Show dialog after a delay to let the success dialog close first
-        setTimeout(() => {
-          Swal.fire({
-            title: 'กรุณากรอกข้อมูลส่วนตัว',
-            text: 'คุณยังกรอกข้อมูลส่วนตัวไม่ครบถ้วน กรุณากรอกข้อมูลให้ครบเพื่อใช้งานระบบ',
-            icon: 'warning',
-            confirmButtonText: '<span style="color: white;">ไปกรอกข้อมูล</span>',
-            confirmButtonColor: '#41B06E',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-          }).then(() => {
-            router.push('/account-settings')
-          })
-        }, 500)
-        return
+            // Show dialog after a delay to let the success dialog close first
+            setTimeout(() => {
+              Swal.fire({
+                title: 'กรุณากรอกข้อมูลส่วนตัว',
+                text: 'คุณยังกรอกข้อมูลส่วนตัวไม่ครบถ้วน กรุณากรอกข้อมูลให้ครบเพื่อใช้งานระบบ',
+                icon: 'warning',
+                confirmButtonText: '<span style="color: white;">ไปกรอกข้อมูล</span>',
+                confirmButtonColor: '#41B06E',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+              }).then(() => {
+                router.push('/account-settings')
+              })
+            }, 500)
+            return
+          }
+        } catch (error) {
+          console.error('Error checking profile completeness:', error)
+        }
       }
 
       // Check role-based access after authentication
