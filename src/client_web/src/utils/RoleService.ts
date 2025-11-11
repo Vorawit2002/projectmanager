@@ -36,7 +36,7 @@ export class RoleService {
 
   // Permission checking methods
   canAccessMasterData(roles: string[]): boolean {
-    return this.isAdmin(roles) || this.isManager(roles)
+    return this.isAdmin(roles) || this.isManager(roles) || this.isUser(roles)
   }
 
   canModifyData(roles: string[]): boolean {

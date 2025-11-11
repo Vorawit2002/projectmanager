@@ -25,7 +25,9 @@
             >
               <span class="mr-2 mr-md-8 text-h6 text-md-h5">แผนก : {{ User.departments?.name }}</span>
             </v-col>
-            <v-col
+
+            <!-- BTN Share -->
+            <!-- <v-col
               cols="12"
               class="d-flex justify-center"
             >
@@ -43,7 +45,8 @@
                   แชร์
                 </v-tooltip>
               </v-btn>
-            </v-col>
+            </v-col> -->
+
             <VCol cols="12">
               <GetCustomerAppointmentPlan
                 v-if="updateCommand.id"

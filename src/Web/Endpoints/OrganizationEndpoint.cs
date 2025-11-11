@@ -14,14 +14,16 @@ public class Organizations : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
+        // Read operations - all authenticated users (including User role)
         app.MapGroup(this)
-            .RequireAuthorization(Policies.CanViewMasterData)
+            .RequireAuthorization()
             .MapGet(GetOrganizationQuery, "GetOrganizationQuery")
             .MapGet(GetOrganizationQueryByID, "GetOrganizationQueryByID/{id}")
             .MapPost(GetOrganizationWithPagination, "GetOrganizationWithPagination");
             
+        // Write operations - requires CanModifyData policy (Admin, Manager, User - excludes Viewer role)
         app.MapGroup(this)
-            .RequireAuthorization(Policies.CanManageMasterData)
+            .RequireAuthorization(Policies.CanModifyData)
             .MapPost(CreateOrganization, "CreateOrganization")
             .MapPost(CreateOrganizationJustName, "CreateOrganizationJustName")
             .MapPut(UpdateOrganization, "UpdateOrganization")

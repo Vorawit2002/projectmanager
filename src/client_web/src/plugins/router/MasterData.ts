@@ -16,7 +16,7 @@ export default [
         component: OrganizationListView,
         meta: {
           requiresAuth: true,
-          roles: ['Admin', 'Manager']
+          roles: ['Admin', 'Manager', 'User']
         }
       },
       {
@@ -25,7 +25,7 @@ export default [
         component: OrganizationContactListView,
         meta: {
           requiresAuth: true,
-          roles: ['Admin', 'Manager']
+          roles: ['Admin', 'Manager', 'User']
         }
       },
       {
@@ -34,7 +34,7 @@ export default [
         component: ProjectListView,
         meta: {
           requiresAuth: true,
-          roles: ['Admin', 'Manager']
+          roles: ['Admin', 'Manager', 'User']
         }
       },
       {
@@ -43,7 +43,7 @@ export default [
         component: ProjectContactListView,
         meta: {
           requiresAuth: true,
-          roles: ['Admin', 'Manager']
+          roles: ['Admin', 'Manager', 'User']
         }
       },
       {
