@@ -99,6 +99,23 @@ router.beforeEach(async (to: any, from: any, next: any) => {
         }
       }
 
+      // Check if user is Viewer role - block access and show message
+      if (auth.roles.includes('Viewer')) {
+        console.log('Viewer role detected, showing access denied message')
+        await Swal.fire({
+          title: 'ไม่มีสิทธิ์เข้าถึงระบบ',
+          text: 'กรุณาติดต่อผู้ดูแลระบบเพื่อขอสิทธิ์ใช้งานระบบ',
+          icon: 'warning',
+          confirmButtonText: '<span style="color: white;">ตกลง</span>',
+          confirmButtonColor: '#41B06E',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+        })
+        await auth.logout()
+        next('/login')
+        return
+      }
+
       // Check if profile is complete only when accessing Homepage
       if (to.path === '/Homepage' && !profileDialogShown) {
         // Fetch fresh user data from database
