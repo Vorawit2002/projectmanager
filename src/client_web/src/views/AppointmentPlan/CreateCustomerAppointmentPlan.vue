@@ -423,6 +423,10 @@ export default defineComponent({
   beforeUnmount() {
     document.removeEventListener('keydown', this.handleEscKey)
   },
+  activated() {
+    // Reset form เมื่อ component ถูกเปิดใหม่
+    this.resetForm()
+  },
   computed: {
     // showAddButton() {
     //   // แสดงปุ่มเฉพาะเมื่อ: มีการพิมพ์ค้นหา และไม่พบรายการที่ตรงกัน
@@ -450,6 +454,26 @@ export default defineComponent({
     },
   },
   methods: {
+    resetForm() {
+      // Reset form และ validation
+      const form = this.$refs.form as any
+      if (form) {
+        form.reset()
+        form.resetValidation()
+      }
+
+      // Reset ข้อมูลทั้งหมด
+      this.createCommand = new CreateActivityPlanCommand({ allDay: false })
+      this.customers = []
+      this.searchText = ''
+      this.searchTextContact = ''
+      this.OrganizationContactList = []
+      
+      // เก็บ employeeId ไว้
+      if (this.auth.userId && this.User?.id) {
+        this.createCommand.employeeId = this.User.id
+      }
+    },
     handleEscKey(e: KeyboardEvent) {
       if (e.key === 'Escape' || e.keyCode === 27) {
         // ถ้า Drawer ใดกำลังเปิด ให้ปิดอย่างเดียว
@@ -464,6 +488,7 @@ export default defineComponent({
           return
         }
         // ถ้าไม่มี Drawer ไหนเปิด ก็ปิดหน้าหลักได้
+        this.resetForm()
         this.$emit('close')
       }
     },
@@ -530,6 +555,7 @@ export default defineComponent({
       }
     },
     CancelCreate() {
+      this.resetForm()
       this.$emit('close')
     },
     removeCustomer(index: number) {
@@ -577,8 +603,9 @@ export default defineComponent({
             window.dispatchEvent(reloadEvent)
             console.log('🔥 Dispatched reloadAppointmentPlan event for:', response)
 
-            await this.initialize()
-
+            // Reset form ก่อนปิด
+            this.resetForm()
+            
             this.$emit('close')
           }
         } catch (error) {

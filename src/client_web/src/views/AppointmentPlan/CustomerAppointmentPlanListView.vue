@@ -585,7 +585,11 @@
     scrollable
     :permanent="false"
   >
-    <CreateCustomerDailySchedule :CloseDialogCreate="CloseDialogCreate" />
+    <CreateCustomerDailySchedule
+      v-if="DialogCreate"
+      :key="dialogCreateKey"
+      :CloseDialogCreate="CloseDialogCreate"
+    />
   </v-navigation-drawer>
 
   <v-navigation-drawer
@@ -601,6 +605,8 @@
     :permanent="false"
   >
     <UpdateCustomerDailySchedule
+      v-if="DialogUpdate"
+      :key="`update-${id}-${dialogUpdateKey}`"
       :id="id"
       :CloseDialogUpdate="CloseDialogUpdate"
       :mode="mode"
@@ -641,6 +647,8 @@
     :permanent="false"
   >
     <CreateCustomerAppointmentPlan
+      v-if="createActivityPlanDialog"
+      :key="createActivityPlanDialogKey"
       @close="closeCreateActivityPlanDialog"
       @created="handleActivityPlanCreated"
     />
@@ -739,6 +747,9 @@ export default defineComponent({
     return {
       activeTab: 'Card' as string,
       DialogCreate: false as boolean,
+      dialogCreateKey: 0 as number,
+      DialogUpdate: false,
+      dialogUpdateKey: 0 as number,
       tabs: [
         { title: 'มุมมองการ์ด', icon: 'ri-info-card-line', tab: 'Card' },
         { title: 'มุมมองตาราง', icon: 'ri-table-line', tab: 'Table' },
@@ -790,7 +801,6 @@ export default defineComponent({
       currentFilter: 'all' as FilterType,
       EventTypeList: [] as any,
       EventTypeIsActivityPlan: false,
-      DialogUpdate: false,
       id: '' as any,
       DialogCreateSelect: false,
       mode: 'edit' as 'edit' | 'duplicate',
@@ -798,6 +808,7 @@ export default defineComponent({
       manageActivityDialog: false as boolean,
       selectedActivityId: null as string | number | null,
       createActivityPlanDialog: false as boolean,
+      createActivityPlanDialogKey: 0 as number,
       dailyScheduleDetail: false,
       detailDialog: false,
       DailyActions: [
@@ -1496,6 +1507,7 @@ export default defineComponent({
       }
     },
     CreateAppointmentPlan(): void {
+      this.createActivityPlanDialogKey++ // เพิ่ม key เพื่อ force re-render
       this.createActivityPlanDialog = true
     },
     CreateDailyScheduleDialog(): void {
@@ -1503,6 +1515,7 @@ export default defineComponent({
     },
     goCreateActivity() {
       this.DialogCreateSelect = false
+      this.dialogCreateKey++ // เพิ่ม key เพื่อ force re-render
       this.DialogCreate = true
     },
     async DuplicateActivity() {
@@ -1525,6 +1538,7 @@ export default defineComponent({
             this.DialogCreateSelect = false
             setTimeout(() => {
               this.id = response
+              this.dialogUpdateKey++ // เพิ่ม key เพื่อ force re-render
               this.DialogUpdate = true
             }, 1000)
           } else {
@@ -1541,10 +1555,12 @@ export default defineComponent({
     },
     async CloseDialogUpdate(value: boolean) {
       this.DialogUpdate = value
+      this.dialogUpdateKey++ // เพิ่ม key เพื่อให้ครั้งหน้าที่เปิดจะเป็น component ใหม่
     },
 
     async CloseDialogCreate(value: boolean) {
       this.DialogCreate = value
+      this.dialogCreateKey++ // เพิ่ม key เพื่อให้ครั้งหน้าที่เปิดจะเป็น component ใหม่
     },
     CloseDialogSelectTime() {
       this.DialogSelectedTime = false
@@ -1610,6 +1626,7 @@ export default defineComponent({
           localStorage.setItem('selectedAppointmentId', String(id))
         }
 
+        this.dialogUpdateKey++ // เพิ่ม key เพื่อ force re-render
         this.DialogUpdate = true
         this.id = id
       }
@@ -1619,6 +1636,7 @@ export default defineComponent({
         this.mode = 'duplicate'
         this.highlightedId = id
         this.id = id
+        this.dialogUpdateKey++ // เพิ่ม key เพื่อ force re-render
         this.DialogUpdate = true
       } catch (error) {
         this.sweetAlertStore.error('เกิดข้อผิดพลาดในการทำสำเนารายงาน !')
@@ -1654,11 +1672,14 @@ export default defineComponent({
 
     closeCreateActivityPlanDialog(): void {
       this.createActivityPlanDialog = false
-      // ไม่ refresh ที่นี่ - จะ refresh เฉพาะเมื่อสร้างสำเร็จ
+      // เพิ่ม key เพื่อให้ครั้งหน้าที่เปิดจะเป็น component ใหม่
+      this.createActivityPlanDialogKey++
     },
 
     handleActivityPlanCreated(activityPlanId: string | number): void {
       this.createActivityPlanDialog = false
+      // เพิ่ม key เพื่อให้ครั้งหน้าที่เปิดจะเป็น component ใหม่
+      this.createActivityPlanDialogKey++
       // Set highlight และบันทึกใน localStorage
       this.highlightedId = String(activityPlanId)
       localStorage.setItem('selectedAppointmentId', String(activityPlanId))

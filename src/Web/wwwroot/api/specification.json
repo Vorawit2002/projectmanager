@@ -1000,12 +1000,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/departments/GetDepartmentQueryByID/{id}": {

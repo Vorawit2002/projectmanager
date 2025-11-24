@@ -114,6 +114,10 @@
         </v-chip>
       </template>
 
+      <template v-slot:item.department="{ item }">
+        {{ getDepartmentName(item.departmentId) }}
+      </template>
+
       <template v-slot:item.isActive="{ item }">
         <v-chip
           :color="item.isActive ? 'success' : 'error'"
@@ -246,9 +250,11 @@ export default defineComponent({
       userDetailDrawer: false,
       selectedUser: null as any,
       selectedUserId: '',
+      departments: [] as any[],
     }
   },
   async mounted() {
+    await this.getDepartments()
     await this.initialize()
   },
   methods: {
@@ -323,6 +329,19 @@ export default defineComponent({
     async handleRoleAssigned() {
       this.assignRoleDrawer = false
       await this.initialize()
+    },
+    async getDepartments() {
+      try {
+        const response = await client.getDepartmentQuery()
+        this.departments = response || []
+      } catch (error) {
+        console.error('Error fetching departments:', error)
+      }
+    },
+    getDepartmentName(departmentId: string | null | undefined): string {
+      if (!departmentId) return '-'
+      const department = this.departments.find((d: any) => d.id === departmentId)
+      return department ? department.name : '-'
     },
   },
 })

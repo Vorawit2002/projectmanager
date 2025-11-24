@@ -14,9 +14,13 @@ public class Departments : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
+        // Public endpoint - ไม่ต้อง authorization (สำหรับ dropdown, account settings)
+        app.MapGroup(this)
+            .AllowAnonymous()
+            .MapGet(GetDepartmentQuery, "GetDepartmentQuery");
+            
         app.MapGroup(this)
             .RequireAuthorization(Policies.CanViewMasterData)
-            .MapGet(GetDepartmentQuery, "GetDepartmentQuery")
             .MapGet(GetDepartmentQueryByID, "GetDepartmentQueryByID/{id}")
             .MapPost(GetDepartmentWithPagination, "GetDepartmentWithPagination");
             
