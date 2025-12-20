@@ -910,18 +910,14 @@ export default defineComponent({
 
     await this.getEventTypeList()
     await this.getDepartmentList()
-    if (
-      (!this.request.employeeId || this.request.employeeId?.length === 0) &&
-      (!this.request.departmentId)
-    ) {
+    if ((!this.request.employeeId || this.request.employeeId?.length === 0) && !this.request.departmentId) {
       this.request.employeeId = [] // กำหนด array ใหม่ถ้ายังไม่มี
       this.selectedEmployeeIds = []
       const result = await client.getEmployeeQueryByUserID(this.auth.userId)
       if (!this.request.employeeId?.includes(result.id!)) {
-     
         this.selectedDepartmentIds = result.departmentId ? [result.departmentId] : []
         // store defaults
-           this.request.departmentId =  this.selectedDepartmentIds
+        this.request.departmentId = this.selectedDepartmentIds
         this.defaultDepartmentId = result.departmentId || ''
         this.defaultEmployeeId = result.id || ''
         await this.getEmployeeByDepartment()
@@ -1004,14 +1000,13 @@ export default defineComponent({
     },
     async onDepartmentMultiChange(newValue?: any[]) {
       let value = Array.isArray(newValue) ? [...newValue] : [...this.selectedDepartmentIds]
-            this.selectedEmployeeIds = []
+      this.selectedEmployeeIds = []
       if (value.length === 0) {
         // เมื่อกด clearable ให้เคลียร์ทั้งหมด ไม่กู้คืนค่า default
         // ไม่ทำอะไร ให้ value เป็น array ว่าง
-                value = []
-  
+        value = []
       }
-      if (value.includes('ALL') ) {
+      if (value.includes('ALL')) {
         if (value.length === 1) {
           this.lastSelectionIsAll = true
           value = []
@@ -1134,10 +1129,7 @@ export default defineComponent({
           return
         }
         // Single department mode
-        if (
-          !this.request.departmentId ||
-          this.selectedDepartmentIds.length === 0
-        ) {
+        if (!this.request.departmentId || this.selectedDepartmentIds.length === 0) {
           this.EmployeeList = this.injectAllEmployeeOption([])
           return
         }
@@ -1272,12 +1264,12 @@ export default defineComponent({
     },
     getImageUrl(imageProfile: string): string {
       if (!imageProfile) return ''
-      
+
       // If it's already a full URL (http/https) or data URL (data:), use as is
       if (imageProfile.startsWith('http') || imageProfile.startsWith('data:')) {
         return imageProfile
       }
-      
+
       // If it's a relative path, prepend BACKEND_API_URL
       const BACKEND_API_URL = 'https://localhost:5001'
       return `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
@@ -1339,7 +1331,6 @@ export default defineComponent({
       try {
         this.isLoading = true
 
-  
         if (this.selectedEmployeeIds.includes('ALL_EMP') || this.employeeAllSelected) {
           // เมื่อเลือก "ทั้งหมด" ให้ใช้รายการพนักงานทั้งหมดในแผนกที่เลือก
           // แทนที่จะเป็น undefined ซึ่งจะดึงข้อมูลจากทุกแผนก
@@ -1407,16 +1398,16 @@ export default defineComponent({
         this.request.activityPlanStatus = ActivityPlanStatus.All
         this.request.departmentId = this.selectedDepartmentIds.length > 0 ? [...this.selectedDepartmentIds] : undefined
         console.log(this.request)
-          const response = await client.getActivityPlanWithPagination(this.request)
-          this.Activity = response.items || []
-          this.Itemlength = response.totalCount || 0
-          
-          // Debug: Check if imageProfile is in response
-          if (this.Activity.length > 0) {
-            console.log('First activity item:', this.Activity[0])
-            console.log('Employee data:', this.Activity[0].employees)
-            console.log('ImageProfile:', this.Activity[0].employees?.imageProfile)
-          }
+        const response = await client.getActivityPlanWithPagination(this.request)
+        this.Activity = response.items || []
+        this.Itemlength = response.totalCount || 0
+
+        // Debug: Check if imageProfile is in response
+        if (this.Activity.length > 0) {
+          console.log('First activity item:', this.Activity[0])
+          console.log('Employee data:', this.Activity[0].employees)
+          console.log('ImageProfile:', this.Activity[0].employees?.imageProfile)
+        }
         // }
 
         if (this.Activity.length > 0) {

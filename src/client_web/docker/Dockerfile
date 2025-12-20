@@ -1,4 +1,4 @@
-FROM node:22 as build-stage
+FROM node:20 as build-stage
 
 ARG VITE_API_BACKEND_URL 
 

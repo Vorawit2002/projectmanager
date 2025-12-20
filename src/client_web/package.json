@@ -96,11 +96,13 @@
   "resolutions": {
     "postcss": "^8",
     "stylelint-order": "6.0.3",
-    "@types/video.js": "^7"
+    "@types/video.js": "^7",
+    "entities": "^4.5.0"
   },
   "overrides": {
     "postcss": "^8",
     "stylelint-order": "6.0.3",
-    "@types/video.js": "^7"
+    "@types/video.js": "^7",
+    "entities": "^4.5.0"
   }
 }
