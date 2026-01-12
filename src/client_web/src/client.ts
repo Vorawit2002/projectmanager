@@ -1129,6 +1129,42 @@ export class Client extends BaseClass {
         return Promise.resolve<CurrentUserDto>(null as any);
     }
 
+    changePassword(command: ChangePasswordCommand): Promise<void> {
+        let url_ = this.baseUrl + "/api/authentication/change-password";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processChangePassword(_response);
+        });
+    }
+
+    protected processChangePassword(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     migrateExistingUsers(command: MigrateExistingUsersCommand): Promise<void> {
         let url_ = this.baseUrl + "/api/authentication/migrate-users";
         url_ = url_.replace(/[?&]$/, "");
@@ -7895,6 +7931,50 @@ export interface ICurrentUserDto {
     id?: string | undefined;
     displayName?: string | undefined;
     roleNames?: string[];
+}
+
+export class ChangePasswordCommand implements IChangePasswordCommand {
+    currentPassword?: string;
+    newPassword?: string;
+    confirmNewPassword?: string;
+
+    constructor(data?: IChangePasswordCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.currentPassword = _data["currentPassword"];
+            this.newPassword = _data["newPassword"];
+            this.confirmNewPassword = _data["confirmNewPassword"];
+        }
+    }
+
+    static fromJS(data: any): ChangePasswordCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangePasswordCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["currentPassword"] = this.currentPassword;
+        data["newPassword"] = this.newPassword;
+        data["confirmNewPassword"] = this.confirmNewPassword;
+        return data;
+    }
+}
+
+export interface IChangePasswordCommand {
+    currentPassword?: string;
+    newPassword?: string;
+    confirmNewPassword?: string;
 }
 
 export class MigrateExistingUsersCommand implements IMigrateExistingUsersCommand {

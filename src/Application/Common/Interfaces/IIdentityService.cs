@@ -38,4 +38,6 @@ public interface IIdentityService
     Task<IEnumerable<ApplicationUser>> GetUsersByDepartmentAsync(Guid departmentId);
     
     Task<Result> UpdateUserAsync(ApplicationUser user);
+    
+    Task<Result> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
 }

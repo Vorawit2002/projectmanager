@@ -304,4 +304,37 @@ public class IdentityService : IIdentityService
 
         return result.ToApplicationResult();
     }
+
+    public async Task<Result> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        
+        if (user == null)
+        {
+            return Result.Failure(new[] { "ไม่พบผู้ใช้งาน" });
+        }
+
+        // Verify current password
+        var passwordValid = await _userManager.CheckPasswordAsync(user, currentPassword);
+        if (!passwordValid)
+        {
+            return Result.Failure(new[] { "รหัสผ่านปัจจุบันไม่ถูกต้อง" });
+        }
+
+        // Change password
+        var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        
+        if (!result.Succeeded)
+        {
+            return result.ToApplicationResult();
+        }
+
+        // Update LastPasswordChangeDate and clear RequirePasswordChange flag
+        user.LastPasswordChangeDate = DateTime.UtcNow;
+        user.RequirePasswordChange = false;
+        await _userManager.UpdateAsync(user);
+
+        return Result.Success();
+    }
 }
+

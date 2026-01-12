@@ -2,6 +2,7 @@ using ProjectManagement.Application.Authentication.Commands.Login;
 using ProjectManagement.Application.Authentication.Commands.Register;
 using ProjectManagement.Application.Authentication.Commands.RefreshToken;
 using ProjectManagement.Application.Authentication.Commands.MigrateExistingUsers;
+using ProjectManagement.Application.Authentication.Commands.ChangePassword;
 using ProjectManagement.Application.ApplicationUserProfile.Queries;
 using ProjectManagement.Application.Authentication.Queries;
 using ProjectManagement.Domain.Constants;
@@ -19,7 +20,8 @@ public class AuthenticationEndpoint : EndpointGroupBase
             
         app.MapGroup(this)
             .RequireAuthorization()
-            .MapGet(GetCurrentUser, "me");
+            .MapGet(GetCurrentUser, "me")
+            .MapPost(ChangePassword, "change-password");
             
         app.MapGroup(this)
             .RequireAuthorization(Roles.Administrator)
@@ -87,5 +89,23 @@ public class AuthenticationEndpoint : EndpointGroupBase
         }
 
         return Results.Ok(result.Data);
+    }
+
+    public async Task<IResult> ChangePassword(ISender sender, ChangePasswordCommand command)
+    {
+        var result = await sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return Results.BadRequest(new
+            {
+                errors = result.Errors
+            });
+        }
+
+        return Results.Ok(new
+        {
+            message = "เปลี่ยนรหัสผ่านสำเร็จ"
+        });
     }
 }
