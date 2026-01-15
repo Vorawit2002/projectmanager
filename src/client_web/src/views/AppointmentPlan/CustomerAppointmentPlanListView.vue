@@ -169,7 +169,7 @@
     </VCol>
   </VRow>
 
-  <Card class="px-3 mt-0">
+  <div class="px-3 mt-0">
     <VTabs
       v-model="activeTab"
       show-arrows
@@ -234,7 +234,7 @@
 
     <VWindow
       v-model="activeTab"
-      class="mt-5 disable-tab-transition px-md-6"
+      class="mt-5 disable-tab-transition "
       :touch="false"
       :item-class="getRowClass"
     >
@@ -478,7 +478,7 @@
       <!-- DailySchedule -->
       <VWindowItem value="DailySchedule"> 000 </VWindowItem>
     </VWindow>
-  </Card>
+  </div>
   <!-- เลือกวันที่ -->
   <v-dialog
     v-model="DialogSelectedTime"

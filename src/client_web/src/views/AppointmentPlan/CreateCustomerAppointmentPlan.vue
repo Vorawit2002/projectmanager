@@ -359,7 +359,7 @@ import {
   selectCustomerRules,
 } from '@/utils/RuleServices'
 import CreateOrganizationDetailView from '@/views/MasterData/Organizations/CreateOrganizationDetailView.vue'
-import DemoFormLayoutVerticalFormWithIcons from '@/views/pages/form-layouts/DemoFormLayoutVerticalFormWithIcons.vue'
+
 import { defineComponent } from 'vue'
 
 const client = new Client(BACKEND_API_URL)
@@ -367,7 +367,7 @@ export default defineComponent({
   name: 'CreateCustomerAppointmentPlan',
   emits: ['close', 'created'],
   components: {
-    DemoFormLayoutVerticalFormWithIcons,
+
     TextFieldDatepicker,
     TextFieldTimepicker,
     CreateOrganizationContact,
