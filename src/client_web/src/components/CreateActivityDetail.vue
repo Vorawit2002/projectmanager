@@ -10,7 +10,7 @@
           cols="12"
           class="d-flex justify-center"
         >
-          <span class="text-sub-title text-center">เพิ่มกิจกรรม</span>
+          <span class="text-sub-title text-center">เพิ่มนัดหมายใหม่</span>
         </v-col>
       </v-row>
 

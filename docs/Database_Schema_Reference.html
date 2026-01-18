@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Schema Reference</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        @page { size: A4; margin: 1.5cm; }
+        body { font-family: 'Sarabun', sans-serif; font-size: 13px; line-height: 1.5; color: #000; }
+        h1 { font-size: 20px; text-align: center; margin-bottom: 20px; }
+        .table-header { margin-bottom: 15px; margin-top: 25px; }
+        .table-header p { margin: 3px 0; }
+        .table-title { font-weight: bold; margin-bottom: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 6px 8px; vertical-align: middle; }
+        th { background-color: #fff; font-weight: normal; text-align: center; }
+        td { text-align: center; }
+        td.left { text-align: left; }
+        .underline { text-decoration: underline; color: #0066cc; }
+    </style>
+</head>
+<body>
+
+<h1>Database Schema Reference (Data Dictionary)</h1>
+
+<!-- ตารางที่ 1: Employee -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;พนักงาน (Employee)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดเกี่ยวกับข้อมูลพนักงานในระบบ</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;ApplicationUser, Department</p>
+</div>
+<p class="table-title">ตารางที่ 1 พนักงาน (Employee)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสพนักงาน</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">UserId</td><td class="left">รหัสผู้ใช้ระบบ</td><td>450</td><td>Varchar</td><td>-</td><td>FK(ApplicationUser)</td><td>Foreign Key, UK</td></tr>
+    <tr><td>3</td><td class="underline">DepartmentId</td><td class="left">รหัสแผนก</td><td>-</td><td>UUID</td><td>-</td><td>FK(Department)</td><td>Foreign Key</td></tr>
+    <tr><td>4</td><td>TitleName</td><td class="left">คำนำหน้า</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>FirstName</td><td class="left">ชื่อจริง</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>LastName</td><td class="left">นามสกุล</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>Email</td><td class="left">อีเมล</td><td>256</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>8</td><td>Position</td><td class="left">ตำแหน่ง</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>Phone</td><td class="left">เบอร์โทร</td><td>20</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>10</td><td>ImageProfile</td><td class="left">รูปโปรไฟล์</td><td>-</td><td>Text</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>11</td><td>isActive</td><td class="left">สถานะใช้งาน</td><td>-</td><td>Boolean</td><td>True</td><td>-</td><td>-</td></tr>
+    <tr><td>12</td><td>Subscription</td><td class="left">สมัครสมาชิก</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>13</td><td>Roles</td><td class="left">บทบาท</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>14</td><td>Group</td><td class="left">กลุ่ม</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 2: ApplicationUser -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ผู้ใช้งานระบบ (ApplicationUser)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดเกี่ยวกับข้อมูลผู้ใช้งานระบบ (Identity)</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Employee</p>
+</div>
+<p class="table-title">ตารางที่ 2 ผู้ใช้งานระบบ (ApplicationUser)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสผู้ใช้</td><td>450</td><td>Varchar</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>UserName</td><td class="left">ชื่อเข้าระบบ</td><td>256</td><td>Varchar</td><td>-</td><td>UK</td><td>Unique Key</td></tr>
+    <tr><td>3</td><td>Email</td><td class="left">อีเมล</td><td>256</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>4</td><td>PasswordHash</td><td class="left">รหัสผ่าน (Hash)</td><td>-</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>FirstName</td><td class="left">ชื่อจริง</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>LastName</td><td class="left">นามสกุล</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>IsRevoked</td><td class="left">ระงับใช้งาน</td><td>-</td><td>Boolean</td><td>False</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>RevokeStart</td><td class="left">วันเริ่มระงับ</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>RevokeEnd</td><td class="left">วันสิ้นสุดระงับ</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>10</td><td>RequirePasswordChange</td><td class="left">ต้องเปลี่ยนรหัส</td><td>-</td><td>Boolean</td><td>False</td><td>-</td><td>-</td></tr>
+    <tr><td>11</td><td>LastPasswordChangeDate</td><td class="left">เปลี่ยนรหัสล่าสุด</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>12</td><td>ImageProfile</td><td class="left">รูปโปรไฟล์</td><td>-</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 3: Department -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แผนก (Department)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดเกี่ยวกับข้อมูลแผนก</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Employee</p>
+</div>
+<p class="table-title">ตารางที่ 3 แผนก (Department)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสแผนก</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>Name</td><td class="left">ชื่อแผนก</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>IsActive</td><td class="left">สถานะใช้งาน</td><td>-</td><td>Boolean</td><td>True</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 4: Organization -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;องค์กร/หน่วยงาน (Organization)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดเกี่ยวกับข้อมูลหน่วยงาน/ลูกค้า</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;OrganizationContact, Project, ActivityPlan, CheckInCheckOut</p>
+</div>
+<p class="table-title">ตารางที่ 4 องค์กร/หน่วยงาน (Organization)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสองค์กร</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>Name</td><td class="left">ชื่อหน่วยงาน</td><td>200</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>ShortName</td><td class="left">ชื่อย่อ</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>4</td><td>TypeOrganization</td><td class="left">ประเภทหน่วยงาน</td><td>-</td><td><span class="underline">enum</span></td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>Address</td><td class="left">ที่อยู่</td><td>500</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>Coordinates</td><td class="left">พิกัด</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>WebSite</td><td class="left">เว็บไซต์</td><td>200</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>Phone</td><td class="left">เบอร์โทร</td><td>20</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>Fax</td><td class="left">แฟกซ์</td><td>20</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 5: OrganizationContact -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ผู้ติดต่อองค์กร (OrganizationContact)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดเกี่ยวกับผู้ติดต่อของหน่วยงาน</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Organization, Attachment, ProjectContact, ActivityPlanContact</p>
+</div>
+<p class="table-title">ตารางที่ 5 ผู้ติดต่อองค์กร (OrganizationContact)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสผู้ติดต่อ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">OrganizationId</td><td class="left">รหัสองค์กร</td><td>-</td><td>UUID</td><td>-</td><td>FK(Organization)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td>TitleName</td><td class="left">คำนำหน้า</td><td>50</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>FirstName</td><td class="left">ชื่อ</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>5</td><td>LastName</td><td class="left">นามสกุล</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>Position</td><td class="left">ตำแหน่ง</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>Email</td><td class="left">อีเมล</td><td>256</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>Phone</td><td class="left">เบอร์โทร</td><td>20</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>Fax</td><td class="left">แฟกซ์</td><td>20</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>10</td><td>LineId</td><td class="left">ไลน์ไอดี</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>11</td><td class="underline">AttachmentId</td><td class="left">รูปโปรไฟล์</td><td>-</td><td>UUID</td><td>-</td><td>FK(Attachment)</td><td>Foreign Key</td></tr>
+</table>
+
+<!-- ตารางที่ 6: Project -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;โครงการ (Project)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดเกี่ยวกับข้อมูลโครงการ</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Organization, ProjectContact, ActivityPlan, CheckInCheckOut</p>
+</div>
+<p class="table-title">ตารางที่ 6 โครงการ (Project)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสโครงการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>ProjectCode</td><td class="left">รหัสโปรเจค</td><td>50</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>ProjectName</td><td class="left">ชื่อโปรเจค</td><td>200</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>ShortName</td><td class="left">ชื่อย่อ</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>ContractNumber</td><td class="left">เลขที่สัญญา</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>ContractSignedDate</td><td class="left">วันที่ลงนามสัญญา</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>StartDate</td><td class="left">วันเริ่มงาน</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>EndDate</td><td class="left">วันจบงาน</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>WarrantyEndDate</td><td class="left">วันหมดประกัน</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>10</td><td class="underline">OrganizationId</td><td class="left">รหัสลูกค้า</td><td>-</td><td>UUID</td><td>-</td><td>FK(Organization)</td><td>Foreign Key</td></tr>
+    <tr><td>11</td><td>ProjectCost</td><td class="left">งบประมาณ</td><td>-</td><td>Decimal</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>12</td><td>ProjectType</td><td class="left">ประเภทโครงการ</td><td>-</td><td><span class="underline">enum</span></td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 7: ProjectContact -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ผู้ติดต่อโครงการ (ProjectContact)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บความสัมพันธ์ระหว่างโครงการกับผู้ติดต่อ</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Project, OrganizationContact</p>
+</div>
+<p class="table-title">ตารางที่ 7 ผู้ติดต่อโครงการ (ProjectContact)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">ProjectId</td><td class="left">รหัสโปรเจค</td><td>-</td><td>UUID</td><td>-</td><td>FK(Project)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td class="underline">OrganizationContactId</td><td class="left">รหัสผู้ติดต่อ</td><td>-</td><td>UUID</td><td>-</td><td>FK(OrganizationContact)</td><td>Foreign Key</td></tr>
+</table>
+
+<!-- ตารางที่ 8: ActivityPlan -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แผนกิจกรรม (ActivityPlan)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดเกี่ยวกับแผนงาน/กิจกรรม</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Employee, Project, Organization, EventType, PlanNote, ActivityPlanContact, ActivityPlanAttachment</p>
+</div>
+<p class="table-title">ตารางที่ 8 แผนกิจกรรม (ActivityPlan)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสกิจกรรม</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">EmployeeId</td><td class="left">รหัสพนักงาน</td><td>-</td><td>UUID</td><td>-</td><td>FK(Employee)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td>Objective</td><td class="left">วัตถุประสงค์</td><td>500</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>4</td><td>ObjectiveDetail</td><td class="left">รายละเอียดวัตถุประสงค์</td><td>-</td><td>Text</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>detail</td><td class="left">รายละเอียด</td><td>-</td><td>Text</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td class="underline">ProjectId</td><td class="left">รหัสโปรเจค</td><td>-</td><td>UUID</td><td>-</td><td>FK(Project)</td><td>Foreign Key</td></tr>
+    <tr><td>7</td><td class="underline">OrganizationId</td><td class="left">รหัสองค์กร</td><td>-</td><td>UUID</td><td>-</td><td>FK(Organization)</td><td>Foreign Key</td></tr>
+    <tr><td>8</td><td>AllDay</td><td class="left">ทั้งวัน</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>StartDate</td><td class="left">วันเริ่มต้น</td><td>-</td><td>DateTime</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>10</td><td>EndDate</td><td class="left">วันสิ้นสุด</td><td>-</td><td>DateTime</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>11</td><td>Location</td><td class="left">สถานที่</td><td>200</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>12</td><td>HaveCost</td><td class="left">มีค่าใช้จ่าย</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>13</td><td>CostDetail</td><td class="left">รายละเอียดค่าใช้จ่าย</td><td>-</td><td>Text</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>14</td><td>Cost</td><td class="left">ค่าใช้จ่าย</td><td>-</td><td>Decimal</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>15</td><td>OutSide</td><td class="left">นอกสถานที่</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>16</td><td class="underline">EventTypeId</td><td class="left">ประเภทกิจกรรม</td><td>-</td><td>UUID</td><td>-</td><td>FK(EventType)</td><td>Foreign Key</td></tr>
+</table>
+
+<!-- ตารางที่ 9: PlanNote -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;บันทึกงาน (PlanNote)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดบันทึกงานในแผนกิจกรรม</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;ActivityPlan</p>
+</div>
+<p class="table-title">ตารางที่ 9 บันทึกงาน (PlanNote)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">ActivityPlanId</td><td class="left">รหัสกิจกรรม</td><td>-</td><td>UUID</td><td>-</td><td>FK(ActivityPlan)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td>Summary</td><td class="left">หัวข้อสรุป</td><td>256</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>ToDoNext</td><td class="left">สิ่งที่ต้องทำต่อ</td><td>-</td><td>Text</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>Remarks</td><td class="left">หมายเหตุ</td><td>-</td><td>Text</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 10: EventType -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ประเภทกิจกรรม (EventType)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บประเภทของกิจกรรม</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;-</p>
+</div>
+<p class="table-title">ตารางที่ 10 ประเภทกิจกรรม (EventType)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสประเภท</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>Name</td><td class="left">ชื่อประเภท</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>EventTypeCode</td><td class="left">รหัสโค้ด</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 11: ActivityPlanContact -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ผู้ติดต่อในแผน (ActivityPlanContact)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บความสัมพันธ์ระหว่างแผนกิจกรรมกับผู้ติดต่อ</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;ActivityPlan, OrganizationContact</p>
+</div>
+<p class="table-title">ตารางที่ 11 ผู้ติดต่อในแผน (ActivityPlanContact)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">ActivityPlanId</td><td class="left">รหัสกิจกรรม</td><td>-</td><td>UUID</td><td>-</td><td>FK(ActivityPlan)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td class="underline">OrganizationContactId</td><td class="left">รหัสผู้ติดต่อ</td><td>-</td><td>UUID</td><td>-</td><td>FK(OrganizationContact)</td><td>Foreign Key</td></tr>
+</table>
+
+<!-- ตารางที่ 12: ActivityPlanAttachment -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ไฟล์แนบแผน (ActivityPlanAttachment)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บความสัมพันธ์ระหว่างแผนกิจกรรมกับไฟล์แนบ</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;ActivityPlan, Attachment</p>
+</div>
+<p class="table-title">ตารางที่ 12 ไฟล์แนบแผน (ActivityPlanAttachment)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">ActivityPlanId</td><td class="left">รหัสกิจกรรม</td><td>-</td><td>UUID</td><td>-</td><td>FK(ActivityPlan)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td class="underline">AttachmentId</td><td class="left">รหัสไฟล์</td><td>-</td><td>UUID</td><td>-</td><td>FK(Attachment)</td><td>Foreign Key</td></tr>
+</table>
+
+<!-- ตารางที่ 13: CheckInCheckOut -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การลงเวลา (CheckInCheckOut)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บข้อมูลการลงเวลาเข้า-ออกงาน</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Employee, Project, Organization, CheckInCheckOutAttachment</p>
+</div>
+<p class="table-title">ตารางที่ 13 การลงเวลา (CheckInCheckOut)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">EmployeeId</td><td class="left">รหัสพนักงาน</td><td>-</td><td>UUID</td><td>-</td><td>FK(Employee)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td>Location</td><td class="left">สถานที่เช็คอิน</td><td>256</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>4</td><td>LocationCheckOut</td><td class="left">สถานที่เช็คเอาท์</td><td>256</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>Lat</td><td class="left">ละติจูด</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>Long</td><td class="left">ลองจิจูด</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>IPAddress</td><td class="left">ไอพี</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>CheckIn</td><td class="left">เวลาเข้า</td><td>-</td><td>DateTime</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>9</td><td>CheckOut</td><td class="left">เวลาออก</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>10</td><td class="underline">OrganizationId</td><td class="left">รหัสองค์กร</td><td>-</td><td>UUID</td><td>-</td><td>FK(Organization)</td><td>Foreign Key</td></tr>
+    <tr><td>11</td><td class="underline">ProjectId</td><td class="left">รหัสโครงการ</td><td>-</td><td>UUID</td><td>-</td><td>FK(Project)</td><td>Foreign Key</td></tr>
+    <tr><td>12</td><td>CheckInCheckOutTypes</td><td class="left">ประเภทการลงเวลา</td><td>-</td><td><span class="underline">enum</span></td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>13</td><td>Types</td><td class="left">ประเภท</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 14: CheckInCheckOutAttachment -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ไฟล์แนบลงเวลา (CheckInCheckOutAttachment)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บไฟล์แนบสำหรับการลงเวลา</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;CheckInCheckOut, Attachment</p>
+</div>
+<p class="table-title">ตารางที่ 14 ไฟล์แนบลงเวลา (CheckInCheckOutAttachment)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td class="underline">CheckInCheckOutId</td><td class="left">รหัสรายการลงเวลา</td><td>-</td><td>UUID</td><td>-</td><td>FK(CheckInCheckOut)</td><td>Foreign Key</td></tr>
+    <tr><td>3</td><td>Type</td><td class="left">ประเภท</td><td>-</td><td><span class="underline">enum</span></td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>4</td><td class="underline">AttachmentId</td><td class="left">รหัสไฟล์</td><td>-</td><td>UUID</td><td>-</td><td>FK(Attachment)</td><td>Foreign Key</td></tr>
+</table>
+
+<!-- ตารางที่ 15: Attachment -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ข้อมูลไฟล์ (Attachment)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บรายละเอียดไฟล์ที่อัปโหลดในระบบ</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;-</p>
+</div>
+<p class="table-title">ตารางที่ 15 ข้อมูลไฟล์ (Attachment)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสไฟล์</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>NameFile</td><td class="left">ชื่อไฟล์</td><td>256</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>PathFile</td><td class="left">ที่เก็บไฟล์ (URL)</td><td>500</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>FileSize</td><td class="left">ขนาดไฟล์</td><td>-</td><td>Long</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>5</td><td>FileExtension</td><td class="left">นามสกุล</td><td>20</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>BucketOriginalName</td><td class="left">ชื่อเดิมใน Bucket</td><td>256</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>BucketOriginalPath</td><td class="left">พาธเดิมใน Bucket</td><td>500</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 16: EmailMessageSetting -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตั้งค่าเทมเพลตอีเมล (EmailMessageSetting)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บการตั้งค่าเทมเพลตอีเมล</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;EmailScheduleSetting</p>
+</div>
+<p class="table-title">ตารางที่ 16 ตั้งค่าเทมเพลตอีเมล (EmailMessageSetting)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>SettingCode</td><td class="left">รหัสตั้งค่า</td><td>50</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>SettingName</td><td class="left">ชื่อตั้งค่า</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>MailSubject</td><td class="left">หัวข้อเมล</td><td>200</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>5</td><td>MailBody</td><td class="left">เนื้อหาเมล</td><td>-</td><td>Text</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>6</td><td>IsActive</td><td class="left">สถานะ</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>Remark</td><td class="left">หมายเหตุ</td><td>500</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>Sendtime</td><td class="left">เวลาส่ง</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 17: EmailScheduleSetting -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;รอบส่งเมล (EmailScheduleSetting)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บตารางเวลาการส่งเมลอัตโนมัติ</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;EmailMessageSetting</p>
+</div>
+<p class="table-title">ตารางที่ 17 รอบส่งเมล (EmailScheduleSetting)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>ScheduleName</td><td class="left">ชื่อรอบส่ง</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>HangfireJobId</td><td class="left">รหัสงาน Hangfire</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>4</td><td class="underline">EmailMessageSettingId</td><td class="left">รหัสเทมเพลต</td><td>-</td><td>UUID</td><td>-</td><td>FK(EmailMessageSetting)</td><td>Foreign Key</td></tr>
+    <tr><td>5</td><td>SendMailDate</td><td class="left">วันที่ส่ง</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>IsEnabled</td><td class="left">เปิดใช้งาน</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 18: EmailLog -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ประวัติเมล (EmailLog)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บประวัติการส่งอีเมล</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;-</p>
+</div>
+<p class="table-title">ตารางที่ 18 ประวัติเมล (EmailLog)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>Subject</td><td class="left">หัวข้อ</td><td>256</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>SentTo</td><td class="left">ผู้รับ</td><td>256</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>Massage</td><td class="left">ข้อความ</td><td>-</td><td>Text</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>5</td><td>SendBy</td><td class="left">ผู้ส่ง</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>6</td><td>SendType</td><td class="left">ประเภทการส่ง</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>RefEntityId</td><td class="left">รหัสอ้างอิง</td><td>50</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>RefEntityClass</td><td class="left">ชื่อคลาสอ้างอิง</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>SendDate</td><td class="left">วันที่ส่ง</td><td>-</td><td>DateTime</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>10</td><td>SendStatus</td><td class="left">สถานะการส่ง</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 19: SMTPSetting -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตั้งค่า SMTP (SMTPSetting)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บการตั้งค่า SMTP สำหรับส่งอีเมล</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;-</p>
+</div>
+<p class="table-title">ตารางที่ 19 ตั้งค่า SMTP (SMTPSetting)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>ConfigName</td><td class="left">ชื่อการตั้งค่า</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>3</td><td>SMTPServer</td><td class="left">เซิร์ฟเวอร์</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>SMTPPort</td><td class="left">พอร์ต</td><td>10</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>5</td><td>SMTPAuthentication</td><td class="left">การยืนยันตัวตน</td><td>-</td><td><span class="underline">enum</span></td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>6</td><td>SMTPUserName</td><td class="left">ชื่อผู้ใช้</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>7</td><td>SMTPPassword</td><td class="left">รหัสผ่าน</td><td>100</td><td>Varchar</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>8</td><td>SMTPEnableSSL</td><td class="left">ใช้ SSL</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>9</td><td>IsActive</td><td class="left">สถานะ</td><td>-</td><td>Boolean</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>10</td><td>Remark</td><td class="left">หมายเหตุ</td><td>-</td><td>Text</td><td>-</td><td>-</td><td>-</td></tr>
+</table>
+
+<!-- ตารางที่ 20: PushSubscription -->
+<div class="table-header">
+    <p><strong>ชื่อ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แจ้งเตือน Push (PushSubscription)</p>
+    <p><strong>วัตถุประสงค์</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เก็บข้อมูลสำหรับ Web Push Notification</p>
+    <p><strong>แฟ้มที่เกี่ยวข้อง</strong>&nbsp;&nbsp;&nbsp;Employee</p>
+</div>
+<p class="table-title">ตารางที่ 20 แจ้งเตือน Push (PushSubscription)</p>
+<table>
+    <tr>
+        <th>ลำดับ<br>(Sequence No.)</th>
+        <th>คุณสมบัติ<br>(Attribute)</th>
+        <th>คำอธิบาย<br>(Description)</th>
+        <th>ขนาด<br>(Width)</th>
+        <th>ประเภท<br>(Type)</th>
+        <th>ค่าเบื้องต้น<br>(Default)</th>
+        <th>ตรวจสอบ<br>(Validation Check)</th>
+        <th>ประเภทของคีย์<br>(Key Type)</th>
+    </tr>
+    <tr><td>1</td><td class="underline">Id</td><td class="left">รหัสรายการ</td><td>-</td><td>UUID</td><td>-</td><td>ไม่มีตัวอักษรพิเศษ</td><td>Primary Key</td></tr>
+    <tr><td>2</td><td>EmployeeId</td><td class="left">รหัสพนักงาน</td><td>-</td><td>UUID</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>3</td><td>Endpoint</td><td class="left">Endpoint URL</td><td>500</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>4</td><td>P256dh</td><td class="left">P256dh Key</td><td>256</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>5</td><td>Auth</td><td class="left">Auth Key</td><td>100</td><td>Varchar</td><td>-</td><td>ห้ามว่าง</td><td>-</td></tr>
+    <tr><td>6</td><td>IsActive</td><td class="left">สถานะ</td><td>-</td><td>Boolean</td><td>True</td><td>-</td><td>-</td></tr>
+</table>
+
+<br><hr><br>
+<p style="text-align: center; color: #666;">-- สิ้นสุดเอกสาร (20 ตาราง) --</p>
+
+</body>
+</html>

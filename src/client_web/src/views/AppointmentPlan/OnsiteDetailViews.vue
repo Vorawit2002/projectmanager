@@ -381,11 +381,13 @@ import {
   GetEmployeeByDepartmentIdQuery,
 } from '@/client'
 import { BACKEND_API_URL } from '@/constants'
-import { useSweetAlertStore } from '@/stores'
+import { useSweetAlertStore, useAuthStore } from '@/stores'
+import { RoleService } from '@/utils/RoleService'
 import { defineComponent } from 'vue'
 import OnsiteDetail from './OnsiteDetail.vue'
 
 const client = new Client(BACKEND_API_URL)
+const roleService = new RoleService()
 
 export default defineComponent({
   name: 'OnsiteDetailViews',
@@ -393,8 +395,11 @@ export default defineComponent({
     OnsiteDetail,
   },
   data() {
+    const authStore = useAuthStore()
     return {
+      authStore,
       sweetAlert: useSweetAlertStore(),
+      roleService,
       isLoading: false,
       searchQuery: '',
       pageNumber: 1,
@@ -501,8 +506,11 @@ export default defineComponent({
     async initialize() {
       try {
         await this.getDepartmentList()
-        const emp = await client.getEmployeeQuery()
-        this.EmployeeList = emp
+        // Only load employee list if user has permission (Admin/Manager)
+        if (this.roleService.canViewDepartmentData(this.authStore.roles)) {
+          const emp = await client.getEmployeeQuery()
+          this.EmployeeList = emp
+        }
         // Load attendance history
         // await this.loadAttendanceHistory()
         await this.fetchPageData()
@@ -546,7 +554,18 @@ export default defineComponent({
           dateCheck: this.selectedDate ? new Date(this.selectedDate) : undefined,
           departmentId: this.effectiveDepartmentIds.length ? [...this.effectiveDepartmentIds] : undefined,
         })
-        query.employeeId = this.selectedEmployeeIds.length ? [...this.selectedEmployeeIds] : undefined
+        
+        // For User role: filter to show only their own attendance data
+        if (this.roleService.isUser(this.authStore.roles) && !this.roleService.isAdmin(this.authStore.roles) && !this.roleService.isManager(this.authStore.roles)) {
+          // User role sees only their own data
+          if (this.authStore.employeeId) {
+            query.employeeId = [this.authStore.employeeId]
+          }
+        } else {
+          // Admin/Manager can filter by selected employees
+          query.employeeId = this.selectedEmployeeIds.length ? [...this.selectedEmployeeIds] : undefined
+        }
+        
         query.date = this.selectedRange
         query.startDate = this.request.startDate as any
         query.endDate = this.request.endDate as any
@@ -816,6 +835,11 @@ export default defineComponent({
     },
     async onDepartmentChange() {
       console.log(this.selectedDepartmentIds)
+      // Only load employee list if user has permission (Admin/Manager)
+      if (!this.roleService.canViewDepartmentData(this.authStore.roles)) {
+        await this.fetchPageData()
+        return
+      }
       if (this.selectedDepartmentIds.includes('All')) {
         const emp = await client.getEmployeeQuery()
         this.EmployeeList = emp
