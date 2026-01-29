@@ -681,19 +681,13 @@ export default {
         { bg: '#7C7F84', border: '#7C7F84' },
         { bg: '#15803D', border: '#15803D' },
       ] as any,
-      YearList: [
-        { title: '2568', value: '2025' },
-        { title: '2567', value: '2024' },
-        { title: '2566', value: '2023' },
-        { title: '2565', value: '2022' },
-        { title: '2564', value: '2021' },
-        { title: '2563', value: '2020' },
-        { title: '2562', value: '2019' },
-        { title: '2561', value: '2018' },
-        { title: '2560', value: '2017' },
-        { title: '2559', value: '2016' },
-        { title: '2558', value: '2015' },
-      ],
+      YearList: Array.from({ length: 15 }, (_, i) => {
+        const year = new Date().getFullYear() - i
+        return {
+          title: (year + 543).toString(),
+          value: year.toString(),
+        }
+      }),
       holidayDates: [
         // '2025-01-01',
         // '2025-02-12',
@@ -845,7 +839,7 @@ export default {
     // โหลดฟิลเตอร์ที่บันทึกไว้ก่อนโหลดข้อมูลพื้นฐาน
     // this.loadSavedFilters()
     this.request.eventTypeId = []
-    this.request.years = '2025'
+    this.request.years = new Date().getFullYear().toString()
     if (this.auth.userId) {
       this.request.employeeId = [] as string[]
       try {
