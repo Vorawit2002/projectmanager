@@ -605,6 +605,7 @@ export default {
     console.log('🔧 Before unmount, all dialogs closed')
   },
   created() {
+    this.initHolidays()
     // บังคับปิด drawer เมื่อ component ถูกสร้าง
     this.DialogCreate = false
     this.dialog = false
@@ -716,6 +717,7 @@ export default {
       requestEmployee: new GetEmployeeByDepartmentIdQuery(),
       EventTypeList: [] as any,
       activitytab: 'EditActivity' as any,
+      holidaysMap: {} as Record<string, string>,
     }
   },
   async mounted() {
@@ -1668,28 +1670,80 @@ export default {
       newDate.setFullYear(parseInt(year))
       this.dateTime = newDate as any
     },
-    getHolidayName(dateStr: any) {
-      const holidayNames = {
-        '2025-01-01': 'วันปีใหม่',
+    initHolidays() {
+      const fixedHolidays = {
+        '01-01': 'วันขึ้นปีใหม่',
+        '04-06': 'วันจักรี',
+        '04-13': 'วันสงกรานต์',
+        '04-14': 'วันสงกรานต์',
+        '04-15': 'วันสงกรานต์',
+        '05-01': 'วันแรงงานแห่งชาติ',
+        '05-04': 'วันฉัตรมงคล',
+        '06-03': 'วันเฉลิมฯ พระราชินี',
+        '07-28': 'วันเฉลิมฯ ร.10',
+        '08-12': 'วันแม่แห่งชาติ',
+        '10-13': 'วันนวมินทรมหาราช',
+        '10-23': 'วันปิยมหาราช',
+        '12-05': 'วันพ่อแห่งชาติ',
+        '12-10': 'วันรัฐธรรมนูญ',
+        '12-31': 'วันสิ้นปี',
+      } as Record<string, string>
+
+      // วันหยุดตามจันทรคติ และวันหยุดชดเชย (ระบุปีชัดเจน)
+      const specificHolidays = {
+        // 2024
+        '2024-02-24': 'วันมาฆบูชา',
+        '2024-02-26': 'ชดเชยวันมาฆบูชา',
+        '2024-04-08': 'ชดเชยวันจักรี',
+        '2024-04-16': 'ชดเชยวันสงกรานต์',
+        '2024-05-22': 'วันวิสาขบูชา',
+        '2024-06-03': 'วันเฉลิมฯ พระราชินี',
+        '2024-07-20': 'วันอาสาฬหบูชา',
+        '2024-07-21': 'วันเข้าพรรษา',
+        '2024-07-22': 'ชดเชยวันอาสาฬหบูชา',
+        '2024-07-29': 'ชดเชยวันเฉลิมฯ ร.10',
+        '2024-08-12': 'วันแม่แห่งชาติ',
+        '2024-10-14': 'ชดเชยวันนวมินทรมหาราช',
+        '2024-12-30': 'วันหยุดพิเศษ',
+
+        // 2025
         '2025-02-12': 'วันมาฆบูชา',
-        '2025-04-06': 'วันจักรี',
-        '2025-04-13': 'วันสงกรานต์',
-        '2025-04-14': 'วันสงกรานต์',
-        '2025-04-15': 'วันสงกรานต์',
-        '2025-05-01': 'วันแรงงาน',
-        '2025-05-05': 'วันฉัตรมงคล',
-        '2025-05-12': 'วันวิสาขบูชา',
-        '2025-06-03': 'วันเฉลิมฯ',
+        '2025-05-11': 'วันวิสาขบูชา',
+        '2025-05-12': 'ชดเชยวันวิสาขบูชา',
         '2025-07-10': 'วันอาสาฬหบูชา',
-        '2025-07-28': 'วันเฉลิมฯ',
-        '2025-08-12': 'วันแม่',
-        '2025-10-13': 'วันคล้ายฯ',
-        '2025-10-23': 'วันปิยมหาราช',
-        '2025-12-05': 'วันพ่อ',
-        '2025-12-10': 'วันรัฐธรรมนูญ',
-        '2025-12-31': 'วันสิ้นปี',
-      } as any
-      return holidayNames[dateStr] || ''
+        '2025-07-11': 'วันเข้าพรรษา',
+
+        // 2026
+        '2026-03-03': 'วันมาฆบูชา',
+        '2026-05-31': 'วันวิสาขบูชา',
+        '2026-06-01': 'ชดเชยวันวิสาขบูชา',
+        '2026-07-29': 'วันอาสาฬหบูชา',
+        '2026-07-30': 'วันเข้าพรรษา',
+      } as Record<string, string>
+
+      const currentYear = new Date().getFullYear()
+      const years = [currentYear - 1, currentYear, currentYear + 1] // Generate for prev, current, next year
+
+      const allHolidays = { ...specificHolidays }
+
+      years.forEach((year) => {
+        Object.entries(fixedHolidays).forEach(([date, name]) => {
+          const fullDate = `${year}-${date}`
+          if (!allHolidays[fullDate]) {
+            allHolidays[fullDate] = name
+          }
+        })
+      })
+
+      // Update data properties
+      this.holidaysMap = allHolidays
+      this.holidayDates = Object.keys(allHolidays)
+    },
+    getHolidayName(dateStr: any) {
+      if (!this.holidaysMap) {
+        this.initHolidays();
+      }
+      return this.holidaysMap[dateStr] || ''
     },
     // 🔄 ฟังก์ชันวนลูปสีแบบเรียงลำดับ
     generateColorFromIndex(index: number) {
