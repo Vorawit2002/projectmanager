@@ -86,7 +86,10 @@
             :src="getImageUrl(item.imageProfile)"
             :alt="item.firstName + ' ' + item.lastName"
           />
-          <span v-else class="text-subtitle-1 font-weight-medium">
+          <span
+            v-else
+            class="text-subtitle-1 font-weight-medium"
+          >
             {{ getUserInitials(item) }}
           </span>
         </v-avatar>
@@ -118,13 +121,24 @@
         {{ getDepartmentName(item.departmentId) }}
       </template>
 
-      <template v-slot:item.isActive="{ item }">
-        <v-chip
-          :color="item.isActive ? 'success' : 'error'"
-          size="small"
-        >
-          {{ item.isActive ? 'Active' : 'Inactive' }}
-        </v-chip>
+      <template v-slot:item.accessPermission="{ item }">
+        <div class="d-flex align-center justify-center">
+          <v-switch
+            :model-value="hasAccessPermission(item)"
+            @update:model-value="toggleAccessPermission(item, $event)"
+            color="success"
+            density="compact"
+            hide-details
+            :loading="item._togglingAccess"
+            :disabled="item._togglingAccess"
+          ></v-switch>
+          <span
+            class="text-caption ml-1"
+            :class="hasAccessPermission(item) ? 'text-success' : 'text-error'"
+          >
+            {{ hasAccessPermission(item) ? 'เปิดสิทธิ์' : 'ไม่เปิดสิทธิ์' }}
+          </span>
+        </div>
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -193,10 +207,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { Client } from '@/client'
 import { BACKEND_API_URL } from '@/constants'
 import { useSweetAlertStore } from '@/stores'
+import { defineComponent } from 'vue'
 import AssignRoleDrawer from './AssignRoleDrawer.vue'
 import UserDetailView from './UserDetailView.vue'
 
@@ -218,7 +232,7 @@ export default defineComponent({
         { title: 'ตำแหน่ง', value: 'position' },
         { title: 'แผนก', value: 'department' },
         { title: 'Role', value: 'roles', sortable: false },
-        { title: 'สถานะ', value: 'isActive', align: 'center' },
+        { title: 'สิทธิ์ใช้งาน', value: 'accessPermission', align: 'center', sortable: false },
         { title: 'จัดการ', value: 'actions', align: 'center', sortable: false },
       ] as any,
       users: [] as any[],
@@ -260,12 +274,12 @@ export default defineComponent({
   methods: {
     getImageUrl(imageProfile: string): string {
       if (!imageProfile) return ''
-      
+
       // If it's already a full URL (http/https) or data URL (data:), use as is
       if (imageProfile.startsWith('http') || imageProfile.startsWith('data:')) {
         return imageProfile
       }
-      
+
       // If it's a relative path, prepend BACKEND_API_URL
       return `${BACKEND_API_URL}${imageProfile.startsWith('/') ? '' : '/'}${imageProfile}`
     },
@@ -273,7 +287,7 @@ export default defineComponent({
       const firstName = item.firstName || ''
       const lastName = item.lastName || ''
       const userName = item.userName || ''
-      
+
       if (firstName && lastName) {
         return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
       } else if (firstName) {
@@ -298,7 +312,7 @@ export default defineComponent({
         const response = await client.getAllUsers(
           this.search || undefined,
           this.roleFilter || undefined,
-          this.isActiveFilter !== null ? this.isActiveFilter : undefined
+          this.isActiveFilter !== null ? this.isActiveFilter : undefined,
         )
         this.users = response
         this.totalItems = response.length // For now, use array length. Later can add pagination from backend
@@ -317,6 +331,28 @@ export default defineComponent({
         Viewer: 'secondary',
       }
       return colors[role] || 'default'
+    },
+    hasAccessPermission(item: any): boolean {
+      if (!item.roles || item.roles.length === 0) return false
+      return item.roles.some((role: string) => role !== 'Viewer')
+    },
+    async toggleAccessPermission(item: any, newValue: boolean) {
+      const newRole = newValue ? 'User' : 'Viewer'
+      try {
+        item._togglingAccess = true
+        await client.assignRole({
+          userId: item.userId,
+          roleName: newRole,
+        } as any)
+        // อัพเดท roles ใน local
+        item.roles = [newRole]
+        this.sweetAlert.success(`${newValue ? 'เปิด' : 'ปิด'}สิทธิ์ใช้งานสำเร็จ`)
+      } catch (error: any) {
+        console.error('Error toggling access:', error)
+        this.sweetAlert.error('ไม่สามารถเปลี่ยนสิทธิ์ได้')
+      } finally {
+        item._togglingAccess = false
+      }
     },
     openAssignRoleDialog(user: any) {
       this.selectedUser = user
